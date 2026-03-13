@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.0.2 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.0.3 (latest). See `SECURITY.md` for the support policy.
+
+## [1.0.3] - 2026-03-14
+
+### Fixed
+
+- **Docker Build Failure** (`Dockerfile`): Removed `NEXT_PUBLIC_BUILD_MODE=true` from the Docker build stage. This env var triggers `output: 'export'` in `next.config.js`, which is incompatible with Next.js API routes (`force-dynamic`). Docker runs a full Node.js server and should use `BUILD_STANDALONE=true` for standalone output mode instead.
+
+### Changed
+
+- **MADHAVA Help Bot — Gemini Migration** (`app/api/helpbot/chat/route.ts`) [NEW]: Replaced the backend Groq-powered helpbot endpoint with a local Next.js API route powered by Google Gemini. The bot now carries the full Comicraft platform knowledge base as a system prompt, eliminating the dependency on the backend for chat.
+- **Helpbot Health Check** (`components/madhava-helpbot.tsx`): Updated the health check to use `no-cors` mode for the backend ping, and the bot now stays online even when the backend is cold-starting since Gemini chat works independently.
 
 ## [1.0.2] - 2026-03-14
 

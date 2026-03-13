@@ -21,9 +21,12 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 FROM deps AS build
 
 # Build-time env vars (no secrets — those come from runtime)
+# DO NOT set NEXT_PUBLIC_BUILD_MODE=true here — that triggers output: 'export'
+# which is for Cloudflare Pages static hosting only. Docker runs a full Node.js
+# server so it needs the standard or standalone build mode.
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NEXT_IGNORE_TYPE_ERRORS=1
-ENV NEXT_PUBLIC_BUILD_MODE=true
+ENV BUILD_STANDALONE=true
 
 COPY . .
 RUN npm run build

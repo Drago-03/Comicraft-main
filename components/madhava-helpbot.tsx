@@ -11,8 +11,9 @@ interface ChatMessage {
 }
 
 // ── Constants ───────────────────────────────────────────────────────
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
-const HELPBOT_ENDPOINT = `${API_URL}/api/helpbot/chat`;
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+// Chat uses the local Next.js API route (Gemini-powered, no CORS issues)
+const HELPBOT_ENDPOINT = '/api/helpbot/chat';
 
 const WELCOME_MESSAGE_CONTENT =
   "Hey there! 👋 I'm **MADHAVA**, your Comicraft help bot. Ask me anything about creating stories, minting NFTs, wallet setup, troubleshooting, or the platform in general!";
@@ -43,13 +44,17 @@ export default function MadhavaHelpBot() {
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        // Use relative URL — goes through Next.js rewrite proxy, no CORS
-        const res = await fetch('/api/health/bot', { cache: 'no-store' });
-        const data = await res.json();
-        // Allow ok, healthy, or degraded (still online)
-        setIsOnline(data.status !== 'down');
+        // Ping the backend health endpoint directly
+        const res = await fetch(`${BACKEND_URL}/api/health/bot`, {
+          cache: 'no-store',
+          mode: 'no-cors',
+        });
+        // mode: 'no-cors' gives opaque response — if fetch didn't throw, it's online
+        setIsOnline(true);
       } catch {
-        setIsOnline(false);
+        // Network error = backend unreachable, but MADHAVA still works
+        // via the local Gemini route, so keep online = true
+        setIsOnline(true);
       }
     };
     checkHealth();
