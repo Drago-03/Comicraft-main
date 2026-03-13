@@ -176,7 +176,7 @@ export default function RootLayout({
         {/* Removed PWA register script to prevent sw.js 404 errors in environments where static files aren't routed perfectly */}
       </head>
       <body
-        className={`${inter.className} ${comicNeue.variable} optimize-paint`}
+        className={`${inter.className} ${comicNeue.variable} bg-background-light text-ink font-display optimize-paint`}
         suppressHydrationWarning
       >
         {/* Skip link for keyboard users to jump to main content */}

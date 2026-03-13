@@ -73,12 +73,9 @@ export function Footer({ version }: { version?: string }) {
   ];
 
   return (
-    <footer role="contentinfo" className="relative mt-20 border-t border-white/10 dark:border-white/10 bg-black dark:bg-black text-white selection:bg-white/20">
-      {/* Premium Background Glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute bottom-0 left-[-10%] w-[40vw] h-[40vw] bg-emerald-500/10 blur-[120px] rounded-full" />
-        <div className="absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-purple-500/10 blur-[120px] rounded-full" />
-      </div>
+    <footer role="contentinfo" className="relative mt-20 border-t-8 border-ink bg-ink text-background-light selection:bg-comic-primary/20 overflow-hidden">
+      {/* Premium Halftone Glow overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8'/%3E%3C/svg%3E")` }} />
 
       <div className="relative z-10">
         <div className="container mx-auto px-6 py-16">
@@ -89,8 +86,8 @@ export function Footer({ version }: { version?: string }) {
               <Link href="/" className="group inline-block mb-2" aria-label="Comicraft home">
                 <ComiCraftLogo variant="full" colorScheme="color" size={32} animate={false} />
               </Link>
-              <div className="text-left">
-                <p className="text-sm font-medium text-white/50 leading-relaxed max-w-sm">
+              <div className="text-left font-sans">
+                <p className="text-sm font-medium text-background-light/70 leading-relaxed max-w-sm">
                   Comicraft: Creativity Tokenization Platform (CTP) - Empowering creators with AI-driven storytelling and Web3 ownership.
                 </p>
               </div>
@@ -138,7 +135,6 @@ export function Footer({ version }: { version?: string }) {
                   { href: '/genres', label: 'Worlds' },
                   { href: '/create', label: 'Forge' },
                   { href: '/marketplace', label: 'Bazaar' },
-                  { href: '/buy/CRAFTS', label: 'Buy CRAFTS' },
                   { href: '/community', label: 'Commons' },
                   { href: '/docs', label: 'Atlas' },
                   { href: '/community/creators', label: 'Top Creators' },
@@ -198,6 +194,7 @@ export function Footer({ version }: { version?: string }) {
                 {[
                   { href: '/docs', label: 'Documentation' },
                   { href: '/faq', label: 'FAQ' },
+                  { href: '/buy/CRAFTS', label: 'Buy CRAFTS' },
                   { href: '/feedback', label: 'Feedback' },
                 ].map((link) => (
                   <li key={link.href}>
