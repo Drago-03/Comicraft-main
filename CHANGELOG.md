@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.0.3 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.0.4 (latest). See `SECURITY.md` for the support policy.
+
+## [1.0.4] - 2026-03-14
+
+### Fixed
+
+- **Render Build Crash — Missing `NEXT_PUBLIC_URL`** (`app/layout.tsx`): The build-time environment variable validation was throwing a hard error when `NEXT_PUBLIC_URL` was not set, which Render does not provide at build time. Replaced the `throw` with a warn-and-default strategy: missing `NEXT_PUBLIC_*` vars are now backfilled with production defaults (`https://comicraft.xyz`), and a console warning is emitted at runtime so operators still notice any misconfiguration. Also added detection for the Render-specific `RENDER` env var to the build-phase skip list alongside `CI` and `NEXT_PUBLIC_BUILD_MODE`.
 
 ## [1.0.3] - 2026-03-14
 
