@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.0.4 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.1.0 (latest). See `SECURITY.md` for the support policy.
+
+## [1.1.0] - 2026-03-14
+
+### Changed
+
+- **Homepage Visual Redesign** (`app/page.tsx`, `tailwind.config.js`, `app/globals.css`): Complete redesign of the homepage to a vintage newspaper/comic editorial aesthetic. Warm beige (`#F5E6C8`) background, heavy ink-black (`#1a100f`) borders, bold red accent (`#bf3a2b`), halftone dot patterns, comic-style `box-shadow`, and thick uppercase Be Vietnam Pro typography. Hero section now features a centered layout with a 1.5x scaled Spline 3D model (`spline-viewer`) as a non-interactive background element. Engines section redesigned as a 4-column grid of numbered cards with hover reveal. Added "Provenance Gazette" newspaper-style layout with drop-cap, sidebar, and classifieds. Bazaar and Worlds sections restyled with comic-border cards and horizontal carousel. All existing text content, functionality, API calls, and routing preserved.
+- **Performance Opts**: Replaced heavy CSS `radial-gradient` dot patterns with ultra-fast inline SVG backgrounds to completely resolve scrolling lag.
+
+### Added
+
+- **Design Tokens** (`tailwind.config.js`): New colors `comic-primary`, `background-light`, `background-dark`, `ink`, `paper`; `display` font family (Be Vietnam Pro); `scroll-marquee-home` animation for worlds carousel.
+- **Font Imports** (`app/globals.css`): Added `Be Vietnam Pro` (400, 500, 700, 900) and `Material Symbols Outlined` from Google Fonts.
 
 ## [1.0.4] - 2026-03-14
 

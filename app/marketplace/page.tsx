@@ -125,7 +125,7 @@ export default function MarketplacePage() {
   }, [supabase]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pt-0 pb-8">
       <div className="flex justify-between items-center mb-8">
         <PageHeader
           title="Marketplace"

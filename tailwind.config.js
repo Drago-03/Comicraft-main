@@ -71,14 +71,20 @@ module.exports = {
 					'3': 'hsl(var(--chart-3))',
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))'
-				}
+				},
+				"comic-primary": "#bf3a2b",
+				"background-light": "#F5E6C8",
+				"background-dark": "#1f1413",
+				"ink": "#1a100f",
+				"paper": "#f2eae9"
 			},
 			fontFamily: {
 				sans: [
 					'var(--font-sans)',
 					'sans-serif'
 				],
-				comic: ['var(--font-comic)', 'cursive']
+				comic: ['var(--font-comic)', 'cursive'],
+				display: ['Be Vietnam Pro', 'sans-serif']
 			},
 			boxShadow: {
 				comic: '4px 4px 0px 0px #000000',
@@ -146,6 +152,10 @@ module.exports = {
 				'page-flip-left': {
 					from: { transform: 'rotateY(0deg)' },
 					to: { transform: 'rotateY(180deg)' }
+				},
+				'scroll-marquee-home': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-50%)' }
 				}
 			},
 
@@ -160,7 +170,8 @@ module.exports = {
 				'shimmer_2s_infinite': 'shimmer 2s infinite linear',
 				/* book page flip */
 				'page-flip-right': 'page-flip-right 0.35s ease-in-out forwards',
-				'page-flip-left': 'page-flip-left 0.35s ease-in-out forwards'
+				'page-flip-left': 'page-flip-left 0.35s ease-in-out forwards',
+				'scroll-marquee-home': 'scroll-marquee-home 40s linear infinite'
 			}
 		}
 	},

@@ -106,7 +106,7 @@ router.get('/', async (req, res) => {
         }
 
         // Filter for published/approved stories only
-        query = query.eq('moderation_status', 'approved');
+        query = query.or('moderation_status.eq.approved,moderation_status.is.null');
 
         // Order by newest first
         query = query.order('created_at', { ascending: false });

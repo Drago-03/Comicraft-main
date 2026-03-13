@@ -391,9 +391,10 @@ export default function DashboardPage() {
   // ── Render ────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen relative bg-black text-white font-sans overflow-hidden">
-      {/* Background */}
+    <div className="min-h-screen relative font-sans overflow-hidden">
+      {/* Background Halftone - Vintage style */}
       <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8'/%3E%3C/svg%3E")` }} />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(59,130,246,0.08),_transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(168,85,247,0.06),_transparent_50%)]" />
       </div>

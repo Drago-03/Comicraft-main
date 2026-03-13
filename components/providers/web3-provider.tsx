@@ -34,10 +34,17 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const [ensName, setEnsName] = useState<string | null>(null);
   const [showInstallModal, setShowInstallModal] = useState(false);
 
-  //helper to get ethereum safely with type casting
-  const getEthereum = useCallback(() =>{
-    if(typeof window!== 'undefined' && window.ethereum){
-      return window.ethereum;
+  // helper to get strictly MetaMask ethereum provider
+  const getEthereum = useCallback(() => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      const ethAny = window.ethereum as any;
+      // If multiple providers exist, handle EIP-6963 or find the MetaMask one
+      if (ethAny.providers) {
+        return ethAny.providers.find((p: any) => p.isMetaMask) || null;
+      }
+      if (ethAny.isMetaMask) {
+        return ethAny;
+      }
     }
     return null;
   }, []);
@@ -113,9 +120,8 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   }, [getEthereum, disconnectWallet]);
 
   const connectWallet = async () => {
-    //if (typeof window === "undefined" || !window.ethereum) 
     const ethereum = getEthereum();
-    if(!ethereum){
+    if (!ethereum) {
       setShowInstallModal(true);
       return;
     }

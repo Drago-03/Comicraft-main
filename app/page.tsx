@@ -17,18 +17,16 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import React, { useState, useEffect, useRef } from 'react';
 
 import { useWeb3 } from '@/components/providers/web3-provider';
 import { TrendingStories } from '@/components/trending-stories';
 import { Button } from '@/components/ui/button';
 import { UploadStoryTrigger } from '@/components/upload-story-trigger';
-import { ComiCraftLogo } from '@/components/comicraft-logo';
 import { cn } from '@/lib/utils';
 
 // --- Typewriter Hook ---
-// Uses refs for all mutable values so the interval callback never
-// captures stale closure state — the classic bug in the previous version.
 function useTypewriter(
   texts: string[],
   typingSpeed = 55,
@@ -37,10 +35,8 @@ function useTypewriter(
   pauseAfterDelete = 400,
 ) {
   const [displayText, setDisplayText] = useState('');
-
-  // All mutable state lives in refs so the interval never goes stale
-  const indexRef = useRef(0);   // which phrase we're on
-  const charRef = useRef(0);   // current character position
+  const indexRef = useRef(0);
+  const charRef = useRef(0);
   const isDeletingRef = useRef(false);
   const pausingRef = useRef(false);
 
@@ -49,27 +45,23 @@ function useTypewriter(
 
     const tick = () => {
       const phrase = texts[indexRef.current % texts.length];
-      if (!phrase) return; // guard: phrase is undefined when texts is empty
+      if (!phrase) return;
 
       if (pausingRef.current) return;
 
       if (!isDeletingRef.current) {
-        // — Typing forward —
         charRef.current = Math.min(charRef.current + 1, phrase.length);
         setDisplayText(phrase.slice(0, charRef.current));
 
         if (charRef.current === phrase.length) {
-          // Finished typing — pause before deleting
           pausingRef.current = true;
           setTimeout(() => { isDeletingRef.current = true; pausingRef.current = false; }, pauseAfterType);
         }
       } else {
-        // — Deleting —
         charRef.current = Math.max(charRef.current - 1, 0);
         setDisplayText(phrase.slice(0, charRef.current));
 
         if (charRef.current === 0) {
-          // Finished deleting — move to next phrase, pause before typing
           isDeletingRef.current = false;
           indexRef.current += 1;
           pausingRef.current = true;
@@ -78,20 +70,14 @@ function useTypewriter(
       }
     };
 
-    // Single interval — speed adapts to typing vs deleting phase via delete ref
     let timeoutId: NodeJS.Timeout;
-
     const runTick = () => {
       tick();
       timeoutId = setTimeout(runTick, isDeletingRef.current ? deletingSpeed : typingSpeed);
     };
-
     timeoutId = setTimeout(runTick, isDeletingRef.current ? deletingSpeed : typingSpeed);
 
-    // Re-create the interval whenever the speed should change
-    // (framer-motion / React will clean up via the return)
     return () => clearTimeout(timeoutId);
-    // Re-run only when props change — internal state changes use refs
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [texts, typingSpeed, deletingSpeed, pauseAfterType, pauseAfterDelete]);
 
@@ -111,12 +97,7 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
   const heroRef = useRef<HTMLElement>(null);
 
-  // Parallax values
-  const yBg = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
-  const opacityHero = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-
   const [activeFilter, setActiveFilter] = useState('All');
-
   const typedString = useTypewriter(heroStories, 40, 20, 3000);
 
   // Animation variants
@@ -124,67 +105,12 @@ export default function Home() {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
   };
-
   const fadeUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
   };
 
-  const [activeStep, setActiveStep] = useState(0);
-
-  // Mouse parallax for Hero
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth - 0.5) * 40,
-        y: (e.clientY / window.innerHeight - 0.5) * 40,
-      });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  const pathToCreation = [
-    {
-      id: "spark",
-      step: '01',
-      title: 'The Spark',
-      desc: 'Start with a simple prompt or a fully formed character. You hold the creative reins while intelligent tools help bring your vision into focus.',
-      icon: <PenSquare className="w-6 h-6 shrink-0" />,
-      color: 'from-blue-500 to-indigo-500',
-      activeBg: 'bg-indigo-500/10',
-      activeBorder: 'border-indigo-500/50',
-      iconColor: 'text-indigo-400'
-    },
-    {
-      id: "craft",
-      step: '02',
-      title: 'The Craft',
-      desc: 'Refine your narrative. Shape the world, dictate the outcomes, and watch your story evolve organically.',
-      icon: <BookOpen className="w-6 h-6 shrink-0" />,
-      color: 'from-indigo-500 to-purple-500',
-      activeBg: 'bg-purple-500/10',
-      activeBorder: 'border-purple-500/50',
-      iconColor: 'text-purple-400'
-    },
-    {
-      id: "legacy",
-      step: '03',
-      title: 'The Legacy',
-      desc: 'Publish to a global audience. Retain true ownership of your chapters, securing your legacy as a creator.',
-      icon: <Shield className="w-6 h-6 shrink-0" />,
-      color: 'from-purple-500 to-emerald-500',
-      activeBg: 'bg-emerald-500/10',
-      activeBorder: 'border-emerald-500/50',
-      iconColor: 'text-emerald-400'
-    },
-  ];
-
-  // Top 12 Genres for Marquee
+  // Top 12 Genres for Worlds carousel
   const marqueeGenres = [
     { name: 'Science Fiction', image: 'https://ik.imagekit.io/panmac/tr:f-auto,w-740,pr-true//bcd02f72-b50c-0179-8b4b-5e44f5340bd4/175e79ee-ed99-45d5-846f-5af0be2ab75b/sub%20genre%20guide.webp', color: 'from-cyan-500 to-blue-600' },
     { name: 'Fantasy', image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhv_45322WkBmu9o8IvYfcxEXDTbGzORCAgwdP0OF1Zq4izhDr6PT-bkqYj0BJJ_HP02Op2Y0vrNOQlN6tuf0cnu4GwWqprIJrcn89pYY6uiu89gXLr5UXIZ3h6-2HWvO-SjaqzeMRoiXk/s1600/latest.jpg', color: 'from-purple-500 to-indigo-600' },
@@ -201,330 +127,366 @@ export default function Home() {
   ];
 
   return (
-    <main className="flex min-h-[calc(100vh-80px)] w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] -mt-6 -mb-6 flex-col overflow-hidden bg-black text-white">
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        @keyframes scrollMarquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          animation: scrollMarquee 40s linear infinite;
-        }
-        .animate-marquee:hover {
-          animation-play-state: paused;
-        }
-      `}} />
+    <main className="flex min-h-[calc(100vh-80px)] w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] mb-0 pt-[100px] flex-col overflow-hidden bg-background-light font-display text-ink">
+
+      {/* Load Spline Viewer */}
+      <Script
+        src="https://unpkg.com/@splinetool/viewer@1.12.69/build/spline-viewer.js"
+        type="module"
+        strategy="afterInteractive"
+      />
+
       {/* ═══════════════════════════════════════
-          HERO SECTION (Cinematic Animated Canvas)
+          HERO SECTION — Centered with Spline 3D BG
           ═══════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-[100vh] flex flex-col items-center justify-center overflow-hidden">
-        {/* Parallax Starfield Background */}
-        <motion.div style={{ y: yBg, opacity: opacityHero }} className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920')] bg-cover bg-center opacity-40 mix-blend-screen" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black z-10" />
-          <motion.div
-            animate={{
-              x: mousePos.x,
-              y: mousePos.y
-            }}
-            transition={{ type: "spring", damping: 50, stiffness: 200 }}
-            className="absolute inset-0 z-0"
-          >
-            <motion.div
-              animate={{ scale: [1, 1.1, 1], rotate: [0, 5, 0] }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              className="absolute top-[-20%] right-[-10%] w-[70vw] h-[70vw] rounded-full bg-[radial-gradient(circle,_rgba(59,130,246,0.15)_0%,_transparent_60%)] filter blur-[120px]"
-            />
-            <motion.div
-              animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 0] }}
-              transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-              className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[radial-gradient(circle,_rgba(168,85,247,0.1)_0%,_transparent_60%)] filter blur-[100px]"
-            />
-          </motion.div>
-        </motion.div>
+      <section ref={heroRef} className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden">
+        {/* Spline 3D Background */}
+        <div className="absolute inset-0 w-full h-full z-0" style={{ pointerEvents: 'none' }}>
+          {/* @ts-ignore — custom element from Spline viewer script */}
+          <spline-viewer
+            url="https://prod.spline.design/8icR7qHkgbU0oGaM/scene.splinecode"
+            style={{ width: '100%', height: '100%', pointerEvents: 'none', transform: 'scale(1.5)' } as React.CSSProperties}
+          />
+        </div>
+        {/* Overlay for text readability */}
+        <div className="absolute inset-0 bg-background-light/60 z-[1]" />
 
-        <div className="container mx-auto px-6 relative z-10 flex flex-col items-center max-w-5xl">
+        {/* Hero Content */}
+        <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto px-6 py-16">
+          <motion.div variants={stagger} initial="hidden" animate="visible" className="flex flex-col items-center">
 
-          {/* Centered Text & CTA */}
-          <motion.div variants={stagger} initial="hidden" animate="visible" className="text-center mt-20 md:mt-0 flex flex-col items-center">
-            <motion.div variants={fadeUp} className="mb-10 drop-shadow-[0_0_30px_rgba(34,211,238,0.2)]">
-              <ComiCraftLogo variant="full" colorScheme="color" size={68} animate={false} />
-            </motion.div>
-            
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-8 backdrop-blur-md">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="text-xs font-bold tracking-widest uppercase text-emerald-400">AI × Stories × NFTs</span>
+            {/* Tagline Badge */}
+            <motion.div variants={fadeUp} className="relative bg-white border-2 border-ink px-6 py-3 mb-10 inline-block" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%231a100f' fill-opacity='0.06'/%3E%3C/svg%3E")` }}>
+              <span className="text-ink font-bold uppercase text-xs tracking-[0.2em] relative z-10">Comicraft : Creativity Tokenization PLatform (CTP)</span>
+              {/* Speech bubble tail */}
+              <span className="absolute -bottom-[10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-ink" />
             </motion.div>
 
-            <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.2] pb-4 mb-6">
-              AI-native comics, stories, and collectibles on <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 py-2 inline-block">Blockchain.</span>
+            {/* Main Heading */}
+            <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl font-black leading-[1.05] uppercase tracking-tighter italic mb-8 max-w-4xl">
+              AI-native comics, <br className="hidden md:block" />
+              <span className="bg-comic-primary text-white px-3 py-1 not-italic inline-block my-1" style={{ color: '#fff' }}>stories</span>, and <br className="hidden md:block" />
+              collectibles on Blockchain.
             </motion.h1>
 
-            <motion.div variants={fadeUp} className="min-h-[4rem] mb-10 max-w-2xl mx-auto flex flex-col items-center justify-center">
-              <p className="text-xl md:text-2xl text-white/60 font-medium leading-relaxed text-center mb-4">
-                The cinematic platform where creators, collectors, and communities build immersive universes together.
-              </p>
-              <p className="text-emerald-400/80 font-mono text-sm tracking-wide">
-                {'>'} {typedString}
-                <motion.span
-                  animate={{ opacity: [1, 0] }}
-                  transition={{ repeat: Infinity, duration: 0.8 }}
-                  className="inline-block w-2 bg-emerald-400/80 ml-1 h-4 align-middle"
-                />
-              </p>
+            {/* Subtext */}
+            <motion.p variants={fadeUp} className="text-lg md:text-xl font-medium max-w-2xl border-l-4 border-comic-primary pl-4 text-ink/80 mb-6 text-left">
+              The cinematic platform where creators, collectors, and communities build immersive universes together.
+            </motion.p>
+
+            {/* Shakti Spark Typewriter */}
+            <motion.div variants={fadeUp} className="mb-10 font-mono text-sm text-ink/60 tracking-wide">
+              {'>'} {typedString}
+              <motion.span
+                animate={{ opacity: [1, 0] }}
+                transition={{ repeat: Infinity, duration: 0.8 }}
+                className="inline-block w-2 bg-comic-primary ml-1 h-4 align-middle"
+              />
             </motion.div>
 
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-6 items-center justify-center pt-4">
-              <Button asChild className="group relative overflow-hidden bg-white text-black hover:text-black h-16 px-10 rounded-full font-bold text-lg transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.2)]">
-                <Link href="/create">
-                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                  <span className="relative z-10 flex items-center">
-                    Enter Comicraft Forge <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="h-16 px-10 rounded-full font-bold text-lg border-white/20 hover:bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)]">
-                <Link href="/genres">Discover Worlds</Link>
-              </Button>
+            {/* CTA Buttons */}
+            <motion.div variants={fadeUp} className="flex flex-wrap gap-6 items-center justify-center">
+              {/* Primary — layered comic border with rotate */}
+              <Link href="/create" className="relative group inline-block">
+                <div className="absolute inset-0 bg-comic-primary border-[3px] border-ink shadow-[4px_4px_0px_#1a100f] scale-110 rotate-2 group-hover:rotate-0 transition-transform" />
+                <span className="relative block bg-comic-primary text-white font-black uppercase px-8 py-4 text-xl tracking-tighter" style={{ color: '#fff' }}>
+                  Enter Comicraft Forge <ArrowRight className="inline-block ml-2 w-5 h-5" />
+                </span>
+              </Link>
+              {/* Secondary — dashed border */}
+              <Link href="/genres" className="border-4 border-ink border-dashed p-1 inline-block group">
+                <span className="block border-2 border-ink px-8 py-4 font-black uppercase text-xl hover:bg-ink hover:text-background-light transition-all">
+                  Discover Worlds
+                </span>
+              </Link>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════
-          PATH TO CREATION (Bento Box Layout)
+          THE ENGINES — Heavy Inked Grid
           ═══════════════════════════════════════ */}
-      <section className="relative py-32 bg-black border-t border-white/5">
-        <div className="container mx-auto px-6 max-w-7xl relative z-10">
+      <section className="bg-ink text-background-light py-20 px-6 md:px-10">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={stagger}
-            className="mb-20"
+            className="mb-12"
           >
             <div className="flex flex-col md:flex-row items-end justify-between gap-8">
-              <div className="max-w-2xl">
-                <motion.div variants={fadeUp} className="flex items-center gap-4 mb-4">
-                  <span className="text-emerald-400 font-mono text-xs tracking-widest uppercase">The Engines</span>
-                  <div className="h-px bg-white/10 flex-1 max-w-[100px]" />
-                </motion.div>
-                <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-white mb-4">
-                  Comicraft Forge
-                </motion.h2>
-                <motion.p variants={fadeUp} className="text-white/60 text-lg">
+              <div>
+                <motion.h3 variants={fadeUp} className="text-4xl font-black uppercase italic tracking-tighter flex items-center gap-4 mb-4">
+                  <span className="bg-comic-primary h-8 w-8 inline-block" />
+                  The Engines
+                </motion.h3>
+                <motion.p variants={fadeUp} className="text-background-light/60 text-lg max-w-xl">
                   Choose your engine and bring your stories to life. From intelligent prose to rich comic panels, Comicraft Forge gives you the exact tools you need.
                 </motion.p>
               </div>
-              <motion.div variants={fadeUp} className="flex-shrink-0">
-                <Button asChild className="rounded-full px-8 bg-white text-black hover:bg-white/90 font-medium">
-                  <Link href="/upload">Begin Formatting</Link>
-                </Button>
+              <motion.div variants={fadeUp}>
+                <Link href="/upload" className="bg-background-light text-ink px-6 py-2 font-black uppercase text-sm border-[3px] border-background-light shadow-[4px_4px_0px_rgba(245,230,200,0.3)] hover:translate-y-[-2px] transition-all inline-block">
+                  Begin Formatting
+                </Link>
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Bento Box Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[minmax(300px,_auto)]">
-
-            {/* Bento Card 1: Large Feature */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Engine Card 1: VedaScript */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="md:col-span-12 lg:col-span-7 bg-zinc-950 border border-white/10 rounded-3xl p-8 md:p-12 relative overflow-hidden group"
+              className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 group-hover:bg-indigo-500/20 transition-colors duration-700 pointer-events-none" />
+              {/* Background Image */}
+              <div className="absolute inset-0 z-0">
+                <Image
+                   src="/vedascript-engine.png"
+                   alt="VedaScript Engine"
+                   fill
+                   className="object-cover transition-opacity duration-500"
+                 />
+                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+               </div>
 
-              <div className="relative z-10 h-full flex flex-col justify-between">
-                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-12">
-                  <PenSquare className="w-8 h-8 text-indigo-400" />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-serif font-bold text-white mb-4">Draft with VedaScript Engine</h3>
-                  <p className="text-lg text-white/50 max-w-lg leading-relaxed">
-                    Our flagship AI story studio. Command deep narrative control, long-form storytelling, and advanced parameters to craft your next great saga.
-                  </p>
-                </div>
+              <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
+              <div className="relative z-20">
+                <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">01</span>
+                <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>VedaScript Engine</h4>
+                <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
+                  AI story studio with deep narrative control and long-form storytelling.
+                </p>
               </div>
             </motion.div>
 
-            {/* Bento Card 2: Medium Feature */}
+            {/* Engine Card 2: Panelra */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="md:col-span-6 lg:col-span-5 bg-white border border-white/10 rounded-3xl p-8 relative overflow-hidden group"
+              className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
             >
-              <div className="relative z-10 h-full flex flex-col justify-between">
-                <div className="w-16 h-16 rounded-2xl bg-black/5 flex items-center justify-center mb-12">
-                  <BookOpen className="w-8 h-8 text-black" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-serif font-bold text-black mb-4">Visualize with Panelra Engine</h3>
-                  <p className="text-base text-black/70 leading-relaxed">
-                    Focus on panel-based visual storytelling, cinematic image generation, and dynamic comic layouts to turn your words into stunning graphic novels.
-                  </p>
-                </div>
-              </div>
+              <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
+              <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">02</span>
+              <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>Panelra Engine</h4>
+              <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
+                Panel-based visual storytelling and cinematic image generation.
+              </p>
             </motion.div>
 
-            {/* Bento Card 3 */}
+            {/* Engine Card 3: Mythloom */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="md:col-span-6 lg:col-span-4 bg-zinc-900 border border-white/10 rounded-3xl p-8 relative overflow-hidden group"
+              className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-emerald-500/10 to-transparent pointer-events-none" />
-              <div className="relative z-10 h-full flex flex-col justify-between">
-                <div className="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mb-8">
-                  <Shield className="w-6 h-6 text-emerald-400" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-3">Blend with Mythloom Engine</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">
-                    The ultimate hybrid format. Seamlessly blend serialized prose and comic panels into cohesive, multimedia experiences that keep readers hooked.
-                  </p>
-                </div>
-              </div>
+              <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
+              <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">03</span>
+              <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>Mythloom Engine</h4>
+              <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
+                Seamlessly blend prose and comic panels into multimedia experiences.
+              </p>
             </motion.div>
 
-            {/* Bento Card 4 */}
+            {/* Engine Card 4: Shakti Spark */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="md:col-span-12 lg:col-span-8 bg-zinc-950 border border-white/10 rounded-3xl p-8 relative overflow-hidden flex flex-col md:flex-row items-center gap-8"
+              className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
             >
-              <div className="flex-1 relative z-10">
-                <h3 className="text-2xl font-serif font-bold text-white mb-4">Spark with Shakti Spark</h3>
-                <p className="text-base text-white/50 leading-relaxed mb-6">
-                  Need a jumping-off point? Use our lightweight, lightning-fast idea generator to spark concepts, design characters, and plant the seeds of your universe.
+              <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
+              <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">04</span>
+              <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>Shakti Spark</h4>
+              <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
+                Lightning-fast idea generator to spark concepts and plant seeds.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link href="/create" className="text-comic-primary font-black uppercase text-sm tracking-wider hover:underline inline-flex items-center gap-2 group">
+              Go to Forge <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          PROVENANCE GAZETTE — Newspaper Layout
+          ═══════════════════════════════════════ */}
+      <section className="py-20 px-6 md:px-10 border-y-8 border-ink bg-white/50">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={stagger}
+          className="max-w-5xl mx-auto border-4 border-ink p-8 md:p-12 bg-white relative"
+        >
+          {/* Halftone overlay */}
+          <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%231a100f'/%3E%3C/svg%3E")` }} />
+
+          {/* Gazette Header */}
+          <div className="text-center border-b-4 border-ink pb-6 mb-8 relative z-10">
+            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-2" style={{ color: '#1a100f' }}>
+              PROVENANCE GAZETTE
+            </h2>
+            <div className="flex justify-between font-black uppercase text-sm tracking-widest border-t-2 border-ink pt-2">
+              <span>Vol. 102 — No. 1</span>
+              <span>Blockchain Edition</span>
+              <span>Est. 2024</span>
+            </div>
+          </div>
+
+          {/* Gazette Body */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+            {/* Main Column (2/3) */}
+            <div className="md:col-span-2">
+              <h3 className="text-3xl font-black uppercase italic mb-4" style={{ color: '#1a100f' }}>
+                Ownership Redefined on the Blockchain
+              </h3>
+
+              <div className="mb-4">
+                <p className="font-medium text-lg mb-4 first-letter:text-6xl first-letter:font-black first-letter:float-left first-letter:mr-3 first-letter:leading-none">
+                  Built on Blockchain, Comicraft transforms your creative output into verifiable digital assets. Invisible infrastructure, undeniable ownership. The bridge between digital art and tangible value has finally been forged.
                 </p>
-                <Button variant="link" asChild className="text-emerald-400 p-0 h-auto hover:text-emerald-300 font-medium group">
-                  <Link href="/create" className="flex items-center">
-                    Go to Forge <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
               </div>
 
-              <div className="w-full md:w-1/2 h-full min-h-[200px] rounded-2xl border border-white/10 bg-[url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center brightness-75 mix-blend-luminosity filter transition-all duration-700 hover:mix-blend-normal hover:brightness-100" />
-            </motion.div>
+              {/* Ownership Cards */}
+              <div className="space-y-6 mt-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-comic-primary/10 rounded-full flex items-center justify-center shrink-0">
+                    <Compass className="w-5 h-5 text-comic-primary" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-black uppercase mb-1" style={{ color: '#1a100f' }}>Storymint Gateway</h4>
+                    <p className="text-ink/70 text-sm">Turn your stories and comics into immortal collectibles. We handle the blockchain complexity so you can focus on creation.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-comic-primary/10 rounded-full flex items-center justify-center shrink-0">
+                    <Wallet className="w-5 h-5 text-comic-primary" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-black uppercase mb-1" style={{ color: '#1a100f' }}>Comicraft Bazaar</h4>
+                    <p className="text-ink/70 text-sm">Trade, collect, and monetize your digital assets. A vibrant marketplace empowering creators and rewarding true fans.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-comic-primary/10 rounded-full flex items-center justify-center shrink-0">
+                    <TrendingUp className="w-5 h-5 text-comic-primary" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-black uppercase mb-1" style={{ color: '#1a100f' }}>Reputation & Quests</h4>
+                    <p className="text-ink/70 text-sm">Build long-term reputation via Creator Rank and level up through Craft Quests, unlocking new perks and visibility.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            {/* Sidebar (1/3) */}
+            <div className="border-l-0 md:border-l-2 md:border-ink md:pl-8 space-y-6">
+              <div className="border-b-2 border-ink pb-4">
+                <h4 className="font-black uppercase text-sm mb-2 text-comic-primary">Breaking News</h4>
+                <p className="text-sm font-bold italic">Comicraft Forge now supports multi-chapter stories with blockchain-backed provenance for each chapter.</p>
+              </div>
+              <div className="border-b-2 border-ink pb-4">
+                <h4 className="font-black uppercase text-sm mb-2 text-comic-primary">Market Cap</h4>
+                <p className="text-3xl font-black" style={{ color: '#1a100f' }}>$42.8M</p>
+                <p className="text-xs font-bold uppercase opacity-60 italic">Total value locked in Comic Assets</p>
+              </div>
+              <div>
+                <h4 className="font-black uppercase text-sm mb-2 text-comic-primary">Classifieds</h4>
+                <ul className="text-xs font-bold uppercase space-y-2">
+                  <li>- LF Artist: Neon-Tokyo Saga</li>
+                  <li>- Sale: Golden Age Script #001</li>
+                  <li>- Event: Meta-Convention 2026</li>
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ═══════════════════════════════════════
-          OWNERSHIP & PROVENANCE
+          THE BAZAAR — Marketplace Section
           ═══════════════════════════════════════ */}
-      <section className="relative py-24 bg-zinc-900 border-t border-white/5">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-16">
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
-              Ownership & <span className="text-emerald-400">Provenance</span>
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-lg text-white/50 max-w-2xl mx-auto">
-              Built on Blockchain, Comicraft transforms your creative output into verifiable digital assets. Invisible infrastructure, undeniable ownership.
-            </motion.p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <motion.div variants={fadeUp} className="p-8 rounded-2xl bg-black/50 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-indigo-500/10 rounded-full flex items-center justify-center mb-6">
-                <Compass className="w-6 h-6 text-indigo-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Storymint Gateway</h3>
-              <p className="text-white/50 text-sm">Turn your stories and comics into immortal collectibles. We handle the blockchain complexity so you can focus on creation.</p>
-            </motion.div>
-            
-            <motion.div variants={fadeUp} className="p-8 rounded-2xl bg-black/50 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6">
-                <Wallet className="w-6 h-6 text-emerald-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Comicraft Bazaar</h3>
-              <p className="text-white/50 text-sm">Trade, collect, and monetize your digital assets. A vibrant marketplace empowering creators and rewarding true fans.</p>
-            </motion.div>
-            
-            <motion.div variants={fadeUp} className="p-8 rounded-2xl bg-black/50 border border-white/10 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center mb-6">
-                <TrendingUp className="w-6 h-6 text-purple-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Reputation & Quests</h3>
-              <p className="text-white/50 text-sm">Build long-term reputation via Creator Rank and level up through Craft Quests, unlocking new perks and visibility.</p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════
-          TRENDING STORIES (Horizontal Overflow Grid)
-          ═══════════════════════════════════════ */}
-      <section className="relative py-24 bg-zinc-950 border-t border-white/5">
-        <div className="container mx-auto px-6">
+      <section className="py-20 px-6 md:px-10 bg-background-light">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={stagger}
-            className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
+            className="flex flex-col md:flex-row justify-between items-end mb-12"
           >
             <div>
-              <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight mb-2 flex items-center gap-3">
-                <TrendingUp className="text-red-500 w-8 h-8" /> Comicraft Bazaar
+              <motion.h3 variants={fadeUp} className="text-comic-primary text-xl font-black italic uppercase tracking-widest">
+                Collectors&apos; Hub
+              </motion.h3>
+              <motion.h2 variants={fadeUp} className="text-5xl font-black uppercase tracking-tighter italic" style={{ color: '#1a100f' }}>
+                The Bazaar
               </motion.h2>
-              <motion.p variants={fadeUp} className="text-white/50 text-lg">Collect the most viral lore and trade top assets.</motion.p>
             </div>
             <motion.div variants={fadeUp}>
-              <Button asChild variant="outline" className="rounded-full border-white/10 hover:bg-white/10 text-white">
-                <Link href="/marketplace">Visit Bazaar <ArrowRight className="ml-2 w-4 h-4" /></Link>
-              </Button>
+              <Link href="/marketplace" className="bg-ink text-white px-6 py-2 font-black uppercase text-sm border-[3px] border-ink shadow-[4px_4px_0px_#1a100f] hover:translate-y-[-2px] transition-all inline-block" style={{ color: '#fff' }}>
+                View All Listings
+              </Link>
             </motion.div>
           </motion.div>
 
+          {/* TrendingStories component (existing data fetching) */}
           <TrendingStories />
+
+          <div className="mt-10 text-center">
+            <Link href="/create/ai-story" className="inline-flex items-center gap-2 bg-comic-primary text-white border-[3px] border-ink shadow-[4px_4px_0px_#1a100f] px-8 py-3 font-black uppercase tracking-wider hover:translate-y-[-2px] transition-all" style={{ color: '#fff' }}>
+              <PenSquare className="w-4 h-4" /> Create a Story
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════
-          GENRES (Animated Marquee)
+          COMICRAFT WORLDS — Carousel
           ═══════════════════════════════════════ */}
-      <section className="relative py-32 bg-black border-t border-white/5 overflow-hidden">
-        <div className="container mx-auto px-6 mb-16 relative z-10">
+      <section className="py-20 bg-background-light border-t-4 border-ink overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 mb-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-2">Comicraft <span className="text-purple-400">Worlds</span></h2>
-              <p className="text-white/50 text-lg max-w-xl">Step through the portal to experiences and genres unknown. Journey through the Commons to discuss theories.</p>
+              <h2 className="text-5xl font-black uppercase tracking-tighter italic" style={{ color: '#1a100f' }}>Comicraft Worlds</h2>
+              <p className="text-ink/60 text-lg max-w-xl mt-2">Step through the portal to experiences and genres unknown. Journey through the Commons to discuss theories.</p>
             </div>
-            <Button asChild variant="outline" className="rounded-full border-white/10 hover:bg-white/10 text-white w-fit">
-              <Link href="/genres">Explore Worlds <ArrowRight className="ml-2 w-4 h-4" /></Link>
-            </Button>
+            <Link href="/genres" className="bg-ink text-white px-6 py-2 font-black uppercase text-sm border-[3px] border-ink shadow-[4px_4px_0px_#1a100f] hover:translate-y-[-2px] transition-all inline-block w-fit" style={{ color: '#fff' }}>
+              Explore Worlds <ArrowRight className="inline-block ml-2 w-4 h-4" />
+            </Link>
           </div>
         </div>
 
-        {/* Marquee Wrapper with fading edges */}
-        <div className="relative w-full max-w-[100vw] overflow-hidden" style={{ maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage: '-webkit-linear-gradient(left, transparent, black 10%, black 90%, transparent)' }}>
-          <div className="flex w-max animate-marquee gap-6 px-6">
-            {/* Double the list for infinite scrolling */}
+        {/* Horizontal scrolling carousel */}
+        <div className="relative w-full overflow-hidden" style={{ maskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)', WebkitMaskImage: '-webkit-linear-gradient(left, transparent, black 5%, black 95%, transparent)' }}>
+          <div className="flex gap-8 px-10 animate-scroll-marquee-home hover:[animation-play-state:paused]">
             {[...marqueeGenres, ...marqueeGenres].map((genre, i) => (
-              <Link key={i} href={`/genres?genre=${genre.name.toLowerCase()}`} className="block group flex-shrink-0 w-[280px] md:w-[320px]">
-                <div className="relative h-64 md:h-72 rounded-3xl overflow-hidden border border-white/10">
-                  <Image src={genre.image} alt={genre.name} fill sizes="(max-width: 768px) 280px, 320px" className="object-cover transform group-hover:scale-110 transition-transform duration-700" />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${genre.color} mix-blend-multiply opacity-60 group-hover:opacity-80 transition-opacity`} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80" />
-
-                  <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                    <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md group-hover:translate-x-1 transition-transform">{genre.name}</h3>
-                    <div className="h-0.5 w-12 bg-white/50 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-                  </div>
+              <Link key={i} href={`/genres?genre=${genre.name.toLowerCase()}`} className="flex-none w-72 h-[450px] bg-ink border-4 border-ink shadow-[4px_4px_0px_#1a100f] relative group overflow-hidden block">
+                <Image
+                  src={genre.image}
+                  alt={genre.name}
+                  fill
+                  sizes="288px"
+                  className="object-cover opacity-80 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <h4 className="text-white text-3xl font-black italic uppercase leading-none" style={{ color: '#fff' }}>{genre.name}</h4>
+                  <p className="text-comic-primary font-bold text-sm mt-2">EXPLORE →</p>
                 </div>
               </Link>
             ))}
@@ -533,27 +495,32 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════
-          FINAL CTA
+          FINAL CTA — Begin Your Journey
           ═══════════════════════════════════════ */}
-      <section className="relative py-32 bg-zinc-950 border-t border-white/5 overflow-hidden">
-        <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.15),_transparent_70%)]" />
-        <div className="container mx-auto px-6 text-center relative z-10">
+      <section className="relative py-32 bg-ink overflow-hidden">
+        {/* Halftone BG */}
+        <div className="absolute inset-0 pointer-events-none opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8'/%3E%3C/svg%3E")` }} />
+
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.h2 variants={fadeUp} className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 leading-tight">
-              Begin your <span className="text-emerald-400">journey.</span>
+            <motion.h2 variants={fadeUp} className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase italic mb-6 leading-tight text-background-light" style={{ color: '#F5E6C8' }}>
+              Begin your <span className="text-comic-primary">journey.</span>
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-white/50 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-10">
-              Join visionary creators crafting on the world's fastest decentralized network.
+            <motion.p variants={fadeUp} className="text-background-light/60 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-10">
+              Join visionary creators crafting on the world&apos;s fastest decentralized network.
             </motion.p>
-            <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
-              <Button asChild className="h-16 px-10 rounded-full font-bold text-lg bg-emerald-500 hover:bg-emerald-400 text-black border border-emerald-400/50 shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all hover:scale-105 active:scale-95">
-                <Link href="/create">
-                  Enter Forge <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="h-16 px-10 rounded-full font-bold text-lg border-white/20 hover:bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)]">
-                <Link href="/community">Join Commons</Link>
-              </Button>
+            <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-6">
+              <Link href="/create" className="relative group inline-block">
+                <div className="absolute inset-0 bg-comic-primary border-[3px] border-background-light shadow-[4px_4px_0px_rgba(245,230,200,0.3)] scale-110 rotate-2 group-hover:rotate-0 transition-transform" />
+                <span className="relative block bg-comic-primary text-white font-black uppercase px-8 py-4 text-xl tracking-tighter" style={{ color: '#fff' }}>
+                  Enter Forge <ArrowRight className="inline-block ml-2 w-5 h-5" />
+                </span>
+              </Link>
+              <Link href="/community" className="border-4 border-background-light border-dashed p-1 inline-block">
+                <span className="block border-2 border-background-light px-8 py-4 font-black uppercase text-xl text-background-light hover:bg-background-light hover:text-ink transition-all" style={{ color: '#F5E6C8' }}>
+                  Join Commons
+                </span>
+              </Link>
             </motion.div>
           </motion.div>
         </div>
