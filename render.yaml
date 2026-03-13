@@ -1,0 +1,138 @@
+# Render deployment configuration for Comicraft Backend
+# This configuration sets up the backend API and SDK services on Render
+
+services:
+  # Main Backend API Service
+  - type: web
+    name: comicraft-backend-api
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: npm install && npm run build:backend
+    startCommand: npm run start:backend
+    healthCheckPath: /healthz
+    ipAllowList:
+      - source: 74.220.48.0/24
+        description: "Allowed IP Range 1"
+      - source: 74.220.56.0/24
+        description: "Allowed IP Range 2"
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: "https://comicraft-backend-api.onrender.com"
+      - key: INTERNAL_API_URL
+        value: "http://comicraft-backend-api:3001"
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: GROQ_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      # Alias keys — set these in the Render dashboard to the same values as the NEXT_PUBLIC_ variants above
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        value: "https://comicraft.xyz,https://comicraft.xyz,https://comicraft.pages.dev"
+      - key: API_VERSION
+        value: v1
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-pro
+      # Google OAuth
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        sync: false
+      # WalletConnect
+      - key: NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
+        sync: false
+      # NFTs & Signer
+      - key: STORY_NFT_CONTRACT_ADDRESS
+        sync: false
+      - key: CRAFTS_MARKETPLACE_ADDRESS
+        sync: false
+      - key: CRAFTS_TOKEN_ADDRESS
+        sync: false
+      - key: PLATFORM_SIGNER_KEY
+        sync: false
+      # Unsplash
+      - key: NEXT_PUBLIC_UNSPLASH_API_KEY
+        sync: false
+      # Email
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      # IPFS
+      - key: PINATA_JWT
+        sync: false
+      # TTS
+      - key: SARVAM_API_KEY
+        sync: false
+
+  # SDK Service (for future SDK implementations)
+  - type: web
+    name: comicraft-sdk-service
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: npm install && npm run build:sdk
+    startCommand: npm run start:sdk
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3002
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SDK_VERSION
+        value: v1.0.0
+      - key: CORS_ORIGIN
+        value: https://comicraft.xyz
+
+  # Background Worker Service
+  - type: worker
+    name: comicraft-worker
+    env: node
+    region: oregon
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm run start:worker
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GROQ_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: REDIS_URL
+        sync: false
+
+
