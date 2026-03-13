@@ -37,7 +37,7 @@ export default function ModerationPage() {
     const [error, setError] = useState('');
     const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
 
     // Check admin auth
     const isAdmin =

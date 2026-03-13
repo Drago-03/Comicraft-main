@@ -9,15 +9,38 @@ import { createBrowserClient } from '@supabase/ssr';
 // back a client whose methods simply resolve to `{ data: null, error: null }`.
 
 function createNoopClient() {
+    // A no-op subscription object returned by onAuthStateChange
+    const noopSubscription = {
+        data: {
+            subscription: {
+                id: '',
+                callback: () => {},
+                unsubscribe: () => {},
+            },
+        },
+        error: null,
+    };
+
+    // Full auth stub — covers every auth method called across the codebase
+    // so the app never crashes with "is not a function" if the noop is served.
+    const noopAuth = {
+        getSession: async () => ({ data: { session: null }, error: null }),
+        getUser: async () => ({ data: { user: null }, error: null }),
+        onAuthStateChange: (_event: any, _session: any) => noopSubscription,
+        signInWithOAuth: async () => ({ data: null, error: null }),
+        signInWithPassword: async () => ({ data: null, error: null }),
+        signOut: async () => ({ error: null }),
+        resetPasswordForEmail: async () => ({ data: null, error: null }),
+        updateUser: async () => ({ data: null, error: null }),
+        exchangeCodeForSession: async () => ({ data: null, error: null }),
+    };
+
     const handler: ProxyHandler<any> = {
         get(_target, prop) {
             if (prop === 'auth') {
-                return {
-                    getSession: async () => ({ data: { session: null } }),
-                    getUser: async () => ({ data: null }),
-                };
+                return noopAuth;
             }
-            // every method call returns a promise resolving to a harmless
+            // every other method call returns a promise resolving to a harmless
             // result object; chained calls are also proxied
             return new Proxy(async () => ({ data: null, error: null }), handler);
         },

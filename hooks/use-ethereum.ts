@@ -111,7 +111,7 @@ export function useEthereum(): UseEthereumResult {
                     throw new Error(msg);
                 }
 
-                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
                 const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
 
                 // Direct mint natively on the backend via Alchemy

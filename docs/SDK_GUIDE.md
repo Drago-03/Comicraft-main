@@ -22,7 +22,7 @@ import { ComicraftSDK } from '@comicraft/sdk';
 
 const sdk = new ComicraftSDK({
   apiKey: 'your-api-key',
-  baseUrl: 'https://comicraft-backend-api.onrender.com',
+  baseUrl: 'https://comicraft-main.onrender.com',
 });
 
 // Generate a story
@@ -152,7 +152,7 @@ interface SDKOptions {
 
 ```bash
 COMICRAFT_API_KEY=your-api-key
-COMICRAFT_BASE_URL=https://comicraft-backend-api.onrender.com
+COMICRAFT_BASE_URL=https://comicraft-main.onrender.com
 ```
 
 ## Error Handling

@@ -3,7 +3,7 @@
   <br />
   Comicraft
 </h1>
-<p align="center"><b>AI-Powered Web3 Storytelling Platform</b></p>
+<p align="center"><b>Creativity Tokenization Platform (CTP)</b></p>
 <p align="center">Create, share, and own AI-generated stories and comics as NFTs on the Monad blockchain.</p>
 
 <p align="center">
@@ -48,7 +48,7 @@
 
 ## What is Comicraft?
 
-Comicraft is an open-source, AI-powered Web3 storytelling platform. Writers and artists can generate
+Comicraft: Creativity Tokenization Platform (CTP) is an open-source, AI-powered Web3 storytelling platform. Writers and artists can generate
 immersive narratives or comic-style stories using AI (Google Gemini as the chairman model + Groq for
 narrow tasks), then mint and trade them as NFTs on Ethereum Mainnet via Alchemy. With a focus on
 ownership, authenticity, and community, Comicraft bridges the world of creative writing, generative
@@ -133,7 +133,7 @@ variables, and deployment details.
 
 ## API Access & Monitoring
 
-Base API URL (Production): `https://comicraft-backend-api.onrender.com`
+Base API URL (Production): `https://comicraft-main.onrender.com`
 
 ### Health Checks
 
@@ -158,7 +158,7 @@ To run this project locally, you must set up your environment variables. Create 
 | `NEXT_PUBLIC_SUPABASE_URL`          | **Required** | Your Supabase project URL for database and authentication.           |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`     | **Required** | Supabase anonymous/public API key for client-side access.            |
 | `ALCHEMY_ETH_MAINNET_HTTP_URL`      | **Required** | The Alchemy RPC endpoint for interacting with Ethereum Mainnet.      |
-| `NEXT_PUBLIC_API_URL`               | **Required** | Backend API URL (e.g., `https://comicraft-backend-api.onrender.com`).|
+| `NEXT_PUBLIC_API_URL`               | **Required** | Backend API URL (e.g., `https://comicraft-main.onrender.com`).|
 | `NEXT_PUBLIC_UNSPLASH_API_KEY`          |  _Optional_  | API key used for fetching high-quality cover images for stories.     |
 | `NEXT_PUBLIC_CONTRACT_ADDR`         | **Required** | The smart contract address for the deployed NFT collection.          |
 | `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | **Required** | WalletConnect project ID for wallet integration.                 |

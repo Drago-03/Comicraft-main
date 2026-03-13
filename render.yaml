@@ -4,7 +4,7 @@
 services:
   # Main Backend API Service
   - type: web
-    name: comicraft-backend-api
+    name: comicraft-main
     env: node
     region: oregon
     plan: starter
@@ -18,9 +18,9 @@ services:
         description: "Allowed IP Range 2"
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        value: "https://comicraft-backend-api.onrender.com"
+        value: "https://comicraft-main.onrender.com"
       - key: INTERNAL_API_URL
-        value: "http://comicraft-backend-api:3001"
+        value: "http://comicraft-main:3001"
       - key: NODE_ENV
         value: production
       - key: PORT

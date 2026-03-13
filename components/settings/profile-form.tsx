@@ -55,7 +55,7 @@ export function ProfileForm() {
     async function loadProfile() {
       try {
         const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
         const res = await fetch(`${baseUrl}/api/v1/settings/profile`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -88,7 +88,7 @@ export function ProfileForm() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
 
       // Update profile via backend API (BFF pattern)
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
       const res = await fetch(`${baseUrl}/api/v1/settings/profile`, {
         method: "PATCH",
         headers: {

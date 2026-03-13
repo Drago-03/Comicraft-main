@@ -81,7 +81,7 @@ http://localhost:3000/api
 For production (when available):
 
 ```
-https://comicraft-backend-api.onrender.com/api
+https://comicraft-main.onrender.com/api
 ```
 
 Check the latest repository updates or announcements for the official production API URL once

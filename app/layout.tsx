@@ -99,18 +99,18 @@ const quickBootScript = '';
 const appVersion = process.env.NEXT_PUBLIC_VERSION ?? '?.?.?';
 
 export const metadata: Metadata = {
-  title: 'Comicraft - AI-Powered Story & Comic Platform',
+  title: 'Comicraft: Creativity Tokenization Platform (CTP)',
   description:
-    'Create, mint, and share AI-generated stories and comics on the blockchain.',
+    'Comicraft: Creativity Tokenization Platform (CTP) - Create, mint, and share AI-generated stories and comics on the blockchain.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://comicraft.xyz'),
   icons: {
     icon: '/logo.png',
     apple: '/logo.png',
   },
   openGraph: {
-    title: 'Comicraft',
+    title: 'Comicraft: Creativity Tokenization Platform (CTP)',
     description:
-      'AI-Powered Storytelling Platform | Create, share, and own AI-generated stories and comics',
+      'Comicraft: Creativity Tokenization Platform (CTP) | Create, share, and own AI-generated stories and comics',
     images: [{ url: '/logo.png' }],
   },
 };

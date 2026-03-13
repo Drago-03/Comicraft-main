@@ -129,7 +129,7 @@ export default function GalleryPage() {
   const supabase = React.useMemo(() => createClient(), []);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com'}/api/v1/stories?limit=40`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com'}/api/v1/stories?limit=40`)
       .then(r => {
         if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
         return r.json();

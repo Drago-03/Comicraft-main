@@ -185,12 +185,12 @@ export default function UploadPage() {
             };
 
             if (activeTab === 'document' && file) {
-                endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com'}/api/v1/stories/upload-file`;
+                endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com'}/api/v1/stories/upload-file`;
                 formData.append('file', file);
                 requestOptions.method = 'POST';
                 requestOptions.body = formData;
             } else {
-                endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com'}/api/v1/stories/upload`;
+                endpoint = `${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com'}/api/v1/stories/upload`;
                 // Because we have a file (coverImage), we MUST use FormData even for the live writer, removing application/json.
                 formData.append('content', markdownContent);
                 formData.append('source', 'uploaded');

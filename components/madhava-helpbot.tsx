@@ -11,7 +11,7 @@ interface ChatMessage {
 }
 
 // ── Constants ───────────────────────────────────────────────────────
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
 const HELPBOT_ENDPOINT = `${API_URL}/api/helpbot/chat`;
 
 const WELCOME_MESSAGE_CONTENT =
@@ -40,30 +40,16 @@ export default function MadhavaHelpBot() {
     setIsMounted(true);
   }, []);
 
-    // Poll health status
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        // Try backend first
-        let res = await fetch(`${API_URL}/api/health/bot`, { cache: 'no-store' });
-        
-        // Fallback to local API route if backend fails
-        if (!res.ok) {
-          res = await fetch('/api/health/bot', { cache: 'no-store' });
-        }
-        
+        // Use relative URL — goes through Next.js rewrite proxy, no CORS
+        const res = await fetch('/api/health/bot', { cache: 'no-store' });
         const data = await res.json();
         // Allow ok, healthy, or degraded (still online)
         setIsOnline(data.status !== 'down');
       } catch {
-        // Try local API route as final fallback
-        try {
-          const res = await fetch('/api/health/bot', { cache: 'no-store' });
-          const data = await res.json();
-          setIsOnline(data.status !== 'down');
-        } catch {
-          setIsOnline(false);
-        }
+        setIsOnline(false);
       }
     };
     checkHealth();

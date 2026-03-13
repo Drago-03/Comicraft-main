@@ -1,8 +1,8 @@
 {
   "name": "comicraft",
-  "version": "2.0.3",
+  "version": "1.0.1",
   "private": true,
-  "description": "Enterprise-grade AI-powered Web3 storytelling platform with NFT integration",
+  "description": "Comicraft: Creativity Tokenization Platform (CTP) - Enterprise-grade AI-powered Web3 storytelling platform with NFT integration",
   "author": "Comicraft Team",
   "license": "MIT",
   "repository": {

@@ -90,7 +90,7 @@ try {
 // ---------------------------------------------------------
 try {
     const ry = fs.readFileSync(path.join(ROOT, 'render.yaml'), 'utf-8');
-    test('Render API service defined', () => assert(ry.includes('comicraft-backend-api'), 'missing'));
+    test('Render API service defined', () => assert(ry.includes('comicraft-main'), 'missing'));
     test('Render Worker service defined', () => assert(ry.includes('comicraft-worker'), 'missing'));
     test('Render GROQ_API_KEY environment', () => assert(ry.includes('GROQ_API_KEY'), 'missing'));
     test('Render healthCheckPath: /healthz', () => assert(ry.includes('healthCheckPath:') && ry.includes('/healthz'), 'missing healthCheckPath: /healthz'));

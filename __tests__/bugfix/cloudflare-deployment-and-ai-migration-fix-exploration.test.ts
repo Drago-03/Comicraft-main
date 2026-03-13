@@ -114,18 +114,18 @@ describe('Bug Condition Exploration Tests - Cloudflare Deployment and AI Migrati
 
   /**
    * Bug 4: Wrong backend URL in public/_redirects
-   * Test that _redirects contains comicraft-backend-api.onrender.com instead of groqtales-backend-api.onrender.com
+   * Test that _redirects contains comicraft-main.onrender.com instead of groqtales-backend-api.onrender.com
    * EXPECTED OUTCOME: Test FAILS (confirms wrong backend URL)
    * **Validates: Requirements 1.7**
    */
   describe('Bug 4: Wrong backend URL in public/_redirects', () => {
-    it('should fail: _redirects contains comicraft-backend-api.onrender.com', () => {
+    it('should fail: _redirects contains comicraft-main.onrender.com', () => {
       const redirectsPath = path.join(process.cwd(), 'public/_redirects');
       const redirectsContent = fs.readFileSync(redirectsPath, 'utf-8');
       
       // The bug: _redirects routes to comicraft-backend-api instead of groqtales-backend-api
       // This test should FAIL on unfixed code (should find comicraft URL)
-      expect(redirectsContent).not.toContain('comicraft-backend-api.onrender.com');
+      expect(redirectsContent).not.toContain('comicraft-main.onrender.com');
     });
 
     it('should fail: _redirects does not contain groqtales-backend-api.onrender.com', () => {
@@ -145,30 +145,54 @@ describe('Bug Condition Exploration Tests - Cloudflare Deployment and AI Migrati
    * **Validates: Requirements 1.8, 1.9**
    */
   describe('Bug 5: Groq service active in server/backend.js', () => {
-    it('should fail: backend.js includes Groq health check configuration', () => {
+    it('should fail: backend.js includes ACTIVE Groq health check configuration', () => {
       const backendPath = path.join(process.cwd(), 'server/backend.js');
       const backendContent = fs.readFileSync(backendPath, 'utf-8');
       
-      // The bug: backend.js includes Groq health check (should be commented out)
-      // Look for groq-related health check code
-      const hasGroqHealthCheck = backendContent.includes('groq:') || 
-                                  backendContent.includes('groqService') ||
-                                  backendContent.match(/groq.*status.*available/i);
+      // The bug: backend.js includes ACTIVE (uncommented) Groq health check in ai_services
+      // Look for uncommented groq: { ... } in ai_services section
+      // Match pattern: groq: { (not preceded by //)
+      const lines = backendContent.split('\n');
+      let hasActiveGroqHealthCheck = false;
       
-      // This test should FAIL on unfixed code (should find Groq health check)
-      expect(hasGroqHealthCheck).toBe(false);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        // Check if this line has "groq:" and is not commented out
+        if (line.includes('groq:') && line.includes('{')) {
+          const trimmed = line.trim();
+          // Check if line starts with comment markers
+          if (!trimmed.startsWith('//') && !trimmed.startsWith('/*') && !trimmed.startsWith('*')) {
+            hasActiveGroqHealthCheck = true;
+            break;
+          }
+        }
+      }
+      
+      // This test should FAIL on unfixed code (should find active Groq health check)
+      expect(hasActiveGroqHealthCheck).toBe(false);
     });
 
-    it('should fail: backend.js registers /api/groq route', () => {
+    it('should fail: backend.js registers ACTIVE /api/groq route', () => {
       const backendPath = path.join(process.cwd(), 'server/backend.js');
       const backendContent = fs.readFileSync(backendPath, 'utf-8');
       
-      // The bug: backend.js registers Groq API route (should be commented out)
-      const hasGroqRoute = backendContent.includes("app.use('/api/groq'") ||
-                           backendContent.includes('require(\'./routes/groq\')');
+      // The bug: backend.js registers ACTIVE (uncommented) Groq API route
+      const lines = backendContent.split('\n');
+      let hasActiveGroqRoute = false;
       
-      // This test should FAIL on unfixed code (should find Groq route)
-      expect(hasGroqRoute).toBe(false);
+      for (const line of lines) {
+        if (line.includes("app.use('/api/groq'")) {
+          const trimmed = line.trim();
+          // Check if line is not commented out
+          if (!trimmed.startsWith('//') && !trimmed.startsWith('/*') && !trimmed.startsWith('*')) {
+            hasActiveGroqRoute = true;
+            break;
+          }
+        }
+      }
+      
+      // This test should FAIL on unfixed code (should find active Groq route)
+      expect(hasActiveGroqRoute).toBe(false);
     });
   });
 
@@ -179,7 +203,7 @@ describe('Bug Condition Exploration Tests - Cloudflare Deployment and AI Migrati
    * **Validates: Requirements 1.8, 1.9**
    */
   describe('Bug 6: AI routes use groqService', () => {
-    it('should fail: server/routes/ai.js imports groqService', () => {
+    it('should fail: server/routes/ai.js has ACTIVE groqService import', () => {
       const aiRoutePath = path.join(process.cwd(), 'server/routes/ai.js');
       
       // Check if file exists
@@ -189,17 +213,27 @@ describe('Bug Condition Exploration Tests - Cloudflare Deployment and AI Migrati
       }
       
       const aiRouteContent = fs.readFileSync(aiRoutePath, 'utf-8');
+      const lines = aiRouteContent.split('\n');
       
-      // The bug: ai.js imports groqService instead of geminiService
-      const importsGroq = aiRouteContent.includes('groqService') &&
-                          aiRouteContent.includes("require(") &&
-                          aiRouteContent.includes('groqService');
+      // The bug: ai.js has ACTIVE (uncommented) groqService import
+      let hasActiveGroqImport = false;
       
-      // This test should FAIL on unfixed code (should find groqService import)
-      expect(importsGroq).toBe(false);
+      for (const line of lines) {
+        if (line.includes('groqService') && line.includes('require(')) {
+          const trimmed = line.trim();
+          // Check if line is not commented out
+          if (!trimmed.startsWith('//') && !trimmed.startsWith('/*') && !trimmed.startsWith('*')) {
+            hasActiveGroqImport = true;
+            break;
+          }
+        }
+      }
+      
+      // This test should FAIL on unfixed code (should find active groqService import)
+      expect(hasActiveGroqImport).toBe(false);
     });
 
-    it('should fail: server/routes/stories.js imports groqService', () => {
+    it('should fail: server/routes/stories.js has ACTIVE groqService import', () => {
       const storiesRoutePath = path.join(process.cwd(), 'server/routes/stories.js');
       
       // Check if file exists
@@ -209,14 +243,24 @@ describe('Bug Condition Exploration Tests - Cloudflare Deployment and AI Migrati
       }
       
       const storiesRouteContent = fs.readFileSync(storiesRoutePath, 'utf-8');
+      const lines = storiesRouteContent.split('\n');
       
-      // The bug: stories.js imports groqService instead of geminiService
-      const importsGroq = storiesRouteContent.includes('groqService') &&
-                          storiesRouteContent.includes("require(") &&
-                          storiesRouteContent.includes('groqService');
+      // The bug: stories.js has ACTIVE (uncommented) groqService import
+      let hasActiveGroqImport = false;
       
-      // This test should FAIL on unfixed code (should find groqService import)
-      expect(importsGroq).toBe(false);
+      for (const line of lines) {
+        if (line.includes('groqService') && line.includes('require(')) {
+          const trimmed = line.trim();
+          // Check if line is not commented out
+          if (!trimmed.startsWith('//') && !trimmed.startsWith('/*') && !trimmed.startsWith('*')) {
+            hasActiveGroqImport = true;
+            break;
+          }
+        }
+      }
+      
+      // This test should FAIL on unfixed code (should find active groqService import)
+      expect(hasActiveGroqImport).toBe(false);
     });
 
     it('should fail: groqService.js is not commented out', () => {
@@ -247,7 +291,7 @@ describe('Bug Condition Exploration Tests - Cloudflare Deployment and AI Migrati
    * 2. @splinetool/runtime in package.json dependencies (line 61)
    * 3. transpilePackages includes Spline packages in next.config.js (line 31)
    * 4. out/ directory missing after cf-build (or build fails)
-   * 5. public/_redirects contains comicraft-backend-api.onrender.com (line 1)
+   * 5. public/_redirects contains comicraft-main.onrender.com (line 1)
    * 6. server/backend.js includes Groq health check configuration
    * 7. server/backend.js registers /api/groq route
    * 8. server/routes/ai.js imports groqService

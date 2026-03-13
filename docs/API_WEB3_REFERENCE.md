@@ -1,6 +1,6 @@
 # Web3 API Reference — Comicraft Backend
 
-Base URL: `https://comicraft-backend-api.onrender.com`
+Base URL: `https://comicraft-main.onrender.com`
 
 ## Authentication
 

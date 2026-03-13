@@ -1,2 +1,2 @@
-/api/* https://groqtales-backend-api.onrender.com/api/:splat 200
+/api/* https://comicraft-main.onrender.com/api/:splat 200
 /sdk/* https://comicraft-sdk-service.onrender.com/sdk/:splat 200

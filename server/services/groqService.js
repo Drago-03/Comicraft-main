@@ -1,5 +1,4 @@
 /* DEPRECATED - Migrated to Gemini 3 exclusively
-/**
  * Groq AI Service — Centralized AI Engine for Comicraft Backend
  *
  * All Groq API interactions flow through this service.
@@ -378,6 +377,7 @@ async function testConnection(apiKey) {
     }
 }
 
+/* COMMENTED OUT - Groq service deprecated
 module.exports = {
     MODELS,
     MODEL_DISPLAY_NAMES,

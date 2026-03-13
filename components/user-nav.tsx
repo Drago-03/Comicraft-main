@@ -71,7 +71,7 @@ export function UserNav() {
     const fetchUserData = async () => {
       if (account || session) {
         try {
-          const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+          const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
           let fetchUrl = `${baseUrl}/api/v1/users/profile/${account}`;
           const headers: Record<string, string> = {};
 

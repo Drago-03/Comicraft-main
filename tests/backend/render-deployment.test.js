@@ -81,7 +81,7 @@ describe('Render Deployment Readiness', () => {
         });
 
         test('render.yaml defines backend API service', () => {
-            expect(renderConfig).toContain('comicraft-backend-api');
+            expect(renderConfig).toContain('comicraft-main');
         });
 
         test('render.yaml defines worker service', () => {
@@ -187,14 +187,14 @@ describe('Render Deployment Readiness', () => {
 
         test('stories.js generate route uses groqService', () => {
             const storiesSource = fs.readFileSync(path.join(SERVER, 'routes/stories.js'), 'utf-8');
-            expect(storiesSource).toContain('groqService');
+            expect(storiesSource).toContain('geminiService');
             expect(storiesSource).not.toContain("content: 'Generated story content based on prompt...'");
         });
 
         test('stories.js analyze route fetches from database', () => {
             const storiesSource = fs.readFileSync(path.join(SERVER, 'routes/stories.js'), 'utf-8');
             expect(storiesSource).toContain('supabaseAdmin');
-            expect(storiesSource).toContain('groqService.analyze');
+            expect(storiesSource).toContain('geminiService.generateContent');
         });
     });
 

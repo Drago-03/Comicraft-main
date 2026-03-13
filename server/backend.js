@@ -66,7 +66,7 @@ const options = {
     },
     servers: [
       {
-        url: process.env.PROD_URL || 'https://comicraft-backend-api.onrender.com/api',
+        url: process.env.PROD_URL || 'https://comicraft-main.onrender.com/api',
         description: 'Production',
       },
     ],
