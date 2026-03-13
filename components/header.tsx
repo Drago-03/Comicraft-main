@@ -1,0 +1,342 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import {
+  PenSquare,
+  Users,
+  BookOpen,
+  FlaskConical,
+  ChevronDown,
+  Trophy,
+  Menu,
+  DollarSign,
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { useWeb3 } from '@/components/providers/web3-provider';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { useToast } from '@/components/ui/use-toast';
+import { UserNav } from '@/components/user-nav';
+import { cn } from '@/lib/utils';
+import { createClient } from '@/lib/supabase/client';
+
+import { CreateStoryDialog } from './create-story-dialog';
+import { ModeToggle } from './mode-toggle';
+import { UploadStoryTrigger } from './upload-story-trigger';
+import { ComiCraftLogo } from './comicraft-logo';
+
+// Type definitions for nav items
+type NavSubItem = {
+  href: string;
+  label: string;
+  icon?: React.ReactNode;
+};
+
+type NavItem = {
+  href?: string;
+  label: string;
+  icon?: React.ReactNode;
+  type?: 'link' | 'dropdown';
+  items?: NavSubItem[];
+};
+
+export function Header() {
+  const pathname = usePathname();
+  const { account } = useWeb3();
+  const { toast } = useToast();
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const router = useRouter();
+  const [session, setSession] = useState<any>(null);
+  const supabase = React.useMemo(() => createClient(), []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
+
+  // Track scroll position for adding box shadow to header
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Define active class for navigation links
+  const isActive = (path: string) => {
+    if (path === '/community') {
+      return pathname === '/community' || pathname === '/community/creators'
+        ? 'bg-primary/10 text-primary font-medium'
+        : 'hover:bg-accent/20 text-muted-foreground';
+    }
+    return pathname === path
+      ? 'bg-primary/10 text-primary font-medium'
+      : 'hover:bg-accent/20 text-muted-foreground';
+  };
+
+  const handleCreateClick = () => {
+    if (!account && !session) {
+      router.push('/sign-in');
+      return;
+    }
+    setShowCreateDialog(true);
+  };
+
+  const navItems: NavItem[] = [
+    { type: 'link', href: '/', label: 'Prime' },
+    { type: 'link', href: '/genres', label: 'Worlds' },
+    { type: 'link', href: '/create', label: 'Forge' },
+    { type: 'link', href: '/gallery', label: 'Gallery' },
+    { type: 'link', href: '/marketplace', label: 'Bazaar' },
+    { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS' },
+    { type: 'link', href: '/community', label: 'Commons' },
+    { type: 'link', href: '/docs', label: 'Atlas' },
+    ...(account
+      ? [
+        {
+          type: 'link' as const,
+          href: '/dashboard/royalties',
+          label: 'Earnings',
+          icon: <DollarSign className="h-4 w-4 mr-1.5 colorful-icon" />,
+        },
+      ]
+      : []),
+  ];
+
+  return (
+    <motion.header
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={cn(
+        'border-b border-white/5 sticky top-0 z-50 transition-all duration-300 bg-black/40 backdrop-blur-xl',
+        scrolled && 'shadow-[0_4px_30px_rgba(0,0,0,0.5)] bg-black/60'
+      )}
+    >
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="flex items-center">
+          <Link
+            href="/"
+            aria-label="Comicraft home"
+            className="flex items-center mr-2 sm:mr-6 group relative rounded-xl px-1 py-0.5 hover:bg-white/[0.04] transition-all duration-200"
+          >
+            <ComiCraftLogo variant="full" colorScheme="color" size={38} animate />
+          </Link>
+
+          <nav role="navigation" aria-label="Primary navigation" className="hidden lg:flex items-center space-x-2">
+            {navItems.map((item, index) => (
+              <motion.div
+                key={
+                  item.type === 'dropdown'
+                    ? `dropdown-${item.label}`
+                    : item.href || `item-${index}`
+                }
+                initial={false}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
+                whileHover={{ scale: 1.03 }}
+                className="inline-flex items-center font-medium"
+              >
+                {item.type === 'dropdown' ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      aria-haspopup="true"
+                      className={`px-4 py-2 text-sm rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm`}
+                    >
+                      {item.icon}
+                      {item.label}
+                      <ChevronDown className="ml-1 h-3 w-3" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      side="bottom"
+                      align="start"
+                      sideOffset={8}
+                      collisionPadding={16}
+                      className="
+                        z-50
+                        w-[160px] sm:w-[180px]
+                        bg-black/90
+                        backdrop-blur-xl
+                        border border-white/10
+                        shadow-2xl
+                        rounded-xl
+                        p-2
+                      "
+                    >
+                      {item.items?.map((subItem) => (
+                        <DropdownMenuItem key={subItem.href} asChild>
+                          <Link
+                            href={subItem.href}
+                            aria-current={pathname === subItem.href ? 'page' : undefined}
+                            className="flex items-center w-full text-white/80 hover:text-white hover:bg-white/10 rounded-lg"
+                          >
+                            {subItem.icon && subItem.icon}
+                            {subItem.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : item.href ? (
+                  <Link
+                    href={item.href}
+                    aria-current={pathname === item.href ? 'page' : undefined}
+                    className={`px-4 py-2 text-sm rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                ) : null}
+              </motion.div>
+            ))}
+          </nav>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2 mr-2">
+            <UploadStoryTrigger variant="outline" className="hidden lg:flex" buttonText="Upload" />
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden lg:flex items-center gap-2 px-5 py-2 rounded-full border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:bg-emerald-500 hover:text-black hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all duration-300"
+              onClick={handleCreateClick}
+              aria-label="Create a new story"
+            >
+              <PenSquare className="h-4 w-4 mr-2" />
+              Create
+            </Button>
+          </div>
+          {/* <ModeToggle /> Temporarily disabled */}
+          <UserNav />
+
+          {/* Mobile Menu */}
+          <div className="lg:hidden">
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/10"
+                  aria-label="Open menu"
+                >
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="bg-zinc-950/90 backdrop-blur-xl border-l border-white/10 text-white p-0"
+              >
+                <SheetHeader className="p-6 border-b border-white/10">
+                  <SheetTitle className="text-white font-bold text-xl flex items-center gap-2">
+                    <ComiCraftLogo variant="icon" colorScheme="color" size={32} animate={false} />
+                    Comicraft
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col p-4 space-y-2">
+                  {navItems.map((item, index) => (
+                    <div
+                      key={
+                        item.type === 'dropdown'
+                          ? `dropdown-${item.label}`
+                          : item.href || `item-${index}`
+                      }
+                      className="flex flex-col"
+                    >
+                      {item.type === 'dropdown' ? (
+                        <>
+                          <div className="px-4 py-2 text-sm font-bold uppercase text-white/60 mt-2">
+                            {item.label}
+                          </div>
+                          {item.items?.map((subItem) => (
+                            <Link
+                              key={subItem.href}
+                              href={subItem.href}
+                              onClick={() => setSheetOpen(false)}
+                              className="px-6 py-3 text-lg hover:bg-white/10 rounded-md transition-colors flex items-center text-white/80 hover:text-white"
+                            >
+                              {subItem.icon}
+                              {subItem.label}
+                            </Link>
+                          ))}
+                        </>
+                      ) : (
+                        item.href && (
+                          <Link
+                            href={item.href}
+                            onClick={() => setSheetOpen(false)}
+                            className={cn(
+                              'px-4 py-3 text-lg hover:bg-white/10 rounded-md transition-colors flex items-center',
+                              pathname === item.href
+                                ? 'bg-primary/20 text-primary font-bold'
+                                : 'text-white/80 hover:text-white'
+                            )}
+                          >
+                            {item.icon && <span className="mr-3">{item.icon}</span>}
+                            {item.label}
+                          </Link>
+                        )
+                      )}
+                    </div>
+                  ))}
+                  <div className="pt-4 mt-4 border-t-2 border-white/10 space-y-3">
+                    <UploadStoryTrigger
+                      variant="outline"
+                      className="w-full justify-start text-lg text-white border-white/50 hover:bg-white/10"
+                      buttonText="Upload Story"
+                    />
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start text-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full font-semibold"
+                      onClick={() => {
+                        setSheetOpen(false);
+                        handleCreateClick();
+                      }}
+                    >
+                      <PenSquare className="h-5 w-5 mr-3" />
+                      Create Story
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </div>
+
+      <CreateStoryDialog
+        isOpen={showCreateDialog}
+        onClose={() => setShowCreateDialog(false)}
+      />
+    </motion.header>
+  );
+}

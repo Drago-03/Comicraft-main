@@ -1,0 +1,77 @@
+# ============================================================
+# Cloudflare Pages configuration for Comicraft
+# Primary hosting: Cloudflare Pages
+# Domain: comicraft.xyz
+#
+# HOW THIS WORKS
+# ─────────────────────────────────────────────────────────────
+# The frontend is deployed as a *static export* using Next.js' built-in
+# `output: 'export'` mode. All dynamic server logic (API routes, database
+# queries, authentication) runs on our backend service (Render / Cloudflare
+# Worker). Cloudflare Pages simply serves the files produced in the `out/`
+# directory. This allows us to avoid the @cloudflare/next-on-pages adapter
+# (which required Edge runtime for every route) and simplifies the build.
+#
+# Build command (set in Cloudflare Pages dashboard):
+#   npm run cf-build
+#
+# Build output directory (set in Cloudflare Pages dashboard):
+#   out
+#
+# ============================================================
+
+name = "comicraft"
+pages_build_output_dir = "out"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# ── Environment variable bindings ────────────────────────────
+# Do NOT store real secrets here.
+# Add all secrets via:
+#   Cloudflare Pages → <project> → Settings → Environment variables
+#
+# Required env vars to add in the dashboard
+# (copy from your .env.local / Vercel project settings):
+#
+#   NEXT_PUBLIC_URL                       = https://comicraft.xyz
+#   NEXT_PUBLIC_VERSION                   = 1.3.101
+#   NEXT_PUBLIC_IMAGE_URL                 = https://comicraft.xyz/images
+#   NEXT_PUBLIC_SPLASH_IMAGE_URL          = https://comicraft.xyz/splash.jpg
+#   NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR   = #1a1a2e
+#   GROQ_API_KEY              = <secret>
+#   NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID = <secret>
+#   NEXT_PUBLIC_API_URL                   = https://comicraft-backend-api.onrender.com
+#   NEXT_PUBLIC_SDK_URL                   = https://comicraft-sdk-service.onrender.com
+#   SUPABASE_URL                          = <secret>
+#   SUPABASE_ANON_KEY                     = <secret>
+#   SUPABASE_SERVICE_ROLE_KEY             = <secret>
+#   NEXT_PUBLIC_SUPABASE_URL              = <secret>
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY         = <secret>
+#   JWT_SECRET                            = <secret>
+#   NEXTAUTH_SECRET                       = <secret>
+#   MONAD_TEST_RPC_URL                    = <secret>
+#   MINTER_PRIVATE_KEY                    = <secret>   ← NEVER expose; set as secret
+
+# ── Local dev (wrangler pages dev) ───────────────────────────
+[vars]
+NODE_ENV = "development"
+NEXT_PUBLIC_BUILD_MODE = "false"
+
+# ── Preview environment ──────────────────────────────────────
+[env.preview]
+name = "comicraft-preview"
+
+[env.preview.vars]
+NODE_ENV = "production"
+NEXT_PUBLIC_BUILD_MODE = "true"
+# NEXT_PUBLIC_URL is set in Cloudflare Pages dashboard to avoid "Binding name already in use" error
+
+# ── Production environment ───────────────────────────────────
+[env.production]
+name = "comicraft"
+
+[env.production.vars]
+NODE_ENV = "production"
+NEXT_PUBLIC_BUILD_MODE = "false"
+# NEXT_PUBLIC_URL and NEXT_PUBLIC_VERSION are set in Cloudflare Pages dashboard
+# to avoid "Binding name already in use" error

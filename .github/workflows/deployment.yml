@@ -1,0 +1,101 @@
+name: Deploy to Cloudflare Pages (Production)
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy-production:
+    if: github.ref_name == 'main'
+    name: Build & Deploy to Cloudflare Pages (Production)
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://comicraft.xyz
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run Lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Build for Cloudflare Pages
+        run: npm run cf-build
+        env:
+          NEXT_PUBLIC_BUILD_MODE: 'false'
+          NEXT_PUBLIC_URL: 'https://comicraft.xyz'
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID }}
+          NEXT_PUBLIC_IMAGE_URL: 'https://comicraft.xyz/images'
+          NEXT_PUBLIC_SPLASH_IMAGE_URL: 'https://comicraft.xyz/splash.jpg'
+          NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR: '#1a1a2e'
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=comicraft --branch=main
+
+  deploy-preview:
+    if: github.ref_name != 'main'
+    name: Build & Deploy to Cloudflare Pages (Preview)
+    runs-on: ubuntu-latest
+    environment:
+      name: preview
+      url: https://comicraft-preview.pages.dev
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run Lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Build for Cloudflare Pages
+        run: npm run cf-build
+        env:
+          NEXT_PUBLIC_BUILD_MODE: 'true'
+          NEXT_PUBLIC_URL: 'https://comicraft-preview.pages.dev'
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID }}
+          NEXT_PUBLIC_IMAGE_URL: 'https://comicraft.xyz/images'
+          NEXT_PUBLIC_SPLASH_IMAGE_URL: 'https://comicraft.xyz/splash.jpg'
+          NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR: '#1a1a2e'
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=comicraft --branch=${{ github.ref_name }}
