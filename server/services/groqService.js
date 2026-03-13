@@ -1,12 +1,15 @@
 /**
- * Groq AI Service — Centralized AI Engine for Comicraft Backend
+ * AI Service — Gemini-Powered (formerly Groq)
  *
- * All Groq API interactions flow through this service.
+ * All AI text-generation interactions flow through this service, now using
+ * Google Gemini instead of Groq. The exported API surface is UNCHANGED so
+ * existing callers (routes, orchestrator) work without modification.
+ *
  * Features:
  *  - Token-efficient prompt engineering per content type
- *  - Valid Groq model selection
  *  - Retry logic with exponential backoff
  *  - Structured JSON output for analysis endpoints
+ *  - Backward-compatible exports (MODELS, callGroq → callGemini internally)
  */
 
 let logger;
@@ -17,18 +20,28 @@ try {
 }
 
 // ---------------------------------------------------------------------------
-// Valid Groq Models
+// Gemini Configuration
+// ---------------------------------------------------------------------------
+
+const GEMINI_CONFIG = {
+    apiKey: process.env.GEMINI_API_KEY,
+    model: process.env.GEMINI_MODEL || 'gemini-3.1-pro',
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
+};
+
+// ---------------------------------------------------------------------------
+// Models — Mapped from old Groq names to Gemini equivalents
 // ---------------------------------------------------------------------------
 const MODELS = {
-    PRIMARY: 'llama-3.3-70b-versatile',    // Best quality — stories, novels
-    FAST: 'llama-3.1-8b-instant',          // Fast — analysis, ideas, synopsis
-    LONG_CONTEXT: 'mistral-saba-24b',       // Mistral Saba — content improvement
+    PRIMARY: 'gemini-3.1-pro',
+    FAST: 'gemini-3.0-flash',
+    LONG_CONTEXT: 'gemini-3.1-pro',
 };
 
 const MODEL_DISPLAY_NAMES = {
-    [MODELS.PRIMARY]: 'Llama 3.3 70B Versatile',
-    [MODELS.FAST]: 'Llama 3.1 8B Instant',
-    [MODELS.LONG_CONTEXT]: 'Mistral Saba 24B',
+    [MODELS.PRIMARY]: 'Gemini 3.1 Pro',
+    [MODELS.FAST]: 'Gemini 3.0 Flash',
+    [MODELS.LONG_CONTEXT]: 'Gemini 3.1 Pro (Long Context)',
 };
 
 // ---------------------------------------------------------------------------
@@ -45,7 +58,7 @@ const TOKEN_BUDGETS = {
 };
 
 // ---------------------------------------------------------------------------
-// Prompt Templates — Token-Efficient
+// Prompt Templates — Token-Efficient (unchanged from original)
 // ---------------------------------------------------------------------------
 
 function buildStoryPrompt({ genre, theme, length, tone, characters, setting, formatType }) {
@@ -84,7 +97,6 @@ function buildNovelPrompt({ genre, theme, chapters = 3, characters, setting, ton
 }
 
 function buildAnalysisPrompt(content) {
-    // Truncate to avoid blowing token budgets on input
     const truncated = content.length > 3000 ? content.substring(0, 3000) + '…' : content;
     return [
         'Analyze this text and return ONLY a JSON object (no markdown, no explanation):',
@@ -134,45 +146,74 @@ const SYSTEM_PROMPTS = {
 };
 
 // ---------------------------------------------------------------------------
-// Core API Call with Retry
+// Core API Call — Gemini (backward-compatible name: callGroq)
 // ---------------------------------------------------------------------------
 
+const TIMEOUT_MS = 60000;
+const MAX_RETRIES = 2;
+const RETRY_BACKOFF_MS = 1000;
+
+/**
+ * Call Gemini API. Named `callGroq` for backward compatibility with existing callers.
+ * @param {Object} params
+ * @param {string} [params.model] - Gemini model name
+ * @param {string} [params.systemPrompt] - System instruction
+ * @param {string} params.userPrompt - User prompt
+ * @param {number} [params.maxTokens] - Max output tokens
+ * @param {number} [params.temperature] - Temperature
+ * @param {string} [params.apiKey] - Override API key
+ * @param {string} [params.responseFormat] - 'json' for JSON mode
+ * @returns {Promise<{content: string, model: string, tokensUsed: Object}>}
+ */
 async function callGroq({ model, systemPrompt, userPrompt, maxTokens, temperature, apiKey, responseFormat }) {
-    const groqApiKey = apiKey || process.env.GROQ_API_KEY;
-    if (!groqApiKey) {
-        throw new Error('GROQ_API_KEY is not configured');
+    const geminiApiKey = apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    if (!geminiApiKey) {
+        throw new Error('GEMINI_API_KEY is not configured. Please set GEMINI_API_KEY or GOOGLE_API_KEY in your environment.');
     }
 
-    const MAX_RETRIES = 2;
+    const effectiveModel = model || GEMINI_CONFIG.model || MODELS.PRIMARY;
+
     let lastError;
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000);
+            const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
+            // Build Gemini request body
+            const contents = [];
+
+            // Gemini uses systemInstruction for system prompts
             const requestBody = {
-                model: model || MODELS.PRIMARY,
-                messages: [
-                    { role: 'system', content: systemPrompt || SYSTEM_PROMPTS.general },
-                    { role: 'user', content: userPrompt },
+                contents: [
+                    {
+                        parts: [{ text: userPrompt }],
+                    },
                 ],
-                max_tokens: maxTokens || 1000,
-                temperature: temperature ?? 0.7,
-                top_p: 0.9,
+                generationConfig: {
+                    maxOutputTokens: maxTokens || 1000,
+                    temperature: temperature ?? 0.7,
+                    topP: 0.9,
+                },
             };
+
+            // Add system instruction if provided
+            if (systemPrompt) {
+                requestBody.systemInstruction = {
+                    parts: [{ text: systemPrompt }],
+                };
+            }
 
             // Add JSON response format if requested
             if (responseFormat === 'json') {
-                requestBody.response_format = { type: 'json_object' };
+                requestBody.generationConfig.responseMimeType = 'application/json';
             }
 
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            const url = `${GEMINI_CONFIG.baseUrl}/${effectiveModel}:generateContent?key=${geminiApiKey}`;
+
+            const response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${groqApiKey}`,
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody),
                 signal: controller.signal,
             });
@@ -181,34 +222,55 @@ async function callGroq({ model, systemPrompt, userPrompt, maxTokens, temperatur
 
             if (!response.ok) {
                 const errorBody = await response.text();
-                // Retry on 5xx errors
-                if (response.status >= 500 && attempt < MAX_RETRIES) {
-                    lastError = new Error(`Groq API ${response.status}: ${errorBody}`);
-                    const delay = Math.pow(2, attempt) * 500;
-                    logger.warn(`Groq API ${response.status}, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
+                // Rate-limited — retry with backoff
+                if (response.status === 429 && attempt < MAX_RETRIES) {
+                    lastError = new Error(`Gemini API ${response.status}: ${errorBody}`);
+                    const delay = RETRY_BACKOFF_MS * Math.pow(2, attempt);
+                    logger.warn(`Gemini API rate limited, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
                     await new Promise(r => setTimeout(r, delay));
                     continue;
                 }
-                throw new Error(`Groq API error ${response.status}: ${errorBody}`);
+                // Server error — retry
+                if (response.status >= 500 && attempt < MAX_RETRIES) {
+                    lastError = new Error(`Gemini API ${response.status}: ${errorBody}`);
+                    const delay = Math.pow(2, attempt) * 500;
+                    logger.warn(`Gemini API ${response.status}, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
+                    await new Promise(r => setTimeout(r, delay));
+                    continue;
+                }
+                throw new Error(`Gemini API error ${response.status}: ${errorBody}`);
             }
 
             const data = await response.json();
-            const content = data.choices?.[0]?.message?.content;
+            const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
             if (!content) {
-                throw new Error('Empty response from Groq API');
+                throw new Error('Empty response from Gemini API');
             }
+
+            // Extract token usage (Gemini provides usageMetadata)
+            const usage = data.usageMetadata || {};
 
             return {
                 content: content.trim(),
-                model: data.model,
+                model: effectiveModel,
                 tokensUsed: {
-                    prompt: data.usage?.prompt_tokens || 0,
-                    completion: data.usage?.completion_tokens || 0,
-                    total: data.usage?.total_tokens || 0,
+                    prompt: usage.promptTokenCount || 0,
+                    completion: usage.candidatesTokenCount || 0,
+                    total: usage.totalTokenCount || 0,
                 },
             };
         } catch (err) {
             lastError = err;
+            if (err.name === 'AbortError') {
+                if (attempt < MAX_RETRIES) {
+                    const delay = RETRY_BACKOFF_MS * Math.pow(2, attempt);
+                    logger.warn(`Gemini API timeout, retrying in ${delay}ms`);
+                    await new Promise(r => setTimeout(r, delay));
+                    continue;
+                }
+                throw new Error('Gemini API request timed out after retries');
+            }
             if (attempt < MAX_RETRIES && err.message?.includes('500')) {
                 const delay = Math.pow(2, attempt) * 500;
                 await new Promise(r => setTimeout(r, delay));
@@ -222,14 +284,13 @@ async function callGroq({ model, systemPrompt, userPrompt, maxTokens, temperatur
 }
 
 // ---------------------------------------------------------------------------
-// Public API
+// Public API (unchanged function signatures)
 // ---------------------------------------------------------------------------
 
 /**
  * Generate creative content (story, comic, novel)
  */
 async function generate({ prompt, genre, theme, length, tone, characters, setting, formatType, model, temperature, maxTokens, apiKey }) {
-    // Determine the content type and build the appropriate prompt
     let userPrompt;
     let systemPrompt;
     let budget;
@@ -273,16 +334,15 @@ async function analyze({ content, analysisType, apiKey }) {
         maxTokens: TOKEN_BUDGETS.analysis,
         temperature: 0.2,
         apiKey,
+        responseFormat: 'json',
     });
 
     // Parse JSON from response
     try {
-        // Strip any markdown fences the model might add
         let jsonStr = result.content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         const parsed = JSON.parse(jsonStr);
         return { ...result, content: parsed };
     } catch {
-        // Return raw content and calculate basic metrics
         const words = content.split(/\s+/).length;
         return {
             ...result,
@@ -313,11 +373,10 @@ async function generateIdeas({ genre, count = 5, theme, apiKey }) {
         apiKey,
     });
 
-    // Parse numbered list into array
     const ideas = result.content
         .split('\n')
         .filter(line => line.trim().length > 0)
-        .map(line => line.replace(/^\d+[\.\)]\s*/, '').trim())
+        .map(line => line.replace(/^\d+[\.)\]]\s*/, '').trim())
         .filter(line => line.length > 0)
         .slice(0, count);
 
@@ -357,20 +416,31 @@ async function generateSynopsis({ content, genre, formatType, apiKey }) {
 }
 
 /**
- * Test connection to Groq API
+ * Test connection to Gemini API (backward-compatible signature)
  */
 async function testConnection(apiKey) {
     try {
-        const groqApiKey = apiKey || process.env.GROQ_API_KEY;
-        if (!groqApiKey) return { success: false, message: 'GROQ_API_KEY not configured' };
+        const geminiApiKey = apiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+        if (!geminiApiKey) return { success: false, message: 'GEMINI_API_KEY not configured' };
 
-        const response = await fetch('https://api.groq.com/openai/v1/models', {
-            headers: { 'Authorization': `Bearer ${groqApiKey}` },
-        });
+        const response = await fetch(
+            `${GEMINI_CONFIG.baseUrl}/${GEMINI_CONFIG.model}:generateContent?key=${geminiApiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: 'ping' }] }],
+                    generationConfig: { maxOutputTokens: 10 },
+                }),
+                signal: AbortSignal.timeout(5000),
+            }
+        );
 
         return {
             success: response.ok,
-            message: response.ok ? 'Connected to Groq API' : `Failed: ${response.status}`,
+            message: response.ok ? 'Connected to Gemini API' : `Failed: ${response.status}`,
+            provider: 'gemini',
+            model: GEMINI_CONFIG.model,
         };
     } catch (err) {
         return { success: false, message: err.message };
@@ -387,7 +457,7 @@ module.exports = {
     improve,
     generateSynopsis,
     testConnection,
-    callGroq,
+    callGroq,  // Kept as callGroq for backward compat — internally uses Gemini
     // Expose prompt builders for testing/customization
     buildStoryPrompt,
     buildComicPrompt,

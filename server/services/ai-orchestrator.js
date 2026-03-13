@@ -1,22 +1,25 @@
 /**
- * AI Story Orchestrator — Chairman Pattern
+ * AI Story Orchestrator — Chairman Pattern (IQai + Gemini)
  * 
  * Implements the "Gemini Chairman" pattern where:
  * - Gemini is the primary decision-maker and writer
- * - Groq handles fast, narrow-scoped subtasks (outline, classification, panel breakdown)
+ * - Gemini also handles fast subtasks (outline, classification, panel breakdown)
+ *   via the groqService module (which now routes through Gemini internally)
+ * - IQai ADK agent layer provides tokenizable agent framework and tooling
  * - Final output is coherent, Gemini-consistent, and properly merged
  * 
  * Flow:
  * 1. Chairman reads config (90+ parameters)
- * 2. Decides task decomposition (Gemini-only vs Gemini+Groq)
- * 3. Orchestrates calls to appropriate models
+ * 2. Decides task decomposition
+ * 3. Orchestrates calls via IQai agent / Gemini
  * 4. Merges results into unified output
  * 5. Applies safety filters and post-processing
  */
 
 const geminiService = require('./geminiService');
-const groqService = require('./groqService');
+const groqService = require('./groqService'); // Now Gemini-powered (backward-compat exports)
 const vectorService = require('./vectorService');
+const { storyAgent } = require('./iqai-agent');
 
 let logger;
 try {
@@ -135,24 +138,24 @@ Return ONLY JSON array:
 // ─────────────────────────────────────────────────────────────────────────
 
 /**
- * Safely execute Groq task with fallback
+ * Safely execute AI subtask with fallback (powered by Gemini via groqService)
  */
 async function executeGroqTask(taskName, prompt, correlationId) {
     try {
-        logger.debug(`[${correlationId}] Executing Groq task: ${taskName}`);
+        logger.debug(`[${correlationId}] Executing AI subtask: ${taskName}`);
         const result = await groqService.callGroq({
-            model: 'llama-3.3-70b-versatile',
+            model: groqService.MODELS.FAST,
             systemPrompt: 'You are a story structuring assistant. Keep responses concise. Return your response as valid JSON.',
             userPrompt: prompt,
             maxTokens: 1000,
             temperature: 0.5,
             responseFormat: 'json',
         });
-        logger.debug(`[${correlationId}] Groq task ${taskName} completed`);
+        logger.debug(`[${correlationId}] AI subtask ${taskName} completed`);
         return result;
     } catch (error) {
-        logger.warn(`[${correlationId}] Groq task ${taskName} failed: ${error.message}. Continuing without it.`);
-        return null; // Non-fatal: continue without Groq enhancement
+        logger.warn(`[${correlationId}] AI subtask ${taskName} failed: ${error.message}. Continuing without it.`);
+        return null; // Non-fatal: continue without enhancement
     }
 }
 
@@ -342,7 +345,7 @@ async function orchestrateGeneration({
         // ─────────────────────────────────────────────────────────────
 
         const latencyPriority = config.latencyPriority || 'balanced';
-        const useGroqTasks = latencyPriority !== 'speed-only'; // Groq for insights unless speed-critical
+        const useGroqTasks = latencyPriority !== 'speed-only'; // Gemini subtasks for insights unless speed-critical
 
         logger.info(`[${correlationId}] Chairman Strategy:`, {
             latencyPriority,
@@ -351,15 +354,15 @@ async function orchestrateGeneration({
         });
 
         // ─────────────────────────────────────────────────────────────
-        // PHASE 2A: PARALLEL GROQ PRE-PROCESSING (optional)
+        // PHASE 2A: PARALLEL AI PRE-PROCESSING (Gemini subtasks, optional)
         // ─────────────────────────────────────────────────────────────
 
         let groqContext = {};
 
         if (useGroqTasks) {
-            logger.debug(`[${correlationId}] Starting parallel Groq pre-processing tasks and Vector Search`);
+            logger.debug(`[${correlationId}] Starting parallel AI pre-processing tasks and Vector Search`);
 
-            // Execute Groq tasks in parallel: validation, classification, outline, AND Vector Search
+            // Execute AI subtasks in parallel: validation, classification, outline, AND Vector Search
             const tasks = [
                 executeGroqTask(
                     'parameter-validation',
@@ -389,7 +392,7 @@ async function orchestrateGeneration({
                 logger.debug(`[${correlationId}] Vector Search found ${vectorResult.similarStories.length} similar stories. Uniqueness protocol activated.`);
             }
 
-            // Parse Groq results
+            // Parse AI subtask results
             if (valResult?.content) {
                 try {
                     groqContext.validation = JSON.parse(valResult.content);
@@ -414,7 +417,7 @@ async function orchestrateGeneration({
                     .slice(0, 15); // Limit to 15 beats
             }
 
-            logger.debug(`[${correlationId}] Groq pre-processing complete`, {
+            logger.debug(`[${correlationId}] AI pre-processing complete`, {
                 hasValidation: !!groqContext.validation,
                 hasClassification: !!groqContext.classification,
                 outlineBeats: groqContext.outline?.length || 0,
@@ -423,7 +426,7 @@ async function orchestrateGeneration({
         }
 
         // ─────────────────────────────────────────────────────────────
-        // PHASE 2B: PRIMARY GENERATION — Gemini Chairman or Groq Fallback
+        // PHASE 2B: PRIMARY GENERATION — Gemini Chairman (IQai Agent)
         // ─────────────────────────────────────────────────────────────
 
         const chairmanPrompt = buildChairmanPrompt(userInput, config, groqContext);
@@ -457,11 +460,11 @@ async function orchestrateGeneration({
                 });
             }
         } else {
-            // Fallback: use Groq as primary generator when Gemini is not configured
-            logger.info(`[${correlationId}] Gemini not configured, using Groq as primary generator`);
+            // Fallback: use IQai agent / Gemini via groqService when geminiService is not configured
+            logger.info(`[${correlationId}] geminiService not configured, using IQai agent / Gemini fallback`);
 
-            if (!process.env.GROQ_API_KEY) {
-                throw new Error('AI Generation failed: Neither GEMINI_API_KEY nor GROQ_API_KEY is configured on the server. Please add an API key to the .env file.');
+            if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
+                throw new Error('AI Generation failed: GEMINI_API_KEY (or GOOGLE_API_KEY) is not configured on the server. Please add an API key to the .env file.');
             }
 
             // Use temperature from user params with random jitter for unique outputs
@@ -469,20 +472,20 @@ async function orchestrateGeneration({
             const jitter = (Math.random() - 0.5) * 0.15; // ±0.075 variation
             const effectiveTemp = Math.max(0.1, Math.min(1.5, baseTemp + jitter));
 
-            const groqResult = await groqService.callGroq({
-                model: 'llama-3.3-70b-versatile',
-                systemPrompt: 'You are a world-class fiction writer. Generate complete, publication-quality stories. Output ONLY the story text — no commentary, no meta-text. Be creative and unique in every generation.',
-                userPrompt: chairmanPrompt,
-                maxTokens: config.targetWordCount ? Math.min(Math.ceil(config.targetWordCount * 1.5), 8000) : 4000,
+            const agentResult = await storyAgent.generateStory({
+                prompt: chairmanPrompt,
+                formatType: config.mode,
+                genre: config.primaryGenre,
                 temperature: effectiveTemp,
+                maxTokens: config.targetWordCount ? Math.min(Math.ceil(config.targetWordCount * 1.5), 8000) : 4000,
             });
-            generatedContent = groqResult.content;
+            generatedContent = agentResult.content;
 
             if (streaming && onChunk) {
                 // Send the full result as a single chunk for streaming mode
                 onChunk({
                     type: 'generation',
-                    model: 'groq-llama-3.3-70b',
+                    model: `gemini-iqai (${agentResult.agent || 'compat'})`,
                     chunk: generatedContent,
                     done: true,
                 });
@@ -501,11 +504,11 @@ async function orchestrateGeneration({
         const output = parseGeneratedContent(generatedContent, config);
 
         // ─────────────────────────────────────────────────────────────
-        // PHASE 3A: PARALLEL GROQ POST-PROCESSING (optional)
+        // PHASE 3A: PARALLEL AI POST-PROCESSING (optional)
         // ─────────────────────────────────────────────────────────────
 
         if (useGroqTasks) {
-            logger.debug(`[${correlationId}] Starting parallel Groq post-processing tasks`);
+            logger.debug(`[${correlationId}] Starting parallel AI post-processing tasks`);
 
             const postProcessTasks = [];
 
@@ -536,7 +539,7 @@ async function orchestrateGeneration({
                 }
             }
 
-            logger.debug(`[${correlationId}] Groq post-processing complete`);
+            logger.debug(`[${correlationId}] AI post-processing complete`);
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -553,9 +556,10 @@ async function orchestrateGeneration({
         const metadata = {
             generatedAt: new Date().toISOString(),
             durationMs: Date.now() - startTime,
-            model: 'gemini-chairman',
+            model: 'gemini-chairman-iqai',
             requestId: correlationId,
-            groqEnhanced: useGroqTasks && Object.keys(groqContext).length > 0,
+            iqaiAgent: storyAgent.getInfo(),
+            aiEnhanced: useGroqTasks && Object.keys(groqContext).length > 0,
             config: {
                 mode: config.mode,
                 genre: config.primaryGenre,
@@ -726,7 +730,7 @@ module.exports = {
     orchestrateGeneration,
     buildChairmanPrompt,
     parseGeneratedContent,
-    // Groq helpers for testing/customization
+    // AI subtask helpers for testing/customization
     buildParameterValidationPrompt,
     buildClassificationPrompt,
     buildOutlinePrompt,

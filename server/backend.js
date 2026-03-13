@@ -84,7 +84,7 @@ const options = {
       { name: 'Marketplace', description: 'NFT marketplace — list, buy, cancel, and browse listings in CRAFTS' },
       { name: 'Comics', description: 'Comic creation and management' },
       { name: 'SDK', description: 'External SDK integration endpoints' },
-      { name: 'TTS', description: 'Text-to-speech narration via Sarvam AI Bulbul v3' },
+      { name: 'TTS', description: 'Text-to-speech narration via ElevenLabs' },
     ],
     components: {
       securitySchemes: {
@@ -327,20 +327,27 @@ const maskAddress = (addr) => {
 app.get(['/api/health', '/api/health/db'], async (req, res) => {
   const { supabaseAdmin: _supabaseAdminCheck } = require('./config/supabase');
 
-  // ── Run all async probes in parallel ──────────────────────────────────
+  // ── Run all async probes in parallel (with timeout guard) ───────────
   const supabaseConfigured = !!SUPABASE_URL;
+
+  // Timeout helper — prevent health check from hanging on unreachable external services
+  const withTimeout = (promise, ms = 5000, fallback) =>
+    Promise.race([
+      promise,
+      new Promise(resolve => setTimeout(() => resolve(fallback || { connected: false, error: `Health probe timed out after ${ms}ms` }), ms)),
+    ]);
 
   const [supabaseResult, web3Result] = await Promise.allSettled([
     supabaseConfigured
-      ? checkSupabaseHealth()
+      ? withTimeout(checkSupabaseHealth(), 5000, { connected: false, latency_ms: null, note: 'Supabase health check timed out' })
       : Promise.resolve({ connected: false, latency_ms: null, note: 'Supabase env vars not set' }),
-    (async () => {
+    withTimeout((async () => {
       try {
         return await checkWeb3Health();
       } catch (e) {
         return { configured: false, connected: false, error: e.message };
       }
-    })(),
+    })(), 5000, { configured: false, connected: false, error: 'Web3 health check timed out' }),
   ]);
 
   const supabaseHealth = supabaseResult.status === 'fulfilled'
@@ -356,9 +363,11 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
 
   // ── Env var presence checks (no values leaked) ────────────────────────
   const groqConfigured      = !!process.env.GROQ_API_KEY;
-  const geminiConfigured    = !!process.env.GEMINI_API_KEY;
+  const geminiConfigured    = !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_API_KEY;
   const openaiConfigured    = !!process.env.OPENAI_API_KEY || !!process.env.NEXT_PUBLIC_OPENAI_API_KEY;
   const sarvamConfigured    = !!process.env.SARVAM_API_KEY;
+  const elevenlabsConfigured = !!process.env.ELEVENLABS_API_KEY;
+  const iqaiConfigured      = !!process.env.IQAI_API_KEY;
 
   const supabaseAnonKeySet       = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const supabaseServiceRoleSet   = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -512,25 +521,38 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
 
     // ── AI Services ────────────────────────────────────────────────────
     ai_services: {
-      groq: {
-        status: groqConfigured ? 'available' : 'not_configured',
-        configured: groqConfigured,
-        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
-        api_url: process.env.GROQ_API_URL || 'https://api.groq.com/openai/v1',
-      },
       gemini: {
         status: geminiConfigured ? 'available' : 'not_configured',
         configured: geminiConfigured,
-        model: process.env.GEMINI_MODEL || 'gemini-2.5-pro',
+        model: process.env.GEMINI_MODEL || 'gemini-3.1-pro',
+        role: 'primary_llm',
+      },
+      iqai: {
+        status: iqaiConfigured ? 'available' : 'not_configured',
+        configured: iqaiConfigured,
+        role: 'agent_framework',
+        description: 'IQai ADK-TS Agent Tokenization Platform',
+      },
+      groq: {
+        status: 'deprecated',
+        configured: groqConfigured,
+        note: 'Groq has been replaced by Gemini for all AI tasks',
       },
       openai: {
         configured: openaiConfigured,
         status: openaiConfigured ? 'available' : 'not_configured',
       },
+      elevenlabs_tts: {
+        configured: elevenlabsConfigured,
+        status: elevenlabsConfigured ? 'available' : 'not_configured',
+        provider: 'ElevenLabs',
+        model: process.env.ELEVENLABS_MODEL_ID || 'eleven_multilingual_v2',
+      },
       sarvam_tts: {
         configured: sarvamConfigured,
-        status: sarvamConfigured ? 'available' : 'not_configured',
+        status: 'deprecated',
         provider: 'Sarvam AI Bulbul v3',
+        note: 'Replaced by ElevenLabs — code retained but inactive',
       },
     },
 
@@ -618,7 +640,7 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
       ai_generation: groqConfigured || geminiConfigured ? 'online' : 'offline',
       feed_gallery: feedGalleryStatus,
       blockchain: blockchainStatus,
-      tts: sarvamConfigured ? 'online' : 'offline',
+      tts: elevenlabsConfigured ? 'online' : 'offline',
       auth: supabaseConfigured ? 'online' : 'offline',
       google_oauth: googleClientIdSet && googleClientSecretSet ? 'online' : 'not_configured',
       wallet_connect: walletConnectSet ? 'online' : 'not_configured',
