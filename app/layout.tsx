@@ -46,40 +46,41 @@ const requiredEnvVars = [
   'NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR',
 ];
 
-// Validate required environment variables at build time (only in production)
-// Skip validation during build process (CI/Cloudflare build)
-if (
-  process.env.NODE_ENV === 'production' &&
-  !process.env.CI &&
-  !process.env.NEXT_PUBLIC_BUILD_MODE
-) {
-  for (const envVar of requiredEnvVars) {
-    if (!process.env[envVar]) {
-      throw new Error(`Missing required environment variable: ${envVar}`);
-    }
-  }
-} else {
-  // In development or build mode, set default values for missing environment variables
-  // CF_PAGES_URL is automatically set by Cloudflare Pages during builds
-  const cfPagesUrl = process.env.CF_PAGES_URL;
-  const defaultEnvVars: Record<string, string> = {
-    NEXT_PUBLIC_URL: cfPagesUrl ? `https://${cfPagesUrl}` : 'http://localhost:3000',
-    // 'NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME': 'Comicraft', // Commented out OnChain references
-    // NEXT_PUBLIC_VERSION is injected by next.config.js from the VERSION file at build time.
-    // It does not need a default here — if it is missing the build itself is misconfigured.
-    NEXT_PUBLIC_IMAGE_URL: cfPagesUrl
-      ? `https://${cfPagesUrl}/images`
-      : 'https://comicraft.xyz/images',
-    NEXT_PUBLIC_SPLASH_IMAGE_URL: cfPagesUrl
-      ? `https://${cfPagesUrl}/splash.jpg`
-      : 'https://comicraft.xyz/splash.jpg',
-    NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR: '#1a1a2e',
-  };
+// Default values for missing environment variables.
+// CF_PAGES_URL is automatically set by Cloudflare Pages during builds.
+const cfPagesUrl = process.env.CF_PAGES_URL;
+const defaultEnvVars: Record<string, string> = {
+  NEXT_PUBLIC_URL: cfPagesUrl
+    ? `https://${cfPagesUrl}`
+    : 'https://comicraft.xyz',
+  // 'NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME': 'Comicraft', // Commented out OnChain references
+  // NEXT_PUBLIC_VERSION is injected by next.config.js from the VERSION file at build time.
+  // It does not need a default here — if it is missing the build itself is misconfigured.
+  NEXT_PUBLIC_IMAGE_URL: cfPagesUrl
+    ? `https://${cfPagesUrl}/images`
+    : 'https://comicraft.xyz/images',
+  NEXT_PUBLIC_SPLASH_IMAGE_URL: cfPagesUrl
+    ? `https://${cfPagesUrl}/splash.jpg`
+    : 'https://comicraft.xyz/splash.jpg',
+  NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR: '#1a1a2e',
+};
 
-  for (const envVar of requiredEnvVars) {
-    if (!process.env[envVar]) {
-      process.env[envVar] = defaultEnvVars[envVar];
+// Always backfill missing env vars with sensible defaults so the build never
+// crashes due to a missing NEXT_PUBLIC_* variable.  In true runtime production
+// (not a build step), warn so operators notice the misconfiguration.
+const isBuildPhase =
+  !!process.env.CI ||
+  !!process.env.NEXT_PUBLIC_BUILD_MODE ||
+  !!process.env.RENDER; // Render sets RENDER=true automatically
+
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    if (process.env.NODE_ENV === 'production' && !isBuildPhase) {
+      console.warn(
+        `⚠️  Missing environment variable: ${envVar} — using default "${defaultEnvVars[envVar]}"`
+      );
     }
+    process.env[envVar] = defaultEnvVars[envVar];
   }
 }
 
@@ -99,18 +100,18 @@ const quickBootScript = '';
 const appVersion = process.env.NEXT_PUBLIC_VERSION ?? '?.?.?';
 
 export const metadata: Metadata = {
-  title: 'Comicraft - AI-Powered Story & Comic Platform',
+  title: 'Comicraft: Creativity Tokenization Platform (CTP)',
   description:
-    'Create, mint, and share AI-generated stories and comics on the blockchain.',
+    'Comicraft: Creativity Tokenization Platform (CTP) - Create, mint, and share AI-generated stories and comics on the blockchain.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://comicraft.xyz'),
   icons: {
     icon: '/logo.png',
     apple: '/logo.png',
   },
   openGraph: {
-    title: 'Comicraft',
+    title: 'Comicraft: Creativity Tokenization Platform (CTP)',
     description:
-      'AI-Powered Storytelling Platform | Create, share, and own AI-generated stories and comics',
+      'Comicraft: Creativity Tokenization Platform (CTP) | Create, share, and own AI-generated stories and comics',
     images: [{ url: '/logo.png' }],
   },
 };

@@ -1,8 +1,8 @@
 {
   "name": "comicraft",
-  "version": "2.0.3",
+  "version": "1.0.1",
   "private": true,
-  "description": "Enterprise-grade AI-powered Web3 storytelling platform with NFT integration",
+  "description": "Comicraft: Creativity Tokenization Platform (CTP) - Enterprise-grade AI-powered Web3 storytelling platform with NFT integration",
   "author": "Comicraft Team",
   "license": "MIT",
   "repository": {
@@ -25,7 +25,7 @@
   },
   "scripts": {
     "dev": "concurrently \"next dev\" \"nodemon server/backend.js\"",
-    "build": "NEXT_PUBLIC_BUILD_MODE=true next build",
+    "build": "next build",
     "cf-build": "rm -rf app/api && NEXT_PUBLIC_BUILD_MODE=true next build",
     "start": "concurrently \"next start\" \"node server/backend.js\"",
     "lint": "next lint",
@@ -93,8 +93,6 @@
     "@radix-ui/react-toggle-group": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@simplewebauthn/types": "^12.0.0",
-    "@splinetool/react-spline": "^2.2.6",
-    "@splinetool/runtime": "^1.9.27",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.97.0",
     "@tanstack/react-query": "^5.74.3",

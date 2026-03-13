@@ -111,7 +111,7 @@ export default function SettingsPage() {
   const getToken = () =>
     typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const baseUrl = typeof window !== 'undefined'
-    ? (process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com')
+    ? (process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com')
     : '';
 
   // const onSubmit = (data: ProfileFormValues) => {

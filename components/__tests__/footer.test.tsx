@@ -52,7 +52,7 @@ describe('Footer', () => {
   it('displays the brand tagline', () => {
     render(<Footer />);
     expect(
-      screen.getByText(/empowering creators with ai-driven storytelling/i)
+      screen.getByText(/comicraft: creativity tokenization platform/i)
     ).toBeInTheDocument();
   });
 

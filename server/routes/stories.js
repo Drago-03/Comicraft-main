@@ -7,7 +7,8 @@ const express = require('express');
 const router = express.Router();
 const { supabaseAdmin } = require('../config/supabase');
 const { authRequired } = require('../middleware/auth');
-const groqService = require('../services/groqService');
+// const groqService = require('../services/groqService'); // DEPRECATED - Migrated to Gemini 3
+const geminiService = require('../services/geminiService');
 const { normalizeParam } = require('../utils/paramNormalizer');
 const multer = require('multer');
 
@@ -410,28 +411,35 @@ router.post('/generate', authRequired, async (req, res) => {
     const normalizedSetting = normalizeParam(setting, 'setting');
     const normalizedFormatType = normalizeParam(formatType, 'formatType');
 
-    const result = await groqService.generate({
-      prompt: normalizedPrompt,
-      genre: normalizedGenre,
-      theme: normalizedTheme,
-      length: normalizedLength || 'medium',
-      tone: normalizedStyle,
-      characters: normalizedCharacters,
-      setting: normalizedSetting,
-      formatType: normalizedFormatType || 'story',
+    // Build prompt with parameters - delegate to Gemini
+    let fullPrompt = normalizedPrompt || '';
+    if (normalizedTheme) fullPrompt += `\nTheme: ${normalizedTheme}`;
+    if (normalizedGenre) fullPrompt += `\nGenre: ${normalizedGenre}`;
+    if (normalizedLength) fullPrompt += `\nLength: ${normalizedLength}`;
+    if (normalizedStyle) fullPrompt += `\nTone: ${normalizedStyle}`;
+    if (normalizedCharacters) fullPrompt += `\nCharacters: ${normalizedCharacters}`;
+    if (normalizedSetting) fullPrompt += `\nSetting: ${normalizedSetting}`;
+    if (normalizedFormatType) fullPrompt += `\nFormat: ${normalizedFormatType}`;
+
+    const content = await geminiService.generateContent({
+      prompt: fullPrompt,
+      config: {
+        temperature: 0.8,
+        maxTokensPerResponse: 1200,
+      },
     });
 
     const generatedStory = {
       id: require('crypto').randomUUID(),
       title: `AI Generated ${((normalizedFormatType || 'Story').charAt(0).toUpperCase() + (normalizedFormatType || 'story').slice(1))}`,
-      content: result.content,
+      content,
       genre: normalizedGenre,
       metadata: {
         prompt: normalizedPrompt,
         length: normalizedLength,
         style: normalizedStyle,
-        model: result.model,
-        tokensUsed: result.tokensUsed,
+        model: 'gemini-2.5-pro',
+        tokensUsed: { total: 0 },
         generatedAt: new Date().toISOString(),
       },
     };
@@ -481,12 +489,36 @@ router.post('/:id/analyze', authRequired, async (req, res) => {
       return res.status(404).json({ error: 'Story not found' });
     }
 
-    const result = await groqService.analyze({ content: story.content });
+    // Build analysis prompt - delegate to Gemini
+    const analysisPrompt = `Analyze the following story and provide a general analysis.
+Return structured JSON with: sentiment, themes (array), complexity, readabilityScore (number), wordCount, estimatedReadingTime (minutes).
+
+Story:
+${story.content}
+
+Return JSON ONLY (no markdown):`;
+
+    const response = await geminiService.generateContent({
+      prompt: analysisPrompt,
+      config: {
+        temperature: 0.3,
+        maxTokensPerResponse: 500,
+      },
+    });
+
+    // Try to parse JSON response
+    let results;
+    try {
+      results = JSON.parse(response);
+    } catch {
+      // If not valid JSON, return raw response
+      results = { analysis: response };
+    }
 
     return res.json({
       storyId: id,
-      ...result.content,
-      tokensUsed: result.tokensUsed,
+      ...results,
+      tokensUsed: { total: 0 },
       analyzedAt: new Date().toISOString(),
     });
   } catch (error) {
@@ -654,19 +686,26 @@ router.post('/upload-file', authRequired, fileUploadOptions.fields([{ name: 'fil
 
     const previewText = extractedText.substring(0, 1500);
 
-    // 3. Generate Synopsis via Groq AI
+    // 3. Generate Synopsis via Gemini AI
     let synopsis = `An intriguing ${formatType} exploring themes of ${genre}. Based on the provided file, this story unravels unique concepts and interesting character dynamics.`;
     if (previewText.length > 50) {
-      if (process.env.GROQ_API_KEY) {
+      if (process.env.GEMINI_API_KEY) {
         try {
-          const synopsisResult = await groqService.generateSynopsis({
-            content: previewText,
-            genre,
-            formatType,
+          const synopsisPrompt = `Generate a brief synopsis for this ${formatType} in the ${genre} genre based on the following excerpt:
+
+${previewText}
+
+Return a 2-3 sentence synopsis:`;
+
+          synopsis = await geminiService.generateContent({
+            prompt: synopsisPrompt,
+            config: {
+              temperature: 0.7,
+              maxTokensPerResponse: 200,
+            },
           });
-          synopsis = synopsisResult.content;
-        } catch (groqErr) {
-          console.error('Groq AI Synopsis Error:', groqErr);
+        } catch (geminiErr) {
+          console.error('Gemini AI Synopsis Error:', geminiErr);
           synopsis = `An engaging ${formatType} set in the ${genre} genre. The opening reveals a captivating narrative starting with: "${previewText.substring(0, 100).replace(/\n/g, ' ')}...".`;
         }
       } else {

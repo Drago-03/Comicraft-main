@@ -18,7 +18,7 @@ const allowedOrigins = [
   'http://localhost:3001',
   'http://localhost:3002',
   // ── Render (backend) ──────────────────────────────────────────────────
-  'https://comicraft-backend-api.onrender.com',
+  'https://comicraft-main.onrender.com',
   'https://comicraft-sdk-service.onrender.com',
   // ── Vercel ────────────────────────────────────────────────────────────
   'https://comicraft.vercel.app',

@@ -218,7 +218,7 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                 setLoading(true);
                 setError(false);
 
-                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
 
                 if (slug === 'me') {
                     // Fetch own profile using auth token
@@ -449,7 +449,7 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
 
     const handleMintNft = async (storyId: string) => {
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
             const token = localStorage.getItem('accessToken');
             const res = await fetch(`${baseUrl}/api/v1/nft/mint`, {
                 method: 'POST',

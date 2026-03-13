@@ -68,7 +68,7 @@ export default function AdminMintRequestsPage() {
   const [rejectReason, setRejectReason] = useState('');
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
 
   const fetchRequests = useCallback(async () => {
     setLoading(true);

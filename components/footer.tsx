@@ -31,7 +31,7 @@ export function Footer({ version }: { version?: string }) {
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com'}/api/health`, { cache: 'no-store' });
+        const res = await fetch('/api/health', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           setHealthStatus(
@@ -90,7 +90,7 @@ export function Footer({ version }: { version?: string }) {
               </Link>
               <div className="text-left">
                 <p className="text-sm font-medium text-white/50 leading-relaxed max-w-sm">
-                  Empowering creators with AI-driven storytelling and Web3 ownership. The cinematic platform for your imagination.
+                  Comicraft: Creativity Tokenization Platform (CTP) - Empowering creators with AI-driven storytelling and Web3 ownership.
                 </p>
               </div>
               <div className="flex gap-3 pt-2" role="group" aria-label="Social media links">
@@ -181,7 +181,6 @@ export function Footer({ version }: { version?: string }) {
               <ul className="space-y-4 pl-0 list-none">
                 {[
                   { href: '/docs', label: 'Documentation' },
-                  { href: '/contributors', label: 'Contributors' },
                   { href: '/faq', label: 'FAQ' },
                   { href: '/feedback', label: 'Feedback' },
                 ].map((link) => (

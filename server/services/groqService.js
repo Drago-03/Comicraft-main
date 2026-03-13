@@ -447,6 +447,7 @@ async function testConnection(apiKey) {
     }
 }
 
+/* COMMENTED OUT - Groq service deprecated
 module.exports = {
     MODELS,
     MODEL_DISPLAY_NAMES,
@@ -468,3 +469,4 @@ module.exports = {
     buildImprovementPrompt,
     SYSTEM_PROMPTS,
 };
+*/

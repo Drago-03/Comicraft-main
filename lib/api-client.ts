@@ -6,7 +6,7 @@
  */
 
 export const API_BASE_URL: string =
-    process.env.NEXT_PUBLIC_API_URL ?? 'https://comicraft-backend-api.onrender.com';
+    process.env.NEXT_PUBLIC_API_URL ?? 'https://comicraft-main.onrender.com';
 
 /**
  * Thin wrapper around `fetch` that automatically prefixes the backend

@@ -45,7 +45,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const disconnectWallet = useCallback(async()=>{
     try{
       const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com'}/api/v1/settings/wallet`,{
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com'}/api/v1/settings/wallet`,{
         method: "DELETE",
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -142,7 +142,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         setConnected(true);
 
         // Authenticate via backend wallet-login endpoint (BFF pattern)
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
         try {
           const authRes = await fetch(`${baseUrl}/api/v1/auth/wallet-login`, {
             method: 'POST',

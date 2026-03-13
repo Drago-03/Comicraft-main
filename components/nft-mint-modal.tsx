@@ -114,7 +114,7 @@ export function NftMintModal({
 
     setIsSubmitting(true);
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
 
     try {
       // Small helper to get active account if not injected

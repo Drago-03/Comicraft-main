@@ -12,7 +12,7 @@ import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
 
 interface StoryWithAudio {
   id: string;

@@ -8,7 +8,7 @@ management, user profiles, and content analysis. Built with Express.js and desig
 ## Base URLs
 
 - **Development**: `http://localhost:3001`
-- **Production**: `https://comicraft-backend-api.onrender.com`
+- **Production**: `https://comicraft-main.onrender.com`
 
 ## Authentication
 

@@ -118,7 +118,7 @@ export default function CommunityFeed() {
     // Fetch user profile from backend API (BFF pattern)
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     if (token) {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
       fetch(`${baseUrl}/api/v1/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -127,7 +127,7 @@ export default function CommunityFeed() {
         .catch(() => {});
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com'}/api/v1/stories?limit=20`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com'}/api/v1/stories?limit=20`)
       .then(r => {
         if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
         return r.json();

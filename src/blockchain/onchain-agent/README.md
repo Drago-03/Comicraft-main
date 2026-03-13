@@ -65,9 +65,3 @@ Action Providers define what your agent can do. You can use built-in providers o
 
 ---
 
-## Contributing
-
-Interested in contributing to AgentKit? Follow the contribution guide:
-
-- [Contribution Guide](https://github.com/coinbase/agentkit/blob/main/CONTRIBUTING.md)
-- Join the discussion on [Discord](https://discord.gg/CDP)

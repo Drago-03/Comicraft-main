@@ -503,7 +503,7 @@ function AIStoryContent() {
     };
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
       const res = await fetch(`${baseUrl}/api/v1/drafts`, {
         method: 'PUT',
         headers: {
@@ -567,7 +567,7 @@ function AIStoryContent() {
     };
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
       await fetch(`${baseUrl}/api/v1/drafts`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },

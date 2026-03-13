@@ -120,7 +120,7 @@ export default function WalletConnect() {
       const selectedAccount: string = accounts[0]!;
       
       // Authenticate via backend wallet-login with signature verification
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
       
       // Step 1: Get nonce from backend
       const nonceRes = await fetch(`${baseUrl}/api/v1/auth/nonce?address=${selectedAccount}`);

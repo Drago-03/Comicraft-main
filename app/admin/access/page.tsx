@@ -69,7 +69,7 @@ export default function AccessControlPage() {
 
             // Hardcoded API endpoint because the user requested all API calls to route securely.
             // Alternatively, relative routing works best matching the backend API structure
-            const response = await fetch('https://comicraft-backend-api.onrender.com/api/v1/admin/access/users', {
+            const response = await fetch('https://comicraft-main.onrender.com/api/v1/admin/access/users', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -114,7 +114,7 @@ export default function AccessControlPage() {
             setIsUpdating(true);
             const token = localStorage.getItem('accessToken');
 
-            const response = await fetch('https://comicraft-backend-api.onrender.com/api/v1/admin/access/roles', {
+            const response = await fetch('https://comicraft-main.onrender.com/api/v1/admin/access/roles', {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

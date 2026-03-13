@@ -421,7 +421,7 @@ export default function AIStoryGenerator({
 
       // --- Try backend first (with 10s timeout) ---
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
         const backendController = new AbortController();
         const backendTimeout = setTimeout(() => backendController.abort(), 10000);
 

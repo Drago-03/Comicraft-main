@@ -28,7 +28,7 @@ export function useSystemHealth(): HealthStatus {
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
         if (!baseUrl) {
             setStatus((s) => ({ ...s, loading: false }));
             return;

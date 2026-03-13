@@ -66,7 +66,7 @@ const options = {
     },
     servers: [
       {
-        url: process.env.PROD_URL || 'https://comicraft-backend-api.onrender.com/api',
+        url: process.env.PROD_URL || 'https://comicraft-main.onrender.com/api',
         description: 'Production',
       },
     ],
@@ -413,7 +413,7 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
   let status = 'operational';
   if (!supabaseConfigured || !supabaseHealth.connected) {
     status = 'degraded';
-  } else if (!groqConfigured && !geminiConfigured) {
+  } else if (!geminiConfigured) {
     status = 'partial';
   }
 
@@ -521,6 +521,7 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
 
     // ── AI Services ────────────────────────────────────────────────────
     ai_services: {
+
       gemini: {
         status: geminiConfigured ? 'available' : 'not_configured',
         configured: geminiConfigured,
@@ -637,7 +638,7 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
       database: supabaseHealth.connected
         ? 'online'
         : (supabaseConfigured ? 'offline' : 'not_configured'),
-      ai_generation: groqConfigured || geminiConfigured ? 'online' : 'offline',
+      ai_generation: geminiConfigured ? 'online' : 'offline',
       feed_gallery: feedGalleryStatus,
       blockchain: blockchainStatus,
       tts: elevenlabsConfigured ? 'online' : 'offline',
@@ -888,7 +889,8 @@ app.use('/api/feed', require('./routes/feed'));
 app.use('/api/feeds', require('./routes/notification-feed'));
 
 
-app.use('/api/groq', require('./routes/groq'));
+// DEPRECATED - Migrated to Gemini 3 exclusively
+// app.use('/api/groq', require('./routes/groq'));
 app.use('/api/v1/ai', require('./routes/ai'));
 app.use('/api/v1/drafts', require('./routes/drafts'));
 app.use('/api/v1/tts', require('./routes/tts'));

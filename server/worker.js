@@ -30,7 +30,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://comicraft-backend-api.onrender.com',
+  'https://comicraft-main.onrender.com',
   'https://comicraft.vercel.app',
   'https://comicraft-git-main-indie-hub25s-projects.vercel.app',
   'https://www.comicraft.xyz',

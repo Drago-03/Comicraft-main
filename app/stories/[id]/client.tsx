@@ -50,7 +50,7 @@ export default function StoryClient({ id }: { id: string }) {
       setNotFound(false);
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-backend-api.onrender.com';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
         const res = await fetch(`${baseUrl}/api/v1/stories/${id}`);
         if (!res.ok) throw new Error('Story not found');
         const data = await res.json();

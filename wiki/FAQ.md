@@ -112,11 +112,6 @@ integrations. Smart contracts on the Monad blockchain can also be interacted wit
 features. See [API Documentation](../API-Documentation.md) and
 [Smart Contracts](../Smart-Contracts.md) for details.
 
-**Q: How can I contribute to Comicraft development?** A: You can contribute by cloning the
-repository, setting up a local development environment, making changes, and submitting pull
-requests. Follow the [Development Setup](../Development-Setup.md) guide for setup instructions and
-the [Contributing Guide](../CONTRIBUTING.md) for contribution guidelines.
-
 **Q: Where can I find smart contract addresses or ABIs for Comicraft?** A: As Comicraft is under
 development, specific contract addresses and ABIs for the Monad Testnet or Mainnet are not yet
 finalized. Check the repository for updates in a `contracts` or `deployments` directory, or look for
