@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.0.1 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.0.2 (latest). See `SECURITY.md` for the support policy.
+
+## [1.0.2] - 2026-03-14
+
+### Fixed
+
+- **Cloudflare Pages Build Error** (`wrangler.toml`): Removed the `[build]` table from `wrangler.toml`. Cloudflare Pages does not support the `[build]` key in wrangler config files (it must be set in the Cloudflare Pages dashboard under Settings → Build). The validator was hard-failing the deploy with `Configuration file for Pages projects does not support "build"`. Build command (`npm run cf-build`) and output directory (`out`) are now documented in comments only.
 
 ## [1.0.1] - 2026-03-14
 

@@ -25,11 +25,11 @@ pages_build_output_dir = "out"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
-# ── Build (Cloudflare Pages) ────────────────────────────────
-# The Cloudflare Pages build command must be set in the dashboard or
-# in this config file so Pages knows how to generate the `out/` directory.
-[build]
-command = "npm run cf-build"
+# ── Build (Cloudflare Pages Dashboard) ────────────────────────
+# Set the following in Cloudflare Pages → <project> → Settings → Build:
+#   Build command:        npm run cf-build
+#   Build output dir:     out
+# (The [build] key is NOT supported in wrangler.toml for Pages projects.)
 
 # ── Environment variable bindings ────────────────────────────
 # Do NOT store real secrets here.
