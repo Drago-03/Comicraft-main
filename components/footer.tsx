@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 import { AdminLoginModal } from './admin-login-modal';
 import { UploadStoryTrigger } from './upload-story-trigger';
@@ -85,29 +86,44 @@ export function Footer({ version }: { version?: string }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
             {/* Brand Section */}
             <div className="space-y-6 flex flex-col items-start lg:col-span-2">
-              <Link href="/" className="group inline-block" aria-label="Comicraft home">
-                <ComiCraftLogo variant="full" colorScheme="color" size={38} animate={false} />
+              <Link href="/" className="group inline-block mb-2" aria-label="Comicraft home">
+                <ComiCraftLogo variant="full" colorScheme="color" size={32} animate={false} />
               </Link>
               <div className="text-left">
                 <p className="text-sm font-medium text-white/50 leading-relaxed max-w-sm">
                   Comicraft: Creativity Tokenization Platform (CTP) - Empowering creators with AI-driven storytelling and Web3 ownership.
                 </p>
               </div>
-              <div className="flex gap-3 pt-2" role="group" aria-label="Social media links">
-                {socialLinks.map((link) => (
-                  <Link
-                    key={link.url}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group text-white/70 hover:text-white"
-                    aria-label={link.label}
-                  >
-                    <span className="block group-hover:scale-110 transition-transform duration-300">
-                      {link.icon}
-                    </span>
-                  </Link>
-                ))}
+              <div className="flex flex-wrap items-center gap-6 pt-2">
+                <div className="flex gap-3" role="group" aria-label="Social media links">
+                  {socialLinks.map((link) => (
+                    <Link
+                      key={link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group text-white/70 hover:text-white"
+                      aria-label={link.label}
+                    >
+                      <span className="block group-hover:scale-110 transition-transform duration-300">
+                        {link.icon}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Indie Hub Comic Batch Approval Stamp */}
+                <div className="relative group ml-auto lg:ml-0">
+                  <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <Image
+                    src="/indie-hub-comic-batch.png"
+                    alt="Indie Hub Approved"
+                    width={180}
+                    height={180}
+                    className="relative object-contain opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500 transform hover:scale-105"
+                    priority={false}
+                  />
+                </div>
               </div>
             </div>
 
@@ -232,9 +248,15 @@ export function Footer({ version }: { version?: string }) {
               </div>
               <span className="text-white/30 mx-2">×</span>
               <div className="relative inline-block overflow-hidden">
-                <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600 relative z-10 group-hover:animate-glitch-1">Groq AI</span>
-                <span className="font-bold text-cyan-400 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Groq AI</span>
-                <span className="font-bold text-red-500 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Groq AI</span>
+                <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600 relative z-10 group-hover:animate-glitch-1">Google AI</span>
+                <span className="font-bold text-cyan-400 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Google AI</span>
+                <span className="font-bold text-red-500 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Google AI</span>
+              </div>
+              <span className="text-white/30 mx-2">&</span>
+              <div className="relative inline-block overflow-hidden">
+                <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 relative z-10 group-hover:animate-glitch-1">IQ AI</span>
+                <span className="font-bold text-purple-400 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">IQ AI</span>
+                <span className="font-bold text-pink-500 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">IQ AI</span>
               </div>
             </div>
 
@@ -306,6 +328,7 @@ export function Footer({ version }: { version?: string }) {
         .animate-glitch-2 { animation: glitch-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; }
         .animate-glitch-3 { animation: glitch-3 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; }
       `}} />
+
       <AdminLoginModal open={showAdminModal} onOpenChange={setShowAdminModal} />
     </footer>
   );

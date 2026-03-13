@@ -139,8 +139,8 @@ export function Header() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        'border-b border-white/5 sticky top-0 z-50 transition-all duration-300 bg-black/40 backdrop-blur-xl',
-        scrolled && 'shadow-[0_4px_30px_rgba(0,0,0,0.5)] bg-black/60'
+        'border border-white/10 fixed top-4 left-4 right-4 z-50 rounded-2xl transition-all duration-300 bg-black/40 backdrop-blur-xl',
+        scrolled && 'shadow-[0_10px_40px_rgba(0,0,0,0.7)] bg-black/60'
       )}
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -148,9 +148,9 @@ export function Header() {
           <Link
             href="/"
             aria-label="Comicraft home"
-            className="flex items-center mr-2 sm:mr-6 group relative rounded-xl px-1 py-0.5 hover:bg-white/[0.04] transition-all duration-200"
+            className="flex items-center mr-4 sm:mr-8"
           >
-            <ComiCraftLogo variant="full" colorScheme="color" size={38} animate />
+            <ComiCraftLogo variant="full" colorScheme="color" size={32} animate />
           </Link>
 
           <nav role="navigation" aria-label="Primary navigation" className="hidden lg:flex items-center space-x-2">
@@ -258,8 +258,7 @@ export function Header() {
               >
                 <SheetHeader className="p-6 border-b border-white/10">
                   <SheetTitle className="text-white font-bold text-xl flex items-center gap-2">
-                    <ComiCraftLogo variant="icon" colorScheme="color" size={32} animate={false} />
-                    Comicraft
+                    <ComiCraftLogo variant="full" colorScheme="color" size={28} animate={false} />
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col p-4 space-y-2">

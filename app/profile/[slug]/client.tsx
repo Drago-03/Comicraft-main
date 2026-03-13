@@ -226,15 +226,29 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                         ? localStorage.getItem('accessToken')
                         : null;
                     if (!token) {
+                        // If no token but we are on /profile/me, redirect to sign-in or show login message
                         setError(true);
                         setLoading(false);
                         return;
                     }
                     const res = await fetch(`${baseUrl}/api/v1/users/profile`, {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+                            'Authorization': `Bearer ${token}`,
+                            'Cache-Control': 'no-cache'
+                        },
                         signal: controller.signal,
                     });
-                    if (!res.ok) throw new Error('Failed to load profile');
+                    
+                    if (res.status === 401 || res.status === 403) {
+                        // Token might be expired, clear it
+                        localStorage.removeItem('accessToken');
+                        localStorage.removeItem('refreshToken');
+                        setError(true);
+                        setLoading(false);
+                        return;
+                    }
+
+                    if (!res.ok) throw new Error(`Failed to load profile (Status: ${res.status})`);
                     const json = await res.json();
                     if (!json.success) throw new Error(json.error || 'Failed');
                     // Normalize Supabase field names

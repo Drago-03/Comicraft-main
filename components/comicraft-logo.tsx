@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 // ---------------------------------------------------------------------------
 // Comicraft Logo System — Uses the official /logo.png brand asset
@@ -43,13 +44,9 @@ export function ComiCraftLogo({
 }: ComiCraftLogoProps) {
   const iconSize = size ?? (variant === 'full' ? 40 : variant === 'mark' ? 32 : 36);
 
-  // Calculate dimensions based on variant
-  // Full: wider to show the complete COMICRAFT wordmark
-  // Icon: square aspect ratio
-  // Mark: medium width
-  const aspectRatio = variant === 'full' ? 3.2 : variant === 'mark' ? 2.5 : 1;
-  const width = Math.round(iconSize * aspectRatio);
-  const height = iconSize;
+  // Use the logo.png as a stylized icon for all variants
+  const iconWidth = iconSize;
+  const iconHeight = iconSize;
 
   // Apply filter for mono schemes
   const filterStyle: React.CSSProperties =
@@ -59,43 +56,73 @@ export function ComiCraftLogo({
       ? { filter: 'brightness(0)' }
       : {};
 
-  const logoImage = (
-    <Image
-      src="/logo.png"
-      alt="COMICRAFT"
-      width={width}
-      height={height}
-      className="object-contain"
+  const logoIcon = (
+    <div className="relative flex-shrink-0">
+      <Image
+        src="/logo.png"
+        alt=""
+        width={iconWidth}
+        height={iconHeight}
+        className="object-contain"
+        style={{
+          width: `${iconWidth}px`,
+          height: `${iconHeight}px`,
+          ...filterStyle,
+        }}
+        priority
+        unoptimized
+      />
+      {/* Decorative glow behind the icon for colored schemes */}
+      {colorScheme === 'color' && (
+        <div className="absolute inset-0 bg-primary/20 blur-lg -z-10 rounded-full" />
+      )}
+    </div>
+  );
+
+  const logoText = (variant === 'full' || variant === 'mark') && (
+    <span
+      className={cn(
+        'ml-2 font-bold tracking-tight select-none',
+        variant === 'full' ? 'text-xl' : 'text-lg',
+        'font-comic' // Using the variable defined in layout.tsx
+      )}
       style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        maxWidth: '100%',
-        ...filterStyle,
+        fontFamily: 'var(--font-comic), system-ui, sans-serif',
+        background: colorScheme === 'color'
+          ? 'linear-gradient(135deg, #fff 0%, #a5b4fc 100%)'
+          : 'currentColor',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: colorScheme === 'color' ? 'transparent' : 'currentColor',
       }}
-      priority
-      unoptimized
-    />
+    >
+      COMICRAFT
+    </span>
   );
 
   const inner = (
     <span
-      className={`inline-flex items-center select-none flex-shrink-0 ${className}`}
+      className={cn(
+        'inline-flex items-center select-none flex-shrink-0',
+        className
+      )}
       aria-label="Comicraft"
     >
       {animate ? (
-        <motion.span
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          whileHover={{ scale: 1.03 }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          whileHover={{ scale: 1.02 }}
           className="flex items-center flex-shrink-0"
         >
-          {logoImage}
-        </motion.span>
+          {logoIcon}
+          {logoText}
+        </motion.div>
       ) : (
-        <span className="flex items-center flex-shrink-0">
-          {logoImage}
-        </span>
+        <div className="flex items-center flex-shrink-0">
+          {logoIcon}
+          {logoText}
+        </div>
       )}
     </span>
   );

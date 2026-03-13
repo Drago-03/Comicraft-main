@@ -3,13 +3,11 @@
   <br />
   Comicraft
 </h1>
-<p align="center"><b>Creativity Tokenization Platform (CTP)</b></p>
+<p align="center"><b>Comicraft : Creativity Tokenization Platform (CTP), Tokenize your Creativity Today turning them into digital assets</b></p>
 <p align="center">Create, share, and own AI-generated stories and comics as NFTs on the Monad blockchain.</p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/issues/Drago-03/Comicraft?style=flat-square" alt="Open Issues"/>
-  <img src="https://img.shields.io/github/issues-pr/Drago-03/Comicraft?style=flat-square" alt="Open PRs"/>
-  <img src="https://img.shields.io/github/license/Drago-03/Comicraft?style=flat-square" alt="License"/>
+  <img src="https://img.shields.io/github/license/Drago-03/Comicraft-main?style=flat-square" alt="License"/>
   <img src="https://img.shields.io/badge/website-comicraft.xyz-0052cc?style=flat-square" alt="Website"/>
   <a href="mailto:mantejarora@gmail.com"><img src="https://img.shields.io/badge/contact-mantejarora%40gmail.com-orange?style=flat-square" alt="Contact Us"/></a>
   <a href="https://discord.gg/JK29FZRm"><img src="https://img.shields.io/discord/1245696768829601812?label=Discord&logo=discord&style=flat-square" alt="Discord"/></a>

@@ -266,7 +266,7 @@ export default function GenresPage() {
   };
 
   return (
-    <div className="pt-16 pb-0 min-h-screen">
+    <div className="pt-0 pb-0 min-h-screen">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* ═══════════ HERO SECTION ═══════════ */}
         <div className="mb-20 text-center">

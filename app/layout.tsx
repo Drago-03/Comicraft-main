@@ -203,7 +203,7 @@ export default function RootLayout({
                     <main
                       id="main-content"
                       tabIndex={-1}
-                      className="container mx-auto px-4 py-6 flex-grow focus:outline-2 focus:outline-primary"
+                      className="container mx-auto px-4 pb-6 flex-grow focus:outline-2 focus:outline-primary"
                     >
                       <React.Suspense fallback={null}>
                         <GlobalLoadingWrapper>
