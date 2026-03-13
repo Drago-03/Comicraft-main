@@ -14,6 +14,7 @@ Active full support: 1.0.3 (latest). See `SECURITY.md` for the support policy.
 ### Fixed
 
 - **Docker Build Failure** (`Dockerfile`): Removed `NEXT_PUBLIC_BUILD_MODE=true` from the Docker build stage. This env var triggers `output: 'export'` in `next.config.js`, which is incompatible with Next.js API routes (`force-dynamic`). Docker runs a full Node.js server and should use `BUILD_STANDALONE=true` for standalone output mode instead.
+- **Render Build Failure** (`package.json`): Removed `NEXT_PUBLIC_BUILD_MODE=true` from the `build` script. Only `cf-build` (Cloudflare Pages) should use export mode — it strips `app/api/` first. The regular `build` command is for Render/Docker and needs a full Next.js server build.
 
 ### Changed
 
