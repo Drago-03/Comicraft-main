@@ -10,7 +10,7 @@ Comicraft is an AI-powered Web3 storytelling platform that enables users to crea
 ## Quick Links
 - [Home](../Home.md) | [Quick Start Guide](Quick-Start-Guide.md) | [FAQ](FAQ.md)
 - [Creating Stories](Creating-Stories.md) | [Minting NFTs](Minting-NFTs.md)
-- [Development Setup](Development-Setup.md) | [Contributing](../CONTRIBUTING.md)
+- [Development Setup](Development-Setup.md)
 
 ## Connect With Us
 - [GitHub](https://github.com/Drago-03/Comicraft)

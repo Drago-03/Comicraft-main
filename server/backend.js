@@ -404,7 +404,7 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
   let status = 'operational';
   if (!supabaseConfigured || !supabaseHealth.connected) {
     status = 'degraded';
-  } else if (!groqConfigured && !geminiConfigured) {
+  } else if (!geminiConfigured) {
     status = 'partial';
   }
 
@@ -512,12 +512,13 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
 
     // ── AI Services ────────────────────────────────────────────────────
     ai_services: {
-      groq: {
-        status: groqConfigured ? 'available' : 'not_configured',
-        configured: groqConfigured,
-        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
-        api_url: process.env.GROQ_API_URL || 'https://api.groq.com/openai/v1',
-      },
+      // DEPRECATED - Migrated to Gemini 3 exclusively
+      // groq: {
+      //   status: groqConfigured ? 'available' : 'not_configured',
+      //   configured: groqConfigured,
+      //   model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+      //   api_url: process.env.GROQ_API_URL || 'https://api.groq.com/openai/v1',
+      // },
       gemini: {
         status: geminiConfigured ? 'available' : 'not_configured',
         configured: geminiConfigured,
@@ -615,7 +616,7 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
       database: supabaseHealth.connected
         ? 'online'
         : (supabaseConfigured ? 'offline' : 'not_configured'),
-      ai_generation: groqConfigured || geminiConfigured ? 'online' : 'offline',
+      ai_generation: geminiConfigured ? 'online' : 'offline',
       feed_gallery: feedGalleryStatus,
       blockchain: blockchainStatus,
       tts: sarvamConfigured ? 'online' : 'offline',
@@ -866,7 +867,8 @@ app.use('/api/feed', require('./routes/feed'));
 app.use('/api/feeds', require('./routes/notification-feed'));
 
 
-app.use('/api/groq', require('./routes/groq'));
+// DEPRECATED - Migrated to Gemini 3 exclusively
+// app.use('/api/groq', require('./routes/groq'));
 app.use('/api/v1/ai', require('./routes/ai'));
 app.use('/api/v1/drafts', require('./routes/drafts'));
 app.use('/api/v1/tts', require('./routes/tts'));

@@ -110,12 +110,6 @@ Website: https://comicraft.xyz | GitHub: https://github.com/IndieHub25/Comicraft
 - Events: StoryMinted, MetadataUpdate, Transfer
 - Network: Monad Testnet (Chain ID 10143)
 
-## Contributing
-- Fork the repo, create a branch, make changes, submit a PR.
-- Read CONTRIBUTING.md before submitting.
-- Issues tagged with "good first issue" are great for newcomers.
-- Areas: story generation, UI/UX, blockchain, docs, tests.
-
 ## Security
 - Report vulnerabilities via SECURITY.md.
 - JWT authentication, rate limiting, input validation, CORS, Helmet, HTTPS.

@@ -1,3 +1,4 @@
+/* DEPRECATED - Migrated to Gemini 3 exclusively
 /**
  * Groq AI Service — Centralized AI Engine for Comicraft Backend
  *
@@ -398,3 +399,4 @@ module.exports = {
     buildImprovementPrompt,
     SYSTEM_PROMPTS,
 };
+*/

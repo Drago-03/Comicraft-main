@@ -889,7 +889,7 @@ Migrated the entire backend database layer from MongoDB/Mongoose to **Supabase P
 
 - **AI Help Bot**: Introduced **MADHAVA**, a floating AI-powered help bot available on every page of the Comicraft platform.
   - Uses the `@cf/fblgit/una-cybertron-7b-v2-bf16` model via **Cloudflare Workers AI**.
-  - Contains a comprehensive knowledge base covering every aspect of Comicraft: features, story creation, NFT minting, wallet setup, troubleshooting, project structure, deployment, contributing, security, and more.
+  - Contains a comprehensive knowledge base covering every aspect of Comicraft: features, story creation, NFT minting, wallet setup, troubleshooting, project structure, deployment, security, and more.
   - Supports multi-turn conversations (last 10 turns retained for context).
   - Input validation and rate limiting (max 2000 characters per message).
 - **Backend**: Added `ai` binding to `cf-worker/wrangler.jsonc`. Created `cf-worker/src/routes/helpbot.ts` with Hono route at `/api/helpbot/chat`. Updated `cf-worker/src/index.ts` with `AI` binding and helpbot route.

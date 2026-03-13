@@ -102,18 +102,6 @@ If this PR affects UI flows, also describe the manual test steps you followed.
 
 ---
 
-## Contributor Status
-
-Tick all that apply to you for this PR:
-
-- [ ] I am an **open source indie contributor**.
-- [ ] I am an **ECWoC’26 contributor**.
-- [ ] I am an **OSCG’26 contributor**.
-- [ ] I am a **SWOC’26 contributor**.
-- [ ] I am a **DSWOC'26 contributor**.
-
----
-
 ## Review & Impact
 
 **Breaking Changes**
@@ -134,6 +122,6 @@ Tick all that apply to you for this PR:
 
 You must check all of the following before requesting review. These are **required**:
 
-- [ ] **I confirm that the information and code in this PR are my original work or appropriately credited, and I have the right to contribute them under this repository’s license.**
+- [ ] **I confirm that the information and code in this PR are my original work or appropriately credited, and I have the right to submit them under this repository’s license.**
 - [ ] **I understand that by submitting this PR, I take full responsibility and accountability for the changes I am proposing.**
-- [ ] **I have read and agree to follow the project’s Code of Conduct, Security Policy, and Contribution Guidelines for all discussions and follow‑up on this PR.**
+- [ ] **I have read and agree to follow the project’s Code of Conduct and Security Policy for all discussions and follow‑up on this PR.**

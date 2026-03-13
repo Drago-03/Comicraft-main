@@ -1,7 +1,6 @@
-# 🎨 Spline 3D — Contributor Guide
+# 🎨 Spline 3D — Integration Guide
 
-> This document covers everything contributors need to know about the **Spline 3D** integration in
-> Comicraft. Read this in full before touching any Spline-related code or assets.
+> This document covers the **Spline 3D** integration in Comicraft. Read this in full before touching any Spline-related code or assets.
 
 ---
 

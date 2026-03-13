@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const groqService = require('../services/groqService');
+// const groqService = require('../services/groqService'); // DEPRECATED - Migrated to Gemini 3
+const geminiService = require('../services/geminiService');
 
 /**
  * @swagger
@@ -97,24 +98,28 @@ router.post('/generate', async (req, res) => {
       return res.status(400).json({ error: 'prompt or parameters.theme is required' });
     }
 
-    const result = await groqService.generate({
-      prompt,
-      genre: parameters.genre,
-      theme: parameters.theme,
-      length: parameters.length,
-      tone: parameters.tone,
-      characters: parameters.characters,
-      setting: parameters.setting,
-      formatType: formatType || 'story',
-      model,
-      temperature: parameters.temperature,
-      maxTokens: parameters.maxTokens,
+    // Build prompt with parameters - delegate to Gemini
+    let fullPrompt = prompt || '';
+    if (parameters.theme) fullPrompt += `\nTheme: ${parameters.theme}`;
+    if (parameters.genre) fullPrompt += `\nGenre: ${parameters.genre}`;
+    if (parameters.length) fullPrompt += `\nLength: ${parameters.length}`;
+    if (parameters.tone) fullPrompt += `\nTone: ${parameters.tone}`;
+    if (parameters.characters) fullPrompt += `\nCharacters: ${parameters.characters}`;
+    if (parameters.setting) fullPrompt += `\nSetting: ${parameters.setting}`;
+    if (formatType) fullPrompt += `\nFormat: ${formatType}`;
+
+    const content = await geminiService.generateContent({
+      prompt: fullPrompt,
+      config: {
+        temperature: parameters.temperature || 0.8,
+        maxTokensPerResponse: parameters.maxTokens || 1200,
+      },
     });
 
     res.json({
-      content: result.content,
-      model: result.model,
-      tokensUsed: result.tokensUsed,
+      content,
+      model: model || 'gemini-2.5-pro',
+      tokensUsed: { total: 0 }, // Gemini doesn't return token counts in the same way
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
@@ -194,12 +199,36 @@ router.post('/analyze', async (req, res) => {
       return res.status(400).json({ error: 'content is required' });
     }
 
-    const result = await groqService.analyze({ content, analysisType });
+    // Build analysis prompt - delegate to Gemini
+    const analysisPrompt = `Analyze the following content and provide a ${analysisType || 'general'} analysis.
+Return structured JSON with: sentiment, themes (array), complexity, readabilityScore (number), wordCount, estimatedReadingTime (minutes).
+
+Content:
+${content}
+
+Return JSON ONLY (no markdown):`;
+
+    const response = await geminiService.generateContent({
+      prompt: analysisPrompt,
+      config: {
+        temperature: 0.3,
+        maxTokensPerResponse: 500,
+      },
+    });
+
+    // Try to parse JSON response
+    let results;
+    try {
+      results = JSON.parse(response);
+    } catch {
+      // If not valid JSON, return raw response
+      results = { analysis: response };
+    }
 
     res.json({
       type: analysisType || 'general',
-      results: result.content,
-      tokensUsed: result.tokensUsed,
+      results,
+      tokensUsed: { total: 0 },
       analyzedAt: new Date().toISOString(),
     });
   } catch (error) {

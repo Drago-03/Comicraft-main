@@ -8,10 +8,7 @@
   <img src="../../public/Comicraft.png" alt="Comicraft Logo" width="300" />
 </div>
 
-Setting up a development environment for Comicraft allows you to contribute to the platform, test
-features locally, or build custom integrations. This guide provides detailed instructions for
-developers to clone the repository, install dependencies, configure the environment, and run the
-application locally.
+Setting up a development environment for Comicraft allows you to test features locally or build custom integrations. This guide provides detailed instructions to clone the repository, install dependencies, configure the environment, and run the application locally.
 
 ## Table of Contents
 
@@ -22,7 +19,6 @@ application locally.
 - [Running the Development Server](#running-the-development-server)
 - [Testing Smart Contracts Locally](#testing-smart-contracts-locally)
 - [Building for Production](#building-for-production)
-- [Contributing Changes](#contributing-changes)
 - [Troubleshooting](#troubleshooting)
 - [Next Steps](#next-steps)
 
@@ -167,7 +163,7 @@ application in your browser.
 
 ## Testing Smart Contracts Locally
 
-If you're contributing to or testing the blockchain components of Comicraft, you may need to deploy
+If you're testing the blockchain components of Comicraft, you may need to deploy
 and interact with smart contracts locally:
 
 1. **Install Blockchain Tools**: Ensure Truffle or Hardhat is installed (see
@@ -226,44 +222,6 @@ If you want to test a production build locally or prepare for deployment:
 3. **Environment for Production**: Ensure `NEXT_PUBLIC_BUILD_MODE=false` in `.env.local` for full
    functionality, or set to `true` to mock database connections if testing without real data.
 
-## Contributing Changes
-
-After making changes or fixes in your local environment, contribute back to the project:
-
-1. **Commit Changes**: Stage and commit your changes with meaningful messages following the
-   [Conventional Commits](https://www.conventionalcommits.org/) format if possible:
-
-   ```bash
-   git add .
-   git commit -m "feat: add new story generation endpoint"
-   ```
-
-2. **Create a Branch**: If not already on a feature branch, create one:
-
-   ```bash
-   git checkout -b feature/add-new-feature
-   ```
-
-3. **Push Changes**: Push your branch to the repository:
-
-   ```bash
-   git push origin feature/add-new-feature
-   ```
-
-4. **Open a Pull Request**: Go to the Comicraft repository on GitHub, switch to your branch, and
-   click "New Pull Request." Fill out the PR template with details of your changes. Follow the
-   [Contributing Guide](../CONTRIBUTING.md) for full guidelines.
-
-Ensure your code passes linting and tests before submitting a PR:
-
-```bash
-npm run lint
-npm run test
-# or
-yarn lint
-yarn test
-```
-
 ## Troubleshooting
 
 - **Node.js Version Issues**: If you encounter errors like "unsupported engine," ensure you're using
@@ -303,5 +261,4 @@ For additional help, post questions in
   [API Documentation](../API-Documentation.md).
 - Return to the [Home](../Home.md) page for more resources.
 
-Setting up a development environment for Comicraft empowers you to contribute to an innovative AI
-and Web3 storytelling platform. Dive in and start building!
+Setting up a development environment for Comicraft lets you explore and build on an innovative AI and Web3 storytelling platform. Dive in and start building!

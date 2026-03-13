@@ -9,9 +9,7 @@
 </div>
 
 Welcome to the installation guide for **Comicraft**, your gateway to AI-powered Web3 storytelling!
-Whether you're setting up Comicraft for personal use or local development to contribute to the
-platform, this guide provides clear, step-by-step instructions to get you started quickly and
-efficiently.
+Whether you're setting up Comicraft for personal use or local development, this guide provides clear, step-by-step instructions to get you started quickly and efficiently.
 
 ---
 
@@ -266,15 +264,14 @@ solutions or reach out to the community via
 ## 🚀 Next Steps
 
 Congratulations on setting up Comicraft! Now that you have the application running locally, explore
-these resources to dive deeper into using and contributing to the platform:
+these resources to dive deeper into using and developing on the platform:
 
 - **Create Your First Story**: Follow the [Quick Start Guide](Quick-Start-Guide.md) to generate your
   first AI-powered story or NFT in just a few steps.
 - **Advanced Usage**: Learn more about crafting detailed narratives in
   [Creating Stories](Creating-Stories.md) or minting digital assets in
   [Minting NFTs](Minting-NFTs.md).
-- **Contribute to Development**: If you're a developer, check out
-  [Development Setup](Development-Setup.md) for contributing code or testing features.
+- **Explore Development Setup**: If you're a developer, check out [Development Setup](Development-Setup.md) for setting up a local development environment.
 - **Return to Home**: Go back to the [Home](../Home.md) page for a complete overview of all wiki
   resources.
 

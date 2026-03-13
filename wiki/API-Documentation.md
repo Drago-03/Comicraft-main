@@ -14,8 +14,7 @@ management features of Comicraft. This guide is intended for developers who wish
 applications or services that leverage Comicraft' capabilities.
 
 **Note**: The API documentation is a work in progress. As Comicraft evolves, more endpoints and
-features will be added. Check back for updates or contribute to the API development via the
-[Contributing Guide](../CONTRIBUTING.md).
+features will be added. Check back for updates as the project develops.
 
 ## Table of Contents
 

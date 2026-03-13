@@ -32,7 +32,6 @@ Welcome to the Comicraft Wiki! Use the links below to explore our comprehensive 
 
 - [FAQ](FAQ.md)
 - [Glossary](Glossary.md)
-- [Contributing](../CONTRIBUTING.md)
 - [Code of Conduct](../CODE_OF_CONDUCT.md)
 
 ## Connect With Us
@@ -42,4 +41,4 @@ Welcome to the Comicraft Wiki! Use the links below to explore our comprehensive 
 
 ---
 
-_Navigation designed for Comicraft Wiki users and contributors._
+_Navigation designed for Comicraft Wiki users and developers._

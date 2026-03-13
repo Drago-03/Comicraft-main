@@ -181,7 +181,6 @@ export function Footer({ version }: { version?: string }) {
               <ul className="space-y-4 pl-0 list-none">
                 {[
                   { href: '/docs', label: 'Documentation' },
-                  { href: '/contributors', label: 'Contributors' },
                   { href: '/faq', label: 'FAQ' },
                   { href: '/feedback', label: 'Feedback' },
                 ].map((link) => (

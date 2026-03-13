@@ -14,28 +14,9 @@
   <a href="mailto:mantejarora@gmail.com"><img src="https://img.shields.io/badge/contact-mantejarora%40gmail.com-orange?style=flat-square" alt="Contact Us"/></a>
   <a href="https://discord.gg/JK29FZRm"><img src="https://img.shields.io/discord/1245696768829601812?label=Discord&logo=discord&style=flat-square" alt="Discord"/></a>
 </p>
-<p align="center">
-  <img src="https://img.shields.io/badge/SWOC'26-Open%20Source-orange?style=flat-square" alt="SWOC'26"/>
-  <img src="https://img.shields.io/badge/OSGC'26-Open%20Source-purple?style=flat-square" alt="OSGC'26"/>
-  <img src="https://img.shields.io/badge/ECWOC'26-Open%20Source-ff69b4?style=flat-square" alt="ECWOC'26"/>
-  <img src="https://img.shields.io/badge/GSSOC'25-Legacy-lightgrey?style=flat-square" alt="GSSOC'25"/>
-  <img src="https://img.shields.io/badge/FOSS%20Hack-Legacy-lightgrey?style=flat-square" alt="FOSS Hack"/>
-  <img src="https://img.shields.io/badge/HACKOCTOBER-Legacy-lightgrey?style=flat-square" alt="HACKOCTOBER"/>
-  <img src="https://img.shields.io/badge/Indie%20Hub-Main%20Partner-6e5494?style=flat-square" alt="Indie Hub"/>
-  <img src="https://img.shields.io/badge/Indie%20Developers%20Society-Community%20Partner-6e5494?style=flat-square" alt="Indie Developers Society"/>
-  <img src="https://img.shields.io/badge/Open%20Source%20Community-Welcome-0052cc?style=flat-square" alt="Open Source Community"/>
-  <img src="https://img.shields.io/badge/Investment%20Partners-Applications%20Open-0052cc?style=flat-square" alt="Investment Partners"/>
 </p>
   <b>Built by Indie Hub</b> ✨
 </p>
-
-<div align="center">
-  <a href="https://github.com/IndieHub25/Comicraft/stargazers">
-    <img src="https://img.shields.io/github/stars/IndieHub25/Comicraft?style=social" alt="Star on GitHub" />
-  </a>
-  <br />
-  ⭐ <b>If you like this project, please consider giving it a star!</b> ⭐
-</div>
 
 <br />
 
@@ -56,10 +37,8 @@
 - [📜 Smart Contracts](#-smart-contracts)
 - [🏗️ System Architecture](#️-system-architecture)
 - [For Developers](#for-developers)
-- [🤝 Contributing](#-contributing)
 - [🎨 Spline 3D Guide](#-spline-3d-guide)
 - [Roadmap](#roadmap)
-- [Contributors](#contributors)
 - [Documentation & Architecture](#documentation--architecture)
 - [Resources](#resources)
 - [License](#license)
@@ -110,7 +89,7 @@ AI, and decentralized technology.
 - **Docker Support** Multi-stage Dockerfile with Redis caching + Docker Compose for local
   development.
 - **Extensible & Open Source** Modular codebase with clear separation of frontend, backend, and
-  smart contract logic. Contributions are welcome!
+  smart contract logic.
 
 ---
 
@@ -339,11 +318,6 @@ graph TD
   - Frontend: Use Jest/React Testing Library.
   - Smart Contracts: Use Hardhat/Foundry for Solidity tests.
 
-- **Contributions:**
-  - Issues are tagged by difficulty, area, and technology for easy onboarding.
-  - Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [CONTRIBUTORS.md](CONTRIBUTORS.md) before
-    submitting PRs.
-
 ---
 
 ## 📁 Program Structure
@@ -384,7 +358,6 @@ Comicraft/
 │
 ├── CHANGELOG.md              # Project change history
 ├── CODE_OF_CONDUCT.md        # Community code of conduct
-├── CONTRIBUTING.md           # Contribution guidelines
 ├── COOKIE_POLICY.md          # Cookie usage policy
 ├── LICENSE                   # License information
 ├── README.md                 # Project overview and instructions
@@ -399,77 +372,11 @@ Comicraft/
 └── MIGRATION-TO-CLOUDFLARE.md # Cloudflare migration guide
 ```
 
-## 📸 Screenshots
-
-### 🏠 Landing Page
-
-   Displays the Comicraft homepage introducing AI-powered storytelling with options to create, mint, and share stories as NFTs.
-
-<img width="1911" height="920" alt="Screenshot 2026-01-29 182943" src="https://github.com/user-attachments/assets/822cf8a2-4202-4616-9adb-0ea54971c713" />
-
-
-### ❓ Why Comicraft
- 
-  Highlights the core features of Comicraft including AI generation, blockchain ownership, and creator community.
-
-
-<img width="1892" height="824" alt="Screenshot 2026-01-29 183000" src="https://github.com/user-attachments/assets/481d54f5-e0f0-44f4-a980-9a735ea34a67" />
-
-
-### 🎭 Story Genres
-
-  Presents available storytelling genres such as Science Fiction, Fantasy, and Romance with key themes and elements.
-
-
-<img width="1910" height="915" alt="Screenshot 2026-01-29 183112" src="https://github.com/user-attachments/assets/07c009f2-603c-48c6-a975-74e3430a434c" />
-
-
-### 👥 Community Feed
-
-  Showcases the community feed where creators share stories, interact, and discover trending content.
-
-
-<img width="1911" height="920" alt="Screenshot 2026-01-29 183127" src="https://github.com/user-attachments/assets/0b4e3e2e-58e9-45d9-9a6b-4da57df97df8" />
-
-
-### 🛒 NFT Marketplace
-
-  Illustrates the NFT marketplace for browsing and uploading comic and text-based story NFTs.
-
-<img width="1913" height="915" alt="Screenshot 2026-01-29 183149" src="https://github.com/user-attachments/assets/a6b4ad86-896d-46b6-a854-31eed5bd0631" />
-
-
----
-
-## 🤝 Contributing
-
-📌 New contributors: Please read our [CONTRIBUTING.md](CONTRIBUTING.md) to understand issue labels, templates, and workflows.
-Comicraft is community-powered! We welcome all contributions—whether you're a developer, designer, writer, or blockchain enthusiast.
-
-
-**How You Can Help:**
-
-- Tackle issues labeled `good first issue` (great for newcomers)
-- Enhance story-generation logic, outlines, or UI design
-- Add support for new AI models or blockchains
-- Improve UX (dark mode, mobile layout, galleries)
-- Optimize NFT metadata or IPFS workflows
-- Write or improve documentation and tests
-
-**What’s in It for You:**
-
-- Build your open-source portfolio
-- Feature your work in the contributors section
-- Community recognition and GitHub Sponsors eligibility
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
 ---
 
 ## 🎨 Spline 3D Guide
 
-For detailed information on how to work with 3D models, performance rules, and our model protection
-policy, please refer to the [Spline 3D Contributor Guide](docs/SPLINE_GUIDE.md).
+For detailed information on how to work with 3D models, performance guidelines, and our model protection policy, please refer to the [Spline 3D Guide](docs/SPLINE_GUIDE.md).
 
 ---
 
@@ -484,21 +391,6 @@ policy, please refer to the [Spline 3D Contributor Guide](docs/SPLINE_GUIDE.md).
 
 ---
 
-## Contributors
-
-We value every contribution! Please read our [CONTRIBUTORS.md](CONTRIBUTORS.md) file before making
-your first contribution to understand our guidelines and recognition process.
-
-### Project Contributors
-
-<p align="center">
-  <a href="https://github.com/Drago-03/IndieHub25/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=IndieHub25/Comicraft" alt="Contributors" />
-  </a>
-</p>
-
-Thanks to these amazing people for making Comicraft better!
-
 ---
 
 ## Documentation & Architecture
@@ -509,8 +401,7 @@ Thanks to these amazing people for making Comicraft better!
   and technical architecture
 - **AI Prompt Engineering:** [Wiki/AI-Prompt-Engineering](https://github.com/IndieHub25/Comicraft/wiki/AI-Prompt-Engineering) - AI system prompt parameter reference
 - **Pipelines & Automation:** [PIPELINES.md](docs/PIPELINES.md) - Comprehensive guide for the Cloudflare AI ML rankings, SEO RAG loops, and Admin queues
-- **Spline 3D Guide:** [SPLINE_GUIDE.md](docs/SPLINE_GUIDE.md) - Essential guide for 3D model
-  contributions and protection policy
+- **Spline 3D Guide:** [SPLINE_GUIDE.md](docs/SPLINE_GUIDE.md) - Essential guide for 3D model usage and protection policy
 - **Project Wiki:** [GitHub Wiki](https://github.com/IndieHub25/Comicraft/wiki) - Detailed guides
   and documentation
 - **API Documentation:** [Wiki/API](https://github.com/IndieHub25/Comicraft/wiki/API) - Backend API
@@ -664,7 +555,6 @@ The VedaScript Engine exposes **71 tunable parameters** across **10 categories**
 
 - **Setup Guide:**
   [Wiki/Development-Setup](https://github.com/IndieHub25/Comicraft/wiki/Development-Setup)
-- **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute to the project
 - **Code of Conduct:** [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) - Community guidelines
 - **Security Policy:** [SECURITY.md](SECURITY.md) - Security practices and vulnerability reporting
 
@@ -699,4 +589,3 @@ tuned!_
 
 ---
 
-<p align="center"><i>Support the project by giving us a follow & a Star ⭐️ and share it with others.</i></p>

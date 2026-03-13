@@ -280,32 +280,31 @@ npm run format
 - [ ] Explore codebase structure
 - [ ] Read key documentation
 
-### Day 3-4: Small Contributions
+### Day 3-4: Focus Areas
 
-- [ ] Fix a "good first issue"
+- [ ] Fix a small issue or bug
 - [ ] Improve documentation
 - [ ] Add tests to existing code
-- [ ] Review team's recent PRs
+- [ ] Review recent changes
 
-### Day 5: Feature Development
+### Day 5: Deeper Work
 
-- [ ] Pick up a feature ticket
+- [ ] Tackle a feature or enhancement
 - [ ] Implement with tests
-- [ ] Create pull request
-- [ ] Address code review feedback
+- [ ] Share your work for review
 
-## 🤝 Team Collaboration
+## 🤝 Collaboration Guidelines
 
-### Pull Request Process
+### Pull Request Workflow
 
-1. Create feature branch: `git checkout -b feature/story-analytics`
+1. Create a feature branch: `git checkout -b feature/story-analytics`
 2. Make changes with tests
 3. Run quality checks: `npm run lint && npm run test`
-4. Create PR with detailed description
+4. Open a pull request with a clear description
 5. Address review feedback
 6. Merge after approval
 
-### Code Review Guidelines
+### Code Review Tips
 
 - Focus on functionality and maintainability
 - Check for security issues
@@ -314,17 +313,10 @@ npm run format
 
 ### Communication
 
-- **Daily Standups**: Share progress and blockers
-- **Sprint Planning**: Estimate and commit to work
-- **Retrospectives**: Improve team processes
+- **Standups**: Share progress and blockers
+- **Planning**: Set realistic goals
+- **Retrospectives**: Improve the process
 
-## 🎉 Welcome to the Team
+## ✅ You're All Set
 
-You're now ready to contribute to Comicraft! Remember:
-
-- Ask questions early and often
-- Focus on code quality over speed
-- Contribute to documentation
-- Help make the codebase better for everyone
-
-Happy coding! 🚀
+You're now ready to be productive with Comicraft! If you have questions, ask early and often.
