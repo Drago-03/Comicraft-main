@@ -69,11 +69,11 @@ export function Header() {
   const supabase = React.useMemo(() => createClient(), []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: any } }) => {
       setSession(session);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setSession(session);
     });
 
@@ -139,10 +139,18 @@ export function Header() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        'border border-white/10 fixed top-4 left-4 right-4 z-50 rounded-2xl transition-all duration-300 bg-black/40 backdrop-blur-xl',
-        scrolled && 'shadow-[0_10px_40px_rgba(0,0,0,0.7)] bg-black/60'
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-200 border-b-[3px] border-black',
+        scrolled && 'shadow-[0_4px_0_0_#000]'
       )}
+      style={{ backgroundColor: '#EEDFCA' }}
     >
+      {/* Red comic accent stripe */}
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#cc3333]" />
+      {/* Halftone dot texture */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }}
+      />
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center">
           <Link
@@ -171,7 +179,7 @@ export function Header() {
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       aria-haspopup="true"
-                      className={`px-4 py-2 text-sm rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-[#ff4444] hover:bg-[#cc3333]/10`}
+                      className="px-3 py-1.5 text-[11px] font-black uppercase tracking-widest border-[2px] border-transparent transition-all flex items-center text-black/70 hover:text-black hover:border-black hover:shadow-[2px_2px_0_0_#000]"
                     >
                       {item.icon}
                       {item.label}
@@ -211,7 +219,11 @@ export function Header() {
                   <Link
                     href={item.href}
                     aria-current={pathname === item.href ? 'page' : undefined}
-                    className={`px-4 py-2 text-sm rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-[#ff4444] hover:bg-[#cc3333]/10 ${pathname === item.href ? 'text-[#ff4444] bg-[#cc3333]/10' : ''}`}
+                    className={`px-3 py-1.5 text-[11px] font-black uppercase tracking-widest border-[2px] transition-all flex items-center gap-1 ${
+                      pathname === item.href
+                        ? 'border-black bg-[#cc3333] text-white shadow-[2px_2px_0_0_#000]'
+                        : 'border-transparent text-black/70 hover:text-black hover:border-black hover:shadow-[2px_2px_0_0_#000]'
+                    }`}
                   >
                     {item.icon}
                     {item.label}
@@ -225,16 +237,14 @@ export function Header() {
         <div className="flex items-center space-x-2">
           <div className="flex items-center gap-2 mr-2">
             <UploadStoryTrigger variant="outline" className="hidden lg:flex" buttonText="Upload" />
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden lg:flex items-center gap-2 px-5 py-2 rounded-full border border-red-500/50 bg-red-500/10 text-red-400 font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:bg-red-500 hover:text-black hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all duration-300"
+            <button
+              className="hidden lg:flex items-center gap-1.5 px-4 py-1.5 bg-[#cc3333] hover:bg-black text-white text-[11px] font-black uppercase tracking-widest border-[2.5px] border-black shadow-[3px_3px_0_0_#000] hover:shadow-[5px_5px_0_0_#000] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none transition-all rounded-none"
               onClick={handleCreateClick}
               aria-label="Create a new story"
             >
-              <PenSquare className="h-4 w-4 mr-2" />
+              <PenSquare className="h-3.5 w-3.5" />
               Create
-            </Button>
+            </button>
           </div>
           {/* <ModeToggle /> Temporarily disabled */}
           <UserNav />
@@ -246,7 +256,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:bg-white/10"
+                  className="text-black hover:bg-black/10 border-[2px] border-black shadow-[2px_2px_0_0_#000]"
                   aria-label="Open menu"
                 >
                   <Menu className="h-6 w-6" />
@@ -254,14 +264,15 @@ export function Header() {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="bg-zinc-950/90 backdrop-blur-xl border-l border-white/10 text-white p-0"
+                className="border-l-[3px] border-black text-black p-0"
+                style={{ backgroundColor: '#EEDFCA' }}
               >
-                <SheetHeader className="p-6 border-b border-white/10">
-                  <SheetTitle className="text-white font-bold text-xl flex items-center gap-2">
+                <SheetHeader className="p-6 border-b-[3px] border-black">
+                  <SheetTitle className="text-black font-bold text-xl flex items-center gap-2">
                     <ComiCraftLogo variant="full" colorScheme="color" size={28} animate={false} />
                   </SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col p-4 space-y-2">
+                <div className="flex flex-col p-4 space-y-1">
                   {navItems.map((item, index) => (
                     <div
                       key={
@@ -273,7 +284,7 @@ export function Header() {
                     >
                       {item.type === 'dropdown' ? (
                         <>
-                          <div className="px-4 py-2 text-sm font-bold uppercase text-white/60 mt-2">
+                          <div className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-black/40 mt-2">
                             {item.label}
                           </div>
                           {item.items?.map((subItem) => (
@@ -281,7 +292,7 @@ export function Header() {
                               key={subItem.href}
                               href={subItem.href}
                               onClick={() => setSheetOpen(false)}
-                              className="px-6 py-3 text-lg hover:bg-white/10 rounded-md transition-colors flex items-center text-white/80 hover:text-white"
+                              className="px-4 py-3 text-sm font-black uppercase tracking-wide border-[2px] border-transparent hover:border-black hover:bg-black/5 transition-colors flex items-center text-black/70 hover:text-black"
                             >
                               {subItem.icon}
                               {subItem.label}
@@ -294,10 +305,10 @@ export function Header() {
                             href={item.href}
                             onClick={() => setSheetOpen(false)}
                             className={cn(
-                              'px-4 py-3 text-lg hover:bg-white/10 rounded-md transition-colors flex items-center',
+                              'px-4 py-3 text-sm font-black uppercase tracking-widest border-[2px] transition-colors flex items-center',
                               pathname === item.href
-                                ? 'bg-primary/20 text-primary font-bold'
-                                : 'text-white/80 hover:text-white'
+                                ? 'border-black bg-[#cc3333] text-white shadow-[2px_2px_0_0_#000]'
+                                : 'border-transparent text-black/70 hover:text-black hover:border-black'
                             )}
                           >
                             {item.icon && <span className="mr-3">{item.icon}</span>}
@@ -307,21 +318,21 @@ export function Header() {
                       )}
                     </div>
                   ))}
-                  <div className="pt-4 mt-4 border-t-2 border-white/10 space-y-3">
+                  <div className="pt-4 mt-4 border-t-[2px] border-black/20 space-y-3">
                     <UploadStoryTrigger
                       variant="outline"
-                      className="w-full justify-start text-lg text-white border-white/50 hover:bg-white/10"
+                      className="w-full justify-start text-sm font-black uppercase tracking-wide text-black border-[2px] border-black shadow-[2px_2px_0_0_#000] hover:bg-black/5"
                       buttonText="Upload Story"
                     />
                     <Button
                       variant="outline"
-                      className="w-full justify-start text-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-full font-semibold"
+                      className="w-full justify-start text-sm bg-[#cc3333] hover:bg-black text-white border-[2.5px] border-black shadow-[3px_3px_0_0_#000] font-black uppercase tracking-wide rounded-none"
                       onClick={() => {
                         setSheetOpen(false);
                         handleCreateClick();
                       }}
                     >
-                      <PenSquare className="h-5 w-5 mr-3" />
+                      <PenSquare className="h-4 w-4 mr-3" />
                       Create Story
                     </Button>
                   </div>
