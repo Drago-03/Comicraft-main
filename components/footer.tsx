@@ -35,11 +35,18 @@ export function Footer({ version }: { version?: string }) {
         const res = await fetch('/api/health', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          setHealthStatus(
-            (data.status === 'ok' || data.status === 'healthy' || data.status === 'operational') ? 'ok'
-            : (data.status === 'degraded' || data.status === 'partial') ? 'degraded'
-            : 'down'
-          );
+          if (data && typeof data.status === 'string') {
+            const status = data.status.toLowerCase();
+            if (['ok', 'healthy', 'operational', 'up', 'online'].includes(status)) {
+              setHealthStatus('ok');
+            } else if (['degraded', 'partial'].includes(status)) {
+              setHealthStatus('degraded');
+            } else {
+              setHealthStatus('down');
+            }
+          } else {
+            setHealthStatus('down');
+          }
         } else {
           setHealthStatus('down');
         }
@@ -236,12 +243,6 @@ export function Footer({ version }: { version?: string }) {
                 <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-600 relative z-10 group-hover:animate-glitch-1">Ethereum</span>
                 <span className="font-bold text-blue-500 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Ethereum</span>
                 <span className="font-bold text-indigo-500 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Ethereum</span>
-              </div>
-              <span className="text-white/30 mx-2">&</span>
-              <div className="relative inline-block overflow-hidden">
-                <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500 relative z-10 group-hover:animate-glitch-1">Alchemy</span>
-                <span className="font-bold text-amber-400 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Alchemy</span>
-                <span className="font-bold text-orange-500 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Alchemy</span>
               </div>
               <span className="text-white/30 mx-2">×</span>
               <div className="relative inline-block overflow-hidden">

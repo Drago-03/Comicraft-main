@@ -39,8 +39,8 @@ import { createClient } from '@/lib/supabase/client';
 
 import { CreateStoryDialog } from './create-story-dialog';
 import { ModeToggle } from './mode-toggle';
-import { UploadStoryTrigger } from './upload-story-trigger';
 import { ComiCraftLogo } from './comicraft-logo';
+import { GlobalSearch } from './global-search';
 
 // Type definitions for nav items
 type NavSubItem = {
@@ -113,14 +113,12 @@ export function Header() {
   };
 
   const navItems: NavItem[] = [
-    { type: 'link', href: '/', label: 'Prime' },
     { type: 'link', href: '/genres', label: 'Worlds' },
     { type: 'link', href: '/create', label: 'Forge' },
     { type: 'link', href: '/gallery', label: 'Gallery' },
     { type: 'link', href: '/marketplace', label: 'Bazaar' },
     { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS' },
     { type: 'link', href: '/community', label: 'Commons' },
-    { type: 'link', href: '/docs', label: 'Atlas' },
     ...(account
       ? [
         {
@@ -223,8 +221,10 @@ export function Header() {
         </div>
 
         <div className="flex items-center space-x-2">
+          <div className="hidden lg:flex items-center gap-2 mr-2">
+            <GlobalSearch />
+          </div>
           <div className="flex items-center gap-2 mr-2">
-            <UploadStoryTrigger variant="outline" className="hidden lg:flex" buttonText="Upload" />
             <Button
               variant="outline"
               size="sm"
@@ -308,11 +308,9 @@ export function Header() {
                     </div>
                   ))}
                   <div className="pt-4 mt-4 border-t-2 border-white/10 space-y-3">
-                    <UploadStoryTrigger
-                      variant="outline"
-                      className="w-full justify-start text-lg text-white border-white/50 hover:bg-white/10"
-                      buttonText="Upload Story"
-                    />
+                    <div className="w-full pb-2">
+                      <GlobalSearch />
+                    </div>
                     <Button
                       variant="outline"
                       className="w-full justify-start text-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full font-semibold"
