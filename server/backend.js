@@ -889,9 +889,9 @@ app.use('/api/feed', require('./routes/feed'));
 app.use('/api/feeds', require('./routes/notification-feed'));
 
 
-// DEPRECATED - Migrated to Gemini 3 exclusively
-// app.use('/api/groq', require('./routes/groq'));
-app.use('/api/v1/ai', require('./routes/ai'));
+// DEPRECATED — ai.js conflicts with ai-generation.js (both mount at /api/v1/ai)
+// ai-generation.js is the correct handler that supports { userInput, config } from the frontend
+// app.use('/api/v1/ai', require('./routes/ai'));
 app.use('/api/v1/drafts', require('./routes/drafts'));
 app.use('/api/v1/tts', require('./routes/tts'));
 app.use('/api/v1/settings/notifications', require('./routes/settings/notifications'));
