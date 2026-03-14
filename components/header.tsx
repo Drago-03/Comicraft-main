@@ -3,13 +3,10 @@
 import { motion } from 'framer-motion';
 import {
   PenSquare,
-  Users,
-  BookOpen,
-  FlaskConical,
   ChevronDown,
-  Trophy,
   Menu,
   DollarSign,
+  X,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -25,30 +22,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 import { useToast } from '@/components/ui/use-toast';
 import { UserNav } from '@/components/user-nav';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 
 import { CreateStoryDialog } from './create-story-dialog';
-import { ModeToggle } from './mode-toggle';
 import { ComiCraftLogo } from './comicraft-logo';
 import { GlobalSearch } from './global-search';
 
-// Type definitions for nav items
-type NavSubItem = {
-  href: string;
-  label: string;
-  icon?: React.ReactNode;
-};
-
+type NavSubItem = { href: string; label: string; icon?: React.ReactNode };
 type NavItem = {
   href?: string;
   label: string;
@@ -57,283 +40,224 @@ type NavItem = {
   items?: NavSubItem[];
 };
 
+/* ─────────────────────────────────────
+   Comic-panel accent dot colours that
+   cycle through nav items for visual pop
+───────────────────────────────────────*/
+const ACCENT_COLORS = ['#cc3333', '#6c3fc5', '#457b9d', '#cc3333', '#2d9c68', '#f97316', '#cc3333'];
+
 export function Header() {
   const pathname = usePathname();
   const { account } = useWeb3();
   const { toast } = useToast();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
   const [session, setSession] = useState<any>(null);
   const supabase = React.useMemo(() => createClient(), []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e: string, s: any) => setSession(s));
     return () => subscription.unsubscribe();
   }, [supabase.auth]);
 
-  // Track scroll position for adding box shadow to header
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Define active class for navigation links
-  const isActive = (path: string) => {
-    if (path === '/community') {
-      return pathname === '/community' || pathname === '/community/creators'
-        ? 'bg-primary/10 text-primary font-medium'
-        : 'hover:bg-accent/20 text-muted-foreground';
-    }
-    return pathname === path
-      ? 'bg-primary/10 text-primary font-medium'
-      : 'hover:bg-accent/20 text-muted-foreground';
-  };
-
   const handleCreateClick = () => {
-    if (!account && !session) {
-      router.push('/sign-in');
-      return;
-    }
+    if (!account && !session) { router.push('/sign-in'); return; }
     setShowCreateDialog(true);
   };
 
   const navItems: NavItem[] = [
-    { type: 'link', href: '/genres', label: 'Worlds' },
-    { type: 'link', href: '/create', label: 'Forge' },
-    { type: 'link', href: '/gallery', label: 'Gallery' },
-    { type: 'link', href: '/marketplace', label: 'Bazaar' },
-    { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS' },
-    { type: 'link', href: '/community', label: 'Commons' },
-    ...(account
-      ? [
-        {
-          type: 'link' as const,
-          href: '/dashboard/royalties',
-          label: 'Earnings',
-          icon: <DollarSign className="h-4 w-4 mr-1.5 colorful-icon" />,
-        },
-      ]
-      : []),
+    { type: 'link', href: '/',          label: 'Prime'     },
+    { type: 'link', href: '/genres',    label: 'Worlds'    },
+    { type: 'link', href: '/create',    label: 'Forge'     },
+    { type: 'link', href: '/gallery',   label: 'Gallery'   },
+    { type: 'link', href: '/marketplace', label: 'Bazaar'  },
+    { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS'},
+    { type: 'link', href: '/community', label: 'Commons'   },
+    ...(account ? [{ type: 'link' as const, href: '/dashboard/royalties', label: 'Earnings', icon: <DollarSign className="h-3 w-3 mr-1" /> }] : []),
   ];
 
+  const isActive = (path?: string) => path && (pathname === path || (path !== '/' && pathname.startsWith(path)));
+
   return (
-    <motion.header
-      initial={false}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className={cn(
-        'border border-white/10 fixed top-4 left-4 right-4 z-50 rounded-2xl transition-all duration-300 bg-black/40 backdrop-blur-xl',
-        scrolled && 'shadow-[0_10px_40px_rgba(0,0,0,0.7)] bg-black/60'
-      )}
-    >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center">
-          <Link
-            href="/"
-            aria-label="Comicraft home"
-            className="flex items-center mr-4 sm:mr-8"
-          >
-            <ComiCraftLogo variant="full" colorScheme="color" size={32} animate />
+    <>
+      {/* ══════════════════════════════════════════════════════
+          COMIC-PANEL HEADER BAR
+          Cream background · thick ink border · no blur chrome
+      ══════════════════════════════════════════════════════ */}
+      <header
+        className={cn(
+          'fixed top-0 left-0 right-0 z-50 transition-all duration-200',
+          'border-b-[3px] border-black',
+          scrolled
+            ? 'shadow-[0_4px_0_0_#000]'
+            : 'shadow-none',
+        )}
+        style={{ backgroundColor: '#EEDFCA' }}
+      >
+        {/* Halftone dot texture */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)',
+            backgroundSize: '8px 8px',
+          }}
+        />
+
+        {/* Red accent stripe at very top */}
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#cc3333]" />
+
+        <div className="relative z-10 max-w-screen-2xl mx-auto px-4 h-16 flex items-center justify-between">
+
+          {/* ── LOGO ── */}
+          <Link href="/" aria-label="Comicraft home" className="flex items-center gap-3 flex-shrink-0">
+            <div className="relative w-9 h-9 border-[2.5px] border-black shadow-[2px_2px_0_0_#000] bg-white flex items-center justify-center">
+              <Image src="/logo.png" alt="Comicraft" fill className="object-contain p-0.5" priority />
+            </div>
+            <span className="hidden sm:block font-black uppercase tracking-tighter text-black text-sm italic">
+              Comicraft
+            </span>
           </Link>
 
-          <nav role="navigation" aria-label="Primary navigation" className="hidden lg:flex items-center space-x-2">
-            {navItems.map((item, index) => (
-              <motion.div
-                key={
-                  item.type === 'dropdown'
-                    ? `dropdown-${item.label}`
-                    : item.href || `item-${index}`
-                }
-                initial={false}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
-                whileHover={{ scale: 1.03 }}
-                className="inline-flex items-center font-medium"
-              >
-                {item.type === 'dropdown' ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      aria-haspopup="true"
-                      className={`px-4 py-2 text-sm rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm`}
-                    >
-                      {item.icon}
-                      {item.label}
-                      <ChevronDown className="ml-1 h-3 w-3" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      side="bottom"
-                      align="start"
-                      sideOffset={8}
-                      collisionPadding={16}
-                      className="
-                        z-50
-                        w-[160px] sm:w-[180px]
-                        bg-black/90
-                        backdrop-blur-xl
-                        border border-white/10
-                        shadow-2xl
-                        rounded-xl
-                        p-2
-                      "
-                    >
-                      {item.items?.map((subItem) => (
-                        <DropdownMenuItem key={subItem.href} asChild>
-                          <Link
-                            href={subItem.href}
-                            aria-current={pathname === subItem.href ? 'page' : undefined}
-                            className="flex items-center w-full text-white/80 hover:text-white hover:bg-white/10 rounded-lg"
-                          >
-                            {subItem.icon && subItem.icon}
-                            {subItem.label}
-                          </Link>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : item.href ? (
-                  <Link
-                    href={item.href}
-                    aria-current={pathname === item.href ? 'page' : undefined}
-                    className={`px-4 py-2 text-sm rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm`}
+          {/* ── DESKTOP NAV ── */}
+          <nav role="navigation" aria-label="Primary navigation" className="hidden lg:flex items-center gap-0.5">
+            {navItems.map((item, i) =>
+              item.type === 'dropdown' ? (
+                <DropdownMenu key={`dd-${i}`}>
+                  <DropdownMenuTrigger
+                    className={cn(
+                      'px-3 py-1.5 text-[11px] font-black uppercase tracking-widest border-[2px] border-transparent transition-all flex items-center gap-1',
+                      'hover:border-black hover:shadow-[2px_2px_0_0_#000]',
+                      'text-black/70 hover:text-black',
+                    )}
                   >
-                    {item.icon}
-                    {item.label}
-                  </Link>
-                ) : null}
-              </motion.div>
-            ))}
+                    {item.icon}{item.label}<ChevronDown className="w-3 h-3 ml-0.5" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className="bg-[#EEDFCA] border-[3px] border-black shadow-[4px_4px_0_0_#000] rounded-none p-1 min-w-[140px]"
+                    sideOffset={6}
+                  >
+                    {item.items?.map((sub) => (
+                      <DropdownMenuItem key={sub.href} asChild>
+                        <Link href={sub.href} className="flex items-center gap-2 px-3 py-2 text-[11px] font-black uppercase tracking-wide text-black hover:bg-black hover:text-[#EEDFCA] transition-colors rounded-none">
+                          {sub.icon}{sub.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : item.href ? (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  className={cn(
+                    'px-3 py-1.5 text-[11px] font-black uppercase tracking-widest border-[2px] transition-all flex items-center gap-1',
+                    isActive(item.href)
+                      ? 'border-black bg-[#cc3333] text-white shadow-[2px_2px_0_0_#000]'
+                      : 'border-transparent text-black/70 hover:text-black hover:border-black hover:shadow-[2px_2px_0_0_#000]',
+                  )}
+                  style={isActive(item.href) ? {} : { ['--accent' as string]: ACCENT_COLORS[i % ACCENT_COLORS.length] }}
+                >
+                  {item.icon}{item.label}
+                </Link>
+              ) : null
+            )}
           </nav>
-        </div>
 
-        <div className="flex items-center space-x-2">
-          <div className="hidden lg:flex items-center gap-2 mr-2">
-            <GlobalSearch />
-          </div>
-          <div className="flex items-center gap-2 mr-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden lg:flex items-center gap-2 px-5 py-2 rounded-full border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:bg-emerald-500 hover:text-black hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all duration-300"
+          {/* ── RIGHT ACTIONS ── */}
+          <div className="flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-2">
+              <GlobalSearch />
+            </div>
+
+            {/* Create button */}
+            <button
               onClick={handleCreateClick}
               aria-label="Create a new story"
+              className="hidden lg:flex items-center gap-1.5 px-4 py-1.5 bg-[#cc3333] hover:bg-black text-white text-[11px] font-black uppercase tracking-widest border-[2.5px] border-black shadow-[3px_3px_0_0_#000] hover:shadow-[5px_5px_0_0_#000] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none transition-all"
             >
-              <PenSquare className="h-4 w-4 mr-2" />
-              Create
-            </Button>
-          </div>
-          {/* <ModeToggle /> Temporarily disabled */}
-          <UserNav />
+              <PenSquare className="w-3.5 h-3.5" /> Create
+            </button>
 
-          {/* Mobile Menu */}
-          <div className="lg:hidden">
-            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-white/10"
-                  aria-label="Open menu"
-                >
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                side="right"
-                className="bg-zinc-950/90 backdrop-blur-xl border-l border-white/10 text-white p-0"
-              >
-                <SheetHeader className="p-6 border-b border-white/10">
-                  <SheetTitle className="text-white font-bold text-xl flex items-center gap-2">
-                    <ComiCraftLogo variant="full" colorScheme="color" size={28} animate={false} />
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col p-4 space-y-2">
-                  {navItems.map((item, index) => (
-                    <div
-                      key={
-                        item.type === 'dropdown'
-                          ? `dropdown-${item.label}`
-                          : item.href || `item-${index}`
-                      }
-                      className="flex flex-col"
-                    >
-                      {item.type === 'dropdown' ? (
-                        <>
-                          <div className="px-4 py-2 text-sm font-bold uppercase text-white/60 mt-2">
-                            {item.label}
-                          </div>
-                          {item.items?.map((subItem) => (
-                            <Link
-                              key={subItem.href}
-                              href={subItem.href}
-                              onClick={() => setSheetOpen(false)}
-                              className="px-6 py-3 text-lg hover:bg-white/10 rounded-md transition-colors flex items-center text-white/80 hover:text-white"
-                            >
-                              {subItem.icon}
-                              {subItem.label}
-                            </Link>
-                          ))}
-                        </>
-                      ) : (
-                        item.href && (
-                          <Link
-                            href={item.href}
-                            onClick={() => setSheetOpen(false)}
-                            className={cn(
-                              'px-4 py-3 text-lg hover:bg-white/10 rounded-md transition-colors flex items-center',
-                              pathname === item.href
-                                ? 'bg-primary/20 text-primary font-bold'
-                                : 'text-white/80 hover:text-white'
-                            )}
-                          >
-                            {item.icon && <span className="mr-3">{item.icon}</span>}
-                            {item.label}
-                          </Link>
-                        )
-                      )}
-                    </div>
-                  ))}
-                  <div className="pt-4 mt-4 border-t-2 border-white/10 space-y-3">
-                    <div className="w-full pb-2">
-                      <GlobalSearch />
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full font-semibold"
-                      onClick={() => {
-                        setSheetOpen(false);
-                        handleCreateClick();
-                      }}
-                    >
-                      <PenSquare className="h-5 w-5 mr-3" />
-                      Create Story
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+            <UserNav />
+
+            {/* ── MOBILE HAMBURGER ── */}
+            <button
+              className="lg:hidden w-9 h-9 flex items-center justify-center border-[2.5px] border-black shadow-[2px_2px_0_0_#000] bg-white hover:bg-[#cc3333] hover:text-white transition-all"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
           </div>
         </div>
-      </div>
 
-      <CreateStoryDialog
-        isOpen={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
-      />
-    </motion.header>
+        {/* ── MOBILE DRAWER ── */}
+        {mobileOpen && (
+          <div
+            className="lg:hidden absolute top-full left-0 right-0 border-t-[3px] border-b-[3px] border-black z-40"
+            style={{ backgroundColor: '#EEDFCA' }}
+          >
+            {/* Halftone inside mobile menu */}
+            <div
+              className="absolute inset-0 pointer-events-none opacity-[0.04]"
+              style={{
+                backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)',
+                backgroundSize: '8px 8px',
+              }}
+            />
+            <div className="relative z-10 flex flex-col divide-y-[2px] divide-black/20">
+              {navItems.map((item, i) =>
+                item.href ? (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      'flex items-center gap-3 px-6 py-4 text-sm font-black uppercase tracking-widest transition-colors',
+                      isActive(item.href)
+                        ? 'bg-[#cc3333] text-white'
+                        : 'text-black hover:bg-black/5',
+                    )}
+                  >
+                    {/* Accent dot */}
+                    <span
+                      className="w-2 h-2 border border-black flex-shrink-0"
+                      style={{ backgroundColor: ACCENT_COLORS[i % ACCENT_COLORS.length] }}
+                    />
+                    {item.icon}{item.label}
+                  </Link>
+                ) : null
+              )}
+              <div className="px-6 py-4 flex flex-col gap-3">
+                <GlobalSearch />
+                <button
+                  onClick={() => { setMobileOpen(false); handleCreateClick(); }}
+                  className="w-full py-3 bg-[#cc3333] hover:bg-black text-white text-sm font-black uppercase tracking-widest border-[2.5px] border-black shadow-[3px_3px_0_0_#000] transition-all flex items-center justify-center gap-2"
+                >
+                  <PenSquare className="w-4 h-4" /> Create Story
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Spacer so page content doesn't hide under fixed header */}
+      <div className="h-16" />
+
+      <CreateStoryDialog isOpen={showCreateDialog} onClose={() => setShowCreateDialog(false)} />
+    </>
   );
 }

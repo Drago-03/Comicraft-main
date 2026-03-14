@@ -192,20 +192,19 @@ export default function RootLayout({
           <QueryProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="dark"
-              forcedTheme="dark"
+              defaultTheme="light"
               enableSystem={false}
               disableTransitionOnChange={false}
               storageKey="comicraft-theme"
             >
               <AnimatedLayout>
                 <ClientLayout>
-                  <div className="min-h-screen bg-background dark:dark-premium-bg flex flex-col">
+                  <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#EEDFCA' }}>
                     <Header />
                     <main
                       id="main-content"
                       tabIndex={-1}
-                      className="container mx-auto px-4 pb-6 flex-grow focus:outline-2 focus:outline-primary"
+                      className="flex-grow focus:outline-2 focus:outline-primary"
                     >
                       <React.Suspense fallback={null}>
                         <GlobalLoadingWrapper>

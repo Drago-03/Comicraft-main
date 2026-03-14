@@ -136,7 +136,9 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    /* ── Comic theme: cream paper background sitewide ── */
+    background-color: #EEDFCA !important;
+    color: #1a1008;
     font-family: var(--font-comic);
     overflow-x: hidden;
     position: relative;
@@ -193,6 +195,69 @@
 }
 
 @layer components {
+  /* ── SITEWIDE COMIC PAGE SECTIONS ── */
+
+  /* Light cream section (default page panels) */
+  .comic-page-section {
+    background-color: #EEDFCA;
+    position: relative;
+  }
+  .comic-page-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, #000 1.5px, transparent 1.5px);
+    background-size: 8px 8px;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  /* Deep ink dark section (alternating) */
+  .comic-ink-section {
+    background-color: #1a1008;
+    color: #EEDFCA;
+    position: relative;
+    border-top: 3px solid #000;
+    border-bottom: 3px solid #000;
+  }
+  .comic-ink-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, #EEDFCA 1.5px, transparent 1.5px);
+    background-size: 8px 8px;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  /* Comic panel card */
+  .comic-panel-card {
+    background-color: #fff;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 0 #000;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .comic-panel-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000;
+  }
+
+  /* Ink bordered heading badge */
+  .comic-heading-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border: 2px solid #000;
+    background-color: #000;
+    color: #EEDFCA;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    box-shadow: 3px 3px 0 0 #cc3333;
+  }
+
   .comic-container {
     @apply bg-card border-4 border-foreground p-6;
     box-shadow: 8px 8px 0px 0px var(--shadow-color);
