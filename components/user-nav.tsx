@@ -46,16 +46,20 @@ export function UserNav() {
 
   useEffect(() => {
     // Check Supabase session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
-        setDbUser({ username: session.user.user_metadata?.username || session.user.email?.split('@')[0], avatar: session.user.user_metadata?.avatar_url, id: session.user.id });
-      }
-    });
+    const refreshSession = () => {
+      supabase.auth.getSession().then(({ data: { session } }: { data: { session: any } }) => {
+        setSession(session);
+        if (session?.user) {
+          setDbUser({ username: session.user.user_metadata?.username || session.user.email?.split('@')[0], avatar: session.user.user_metadata?.avatar_url, id: session.user.id });
+        }
+      });
+    };
+
+    refreshSession();
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setSession(session);
       if (session?.user) {
         setDbUser({ username: session.user.user_metadata?.username || session.user.email?.split('@')[0], avatar: session.user.user_metadata?.avatar_url, id: session.user.id });
@@ -64,7 +68,18 @@ export function UserNav() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Listen for token changes from OAuth callback (localStorage persistence)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'accessToken') {
+        refreshSession();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [supabase.auth, account]);
 
   useEffect(() => {

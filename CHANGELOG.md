@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.1.3 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.1.4 (latest). See `SECURITY.md` for the support policy.
+
+## [1.1.4] - 2026-03-14
+
+### Fixed
+
+- **OAuth Callback Flow** (`app/auth/callback/page.tsx`): Completely rewrote to handle three auth flows — PKCE code exchange (server builds), implicit hash-fragment flow (Cloudflare static export), and existing session fallback. Google and GitHub OAuth buttons now work correctly on production (comicraft.xyz).
+- **Navbar Auth State** (`components/user-nav.tsx`): Added `storage` event listener so UserNav immediately refreshes the Supabase session when OAuth callback saves tokens to localStorage. The navbar now correctly shows the user avatar instead of "Login" after signing in.
+- **Server npm Peer Dependencies** (`server/.npmrc`): Added `legacy-peer-deps=true` to resolve `@iqai/adk` peer dependency conflict with `@opentelemetry/instrumentation-express`.
 
 ## [1.1.3] - 2026-03-14
 

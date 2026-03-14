@@ -10,26 +10,21 @@ function AuthCallback() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  useEffect((): void | (() => void) => {
+    const supabase = createClient();
     const code = searchParams.get('code');
     const next = searchParams.get('next') ?? '/dashboard';
-    
+
+    // --- Flow 1: PKCE code exchange (server-rendered builds) ---
     if (code) {
-      const supabase = createClient();
       supabase.auth.exchangeCodeForSession(code)
-        .then(({ data, error }: { data: any, error: any }) => {
+        .then(({ data, error }: { data: any; error: any }) => {
           if (error) {
-            console.error("Supabase Auth Code Exchange Error:", error);
+            console.error('Supabase Auth Code Exchange Error:', error);
             setError('Authentication failed. Please try again.');
             setTimeout(() => router.push('/sign-in?error=AuthFailed'), 3000);
           } else {
-            if (data.session) {
-              localStorage.setItem('accessToken', data.session.access_token);
-              if (data.session.refresh_token) {
-                localStorage.setItem('refreshToken', data.session.refresh_token);
-              }
-              window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
-            }
+            persistSession(data.session);
             router.push(next);
             router.refresh();
           }
@@ -39,9 +34,67 @@ function AuthCallback() {
           setError('An unexpected error occurred.');
           setTimeout(() => router.push('/sign-in?error=AuthFailed'), 3000);
         });
-    } else {
-      router.push('/sign-in');
+      return;
     }
+
+    // --- Flow 2: Implicit / hash-fragment flow (static export / Cloudflare Pages) ---
+    // Supabase redirects back with a URL like:
+    //   /auth/callback#access_token=...&refresh_token=...&type=...
+    // The @supabase/ssr browser client auto-detects the hash and calls
+    // `onAuthStateChange` with the SIGNED_IN event. We just need to wait
+    // for that event rather than immediately redirecting.
+    const hash = typeof window !== 'undefined' ? window.location.hash : '';
+
+    if (hash && hash.includes('access_token')) {
+      // The Supabase client will automatically pick up the hash fragment
+      // and establish the session. Listen for the SIGNED_IN event.
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event: string, session: any) => {
+          if (event === 'SIGNED_IN' && session) {
+            persistSession(session);
+            subscription.unsubscribe();
+            router.push(next);
+            router.refresh();
+          }
+        }
+      );
+
+      // Safety timeout — if the event never fires, redirect anyway
+      const timeout = setTimeout(() => {
+        subscription.unsubscribe();
+        // Check if we already have a session
+        supabase.auth.getSession().then(({ data: { session } }: { data: { session: any } }) => {
+          if (session) {
+            persistSession(session);
+            router.push(next);
+            router.refresh();
+          } else {
+            setError('Authentication timed out. Please try again.');
+            setTimeout(() => router.push('/sign-in?error=AuthTimeout'), 2000);
+          }
+        });
+      }, 5000);
+
+      return () => {
+        clearTimeout(timeout);
+        subscription.unsubscribe();
+      };
+    }
+
+    // --- Flow 3: No code or hash — check for an existing session ---
+    // This handles the case where the user lands on /auth/callback directly
+    // or Supabase already set the session via cookies/localStorage before
+    // this component mounts (e.g. a quick page refresh).
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: any } }) => {
+      if (session) {
+        persistSession(session);
+        router.push(next);
+        router.refresh();
+      } else {
+        // No session at all — send back to sign-in
+        router.push('/sign-in');
+      }
+    });
   }, [router, searchParams]);
 
   if (error) {
@@ -54,6 +107,18 @@ function AuthCallback() {
       <p className="text-neutral-400 font-medium">Completing authentication...</p>
     </div>
   );
+}
+
+/** Persist tokens to localStorage so other hooks/API calls can use them. */
+function persistSession(session: any) {
+  if (!session || typeof window === 'undefined') return;
+  if (session.access_token) {
+    localStorage.setItem('accessToken', session.access_token);
+  }
+  if (session.refresh_token) {
+    localStorage.setItem('refreshToken', session.refresh_token);
+  }
+  window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
 }
 
 export default function AuthCallbackPage() {
