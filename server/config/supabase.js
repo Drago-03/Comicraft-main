@@ -26,6 +26,16 @@ const supabaseAdmin = SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
     })
     : null;
 
+// Anon client — used for client-level auth operations (like sign-in verification)
+const supabaseAnon = SUPABASE_URL && SUPABASE_ANON_KEY
+    ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false,
+        },
+    })
+    : null;
+
 // Per-request client scoped to a user's JWT token
 function createUserClient(accessToken) {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
@@ -57,4 +67,4 @@ async function checkSupabaseHealth() {
     }
 }
 
-module.exports = { supabaseAdmin, createUserClient, checkSupabaseHealth, SUPABASE_URL };
+module.exports = { supabaseAdmin, supabaseAnon, createUserClient, checkSupabaseHealth, SUPABASE_URL };

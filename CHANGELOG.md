@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.1.0 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.1.2 (latest). See `SECURITY.md` for the support policy.
+
 
 ## [1.1.2] - 2026-03-14
 
 ### Fixed
 
-- **Cloudflare Static Generation** (`app/auth/callback/route.ts`): Added `force-dynamic` to prevent build crashes related to `request.url` usage during static export.
+- **Cloudflare Static Generation** (`app/auth/callback/page.tsx`): Migrated the `/auth/callback` route from a Next.js API Route Handler (`route.ts`) to a client-side page (`page.tsx`) wrapped in `<Suspense>`. This resolves the `export const dynamic = "force-dynamic"` build crash, allowing Cloudflare Pages to correctly perform a static export while still successfully exchanging the OAuth code for a session on the frontend.
+- **Backend Supabase Email Login** (`server/config/supabase.js`, `server/routes/auth.js`): Fixed the "invalid credentials" error during email and username login. The backend was previously attempting to call `signInWithPassword` using the `supabaseAdmin` client initialized with the Service Role Key, which Supabase intentionally blocks. A secondary `supabaseAnon` client has been added specifically for verifying passwords.
 - **Frontend Health Status** (`components/footer.tsx`): Improved `/api/health` proxy parsing logic to correctly display "System Operational" instead of "System Offline" when the backend is live.
 
 ### Changed
@@ -21,6 +23,10 @@ Active full support: 1.1.0 (latest). See `SECURITY.md` for the support policy.
 - **Footer UI** (`components/footer.tsx`): Removed Alchemy reference from the footer credits.
 - **Documentation**: Integrated IQai ADK-TS Tokenization Platform into `README.md` and `docs/ARCHITECTURE.md`.
 - **Community & Legal**: Created a new `COOKIE_POLICY.md` and `CODE_OF_CONDUCT.md` from scratch.
+
+### Added
+
+- **GitHub Authentication** (`components/auth/sign-in-form.tsx`, `components/auth/sign-up-form.tsx`): Added GitHub OAuth buttons and logic to the sign in and sign up forms.
 
 ## [1.1.1] - 2026-03-14
 

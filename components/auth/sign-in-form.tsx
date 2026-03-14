@@ -8,7 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Lock, LogIn, CheckCircle2, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Lock, LogIn, CheckCircle2, AlertCircle, Eye, EyeOff, Github } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import WalletConnect from '@/components/wallet-connect';
 import { loginWithUsernameOrEmail } from '@/app/actions/auth';
@@ -99,6 +99,24 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
       if (error) throw error;
     } catch (error: any) {
       setErrorMsg(error.message || 'Error communicating with Google authentication');
+    }
+  };
+
+  const handleGithubSignIn = async () => {
+    try {
+      // Use the canonical app URL if available, otherwise fallback to current origin
+      const baseUrl = process.env.NEXT_PUBLIC_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+      const redirectTo = `${baseUrl}/auth/callback`;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo,
+        },
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      setErrorMsg(error.message || 'Error communicating with GitHub authentication');
     }
   };
 
@@ -221,6 +239,17 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
             Google
+          </Button>
+
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={handleGithubSignIn}
+            disabled={loading || success}
+            className="w-full h-11 rounded-xl bg-[#18181b] border-neutral-800 hover:bg-[#202024] hover:border-neutral-700 text-neutral-300 transition-colors text-sm font-medium"
+          >
+            <Github className="w-4 h-4 mr-3" />
+            GitHub
           </Button>
 
           <div className="w-full relative">
