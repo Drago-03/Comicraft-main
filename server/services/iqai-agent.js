@@ -328,6 +328,56 @@ class ComiCraftStoryAgent {
     }
 
     /**
+     * Run a task through the agent.
+     * @param {Object} params - Input parameters for the task
+     * @returns {Promise<string>} - The result content
+     */
+    async run(params) {
+        await this.initialize();
+
+        // Use ADK agent if available
+        if (this.adkAgent && typeof this.adkAgent.invoke === 'function') {
+            try {
+                const response = await this.adkAgent.invoke({
+                    tool: 'generate_story',
+                    params: params
+                });
+                return response.content || response;
+            } catch (err) {
+                logger.warn(`[IQai] ADK run failed: ${err.message}, falling back to Gemini`);
+            }
+        }
+
+        // Fallback to direct Gemini call via geminiService
+        const prompt = `Task: Generate a story/content based on the following parameters:
+Genre: ${params.genre || 'Not specified'}
+Theme: ${params.theme || 'Not specified'}
+Tone: ${params.tone || 'Not specified'}
+Characters: ${params.characters || 'Not specified'}
+Setting: ${params.setting || 'Not specified'}
+Format: ${params.formatType || 'story'}
+Length: ${params.length || 'medium'}
+Additional Prompt: ${params.prompt || ''}
+
+Please generate the content now.`;
+
+        return await geminiService.generateContent({
+            prompt,
+            config: {
+                temperature: params.temperature || 0.8,
+                maxTokensPerResponse: params.maxTokens || 1200
+            }
+        });
+    }
+
+    /**
+     * Check if ADK is available.
+     */
+    isAdkAvailable() {
+        return adkAvailable;
+    }
+
+    /**
      * Get agent info for health checks / debugging.
      */
     getInfo() {

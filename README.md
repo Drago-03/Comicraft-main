@@ -372,12 +372,6 @@ Comicraft/
 
 ---
 
-## 🎨 Spline 3D Guide
-
-For detailed information on how to work with 3D models, performance guidelines, and our model protection policy, please refer to the [Spline 3D Guide](docs/SPLINE_GUIDE.md).
-
----
-
 ## Roadmap
 
 - AI visuals: Integrate Stable Diffusion/DALL·E for comic panels [Phase 2]

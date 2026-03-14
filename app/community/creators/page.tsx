@@ -242,7 +242,7 @@ export default function CreatorsPage() {
     const fetchCreators = async () => {
       try {
         setIsLoading(true);
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
         const res = await fetch(`${baseUrl}/api/v1/users/top-creators`);
         if (!res.ok) throw new Error('Failed to fetch creators');
         const json = await res.json();

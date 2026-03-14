@@ -45,7 +45,7 @@ export default function ShaktiSparkPage() {
     setGeneratedContent('');
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
       const response = await fetch(`${apiUrl}/api/groq`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -86,10 +86,14 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
 
   const handleGoogleSignIn = async () => {
     try {
+      // Use the canonical app URL if available, otherwise fallback to current origin
+      const baseUrl = process.env.NEXT_PUBLIC_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+      const redirectTo = `${baseUrl}/auth/callback`;
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo,
         },
       });
       if (error) throw error;

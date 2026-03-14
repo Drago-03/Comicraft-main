@@ -22,7 +22,7 @@ export function useUserRole() {
                     return;
                 }
 
-                const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
                 if (!baseUrl) {
                     setRole(null);
                     setLoading(false);

@@ -15,16 +15,17 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     
     if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host');
       const isLocalEnv = process.env.NODE_ENV === 'development';
+      const preferredOrigin = process.env.NEXT_PUBLIC_URL || origin;
       
-      // Handle redirects correctly depending on environment and load balancers
+      // Handle redirects correctly depending on environment
       if (isLocalEnv) {
         return NextResponse.redirect(`${origin}${next}`);
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`);
       } else {
-        return NextResponse.redirect(`${origin}${next}`);
+        // Always redirect back to the canonical frontend URL in production
+        // to ensure the user stays on the correct domain (e.g. comicraft.xyz)
+        // instead of being trapped on the backend's Render URL.
+        return NextResponse.redirect(`${preferredOrigin}${next}`);
       }
     }
     

@@ -23,6 +23,8 @@ export function AuthSync() {
         if (session.refresh_token) {
           localStorage.setItem('refreshToken', session.refresh_token);
         }
+        // Notify other components that auth state has changed
+        window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
       }
     });
 
@@ -33,9 +35,12 @@ export function AuthSync() {
         if (session.refresh_token) {
           localStorage.setItem('refreshToken', session.refresh_token);
         }
+        // Notify other components that auth state has changed
+        window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
       } else if (event === 'SIGNED_OUT') {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
+        window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken', newValue: null }));
       }
     });
 

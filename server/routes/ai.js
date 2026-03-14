@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 // const groqService = require('../services/groqService'); // DEPRECATED - Migrated to Gemini 3
 const geminiService = require('../services/geminiService');
+const { storyAgent: iqaiAgent } = require('../services/iqai-agent');
 
 /**
  * @swagger
@@ -16,8 +17,8 @@ const geminiService = require('../services/geminiService');
  *       - AI
  *     summary: Generate content with AI
  *     description: |
- *       Uses Groq AI to generate story content, comic scripts, novel chapters,
- *       or other creative text based on a prompt and parameters.
+ *       Uses IQai Story Agent (Gemini-powered) to generate story content, 
+ *       comic scripts, novel chapters, or other creative text.
  *     requestBody:
  *       required: true
  *       content:
@@ -32,7 +33,7 @@ const geminiService = require('../services/geminiService');
  *                 example: "Write a sci-fi opening paragraph about Mars colonization"
  *               model:
  *                 type: string
- *                 default: llama-3.3-70b-versatile
+ *                 default: gemini-3.1-pro
  *               formatType:
  *                 type: string
  *                 enum: [story, comic, novel, storybook]
@@ -98,29 +99,26 @@ router.post('/generate', async (req, res) => {
       return res.status(400).json({ error: 'prompt or parameters.theme is required' });
     }
 
-    // Build prompt with parameters - delegate to Gemini
-    let fullPrompt = prompt || '';
-    if (parameters.theme) fullPrompt += `\nTheme: ${parameters.theme}`;
-    if (parameters.genre) fullPrompt += `\nGenre: ${parameters.genre}`;
-    if (parameters.length) fullPrompt += `\nLength: ${parameters.length}`;
-    if (parameters.tone) fullPrompt += `\nTone: ${parameters.tone}`;
-    if (parameters.characters) fullPrompt += `\nCharacters: ${parameters.characters}`;
-    if (parameters.setting) fullPrompt += `\nSetting: ${parameters.setting}`;
-    if (formatType) fullPrompt += `\nFormat: ${formatType}`;
-
-    const content = await geminiService.generateContent({
-      prompt: fullPrompt,
-      config: {
+    // Delegate to IQai Story Agent if available, otherwise fallback to Gemini directly
+    const content = await iqaiAgent.run({
+        prompt: prompt || parameters.theme,
+        genre: parameters.genre,
+        theme: parameters.theme,
+        length: parameters.length,
+        tone: parameters.tone,
+        characters: parameters.characters,
+        setting: parameters.setting,
+        formatType: formatType || 'story',
         temperature: parameters.temperature || 0.8,
-        maxTokensPerResponse: parameters.maxTokens || 1200,
-      },
+        maxTokens: parameters.maxTokens || 1200
     });
 
     res.json({
       content,
-      model: model || 'gemini-2.5-pro',
-      tokensUsed: { total: 0 }, // Gemini doesn't return token counts in the same way
+      model: model || 'gemini-3.1-pro',
+      tokensUsed: { total: 0 },
       generatedAt: new Date().toISOString(),
+      agentUsed: iqaiAgent.isAdkAvailable() ? 'IQai Story Agent' : 'Gemini Direct'
     });
   } catch (error) {
     console.error('AI generate error:', error);

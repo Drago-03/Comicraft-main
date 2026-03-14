@@ -8,7 +8,7 @@ export async function loginWithUsernameOrEmail(
     password: string
 ) {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
         const res = await fetch(`${baseUrl}/api/v1/auth/login-username`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
