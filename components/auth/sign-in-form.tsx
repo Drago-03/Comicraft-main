@@ -8,7 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Lock, LogIn, CheckCircle2, AlertCircle, Eye, EyeOff, Github } from 'lucide-react';
+import { Lock, LogIn, CheckCircle2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import WalletConnect from '@/components/wallet-connect';
 import { loginWithUsernameOrEmail } from '@/app/actions/auth';
@@ -27,56 +27,28 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
   const supabase = createClient();
 
   const validateForm = () => {
-    if (!identifier.trim()) {
-      setErrorMsg('Email or Username is required');
-      return false;
-    }
-    if (!password) {
-      setErrorMsg('Password is required');
-      return false;
-    }
-    if (password.length < 6) {
-      setErrorMsg('Password must be at least 6 characters');
-      return false;
-    }
+    if (!identifier.trim()) { setErrorMsg('Email or Username is required'); return false; }
+    if (!password) { setErrorMsg('Password is required'); return false; }
+    if (password.length < 6) { setErrorMsg('Password must be at least 6 characters'); return false; }
     return true;
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-
     setLoading(true);
     setErrorMsg('');
-    
     try {
       const result = await loginWithUsernameOrEmail(identifier, password);
-
-      if (result.error) {
-        throw new Error(result.error);
-      }
-
-      // Persist tokens so dashboard, profile, and API calls can authenticate
+      if (result.error) throw new Error(result.error);
       if (result.data?.tokens?.accessToken && typeof window !== 'undefined') {
         localStorage.setItem('accessToken', result.data.tokens.accessToken);
-        if (result.data.tokens.refreshToken) {
-          localStorage.setItem('refreshToken', result.data.tokens.refreshToken);
-        }
-        // Notify other tabs/hooks that auth state changed
+        if (result.data.tokens.refreshToken) localStorage.setItem('refreshToken', result.data.tokens.refreshToken);
         window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
       }
-      
       setSuccess(true);
-      toast({
-        title: 'Authentication Successful',
-        description: 'You have securely logged in.',
-      });
-      
-      setTimeout(() => {
-        router.push('/dashboard');
-        router.refresh();
-      }, 800);
-      
+      toast({ title: 'Authentication Successful', description: 'You have securely logged in.' });
+      setTimeout(() => { router.push('/dashboard'); router.refresh(); }, 800);
     } catch (error: any) {
       setErrorMsg(error.message || 'Failed to sign in. Please check your credentials.');
     } finally {
@@ -86,17 +58,9 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
 
   const handleGoogleSignIn = async () => {
     try {
-      const redirectTo = `${window.location.origin}/auth/callback`;
-
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: {
-          redirectTo,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
       });
       if (error) throw error;
     } catch (error: any) {
@@ -104,133 +68,118 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
     }
   };
 
-  const handleGithubSignIn = async () => {
-    try {
-      const redirectTo = `${window.location.origin}/auth/callback`;
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo,
-        },
-      });
-      if (error) throw error;
-    } catch (error: any) {
-      setErrorMsg(error.message || 'Error communicating with GitHub authentication');
-    }
-  };
+  const inputBase = (field: string) =>
+    `relative flex items-center border-[3px] transition-colors ${
+      focusedField === field ? 'border-[#cc3333] bg-white' : 'border-black bg-white'
+    }`;
 
   return (
-    <div className="w-full max-w-md px-6 py-12 relative z-10 flex flex-col">
-      <div className="flex flex-col items-center mb-10">
-        <Link href="/" className="mb-6 block transition-opacity hover:opacity-80">
-          <div className="relative w-16 h-16">
-            <Image src="/logo.png" alt="Comicraft Logo" fill className="object-contain" priority />
+    <div className="w-full max-w-md px-6 py-8 relative z-10 flex flex-col">
+      {/* Header */}
+      <div className="flex flex-col items-center mb-8">
+        <Link href="/" className="mb-5 block">
+          <div className="relative w-14 h-14 border-[3px] border-black shadow-[3px_3px_0_0_#000] bg-white flex items-center justify-center">
+            <Image src="/logo.png" alt="Comicraft Logo" fill className="object-contain p-1" priority />
           </div>
         </Link>
-        <h1 className="text-2xl font-semibold tracking-tight text-white mb-2">Sign in to Comicraft</h1>
-        <p className="text-neutral-400 text-sm text-center">Manage your content, libraries, and Web3 portfolio</p>
+        <div className="inline-flex items-center gap-2 px-3 py-1 border-[2px] border-black bg-[#cc3333] shadow-[3px_3px_0_0_#000] text-[10px] font-black text-white uppercase tracking-widest mb-3">
+          Sign In
+        </div>
+        <h1 className="text-3xl font-black italic uppercase text-black tracking-tighter" style={{ WebkitTextStroke: '0.5px black' }}>
+          Welcome Back
+        </h1>
+        <p className="text-black/60 text-sm font-bold mt-1 text-center">Manage your content, libraries &amp; Web3 portfolio</p>
       </div>
 
-      <div className="bg-[#121214] border border-neutral-800 p-8 rounded-2xl shadow-xl w-full">
+      {/* Card */}
+      <div className="bg-white border-[3px] border-black shadow-[6px_6px_0_0_#000] p-7 w-full">
         <form onSubmit={handleSignIn} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="identifier" className="text-xs font-medium text-neutral-400 uppercase tracking-widest">
+          {/* Email/Username */}
+          <div className="space-y-1.5">
+            <Label htmlFor="identifier" className="text-[10px] font-black text-black uppercase tracking-widest">
               Email / Username
             </Label>
-            <div className={`relative flex items-center rounded-xl border transition-colors ${focusedField === 'identifier' ? 'border-neutral-500 bg-[#1c1c1f]' : 'border-neutral-800 bg-[#141417]'}`}>
-              <svg className={`absolute left-4 w-4 h-4 transition-colors ${focusedField === 'identifier' ? 'text-neutral-300' : 'text-neutral-600'}`} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-              <Input 
-                id="identifier" 
-                type="text" 
-                autoComplete="username"
-                required 
-                value={identifier}
-                disabled={loading || success}
-                onFocus={() => setFocusedField('identifier')}
-                onBlur={() => setFocusedField(null)}
+            <div className={inputBase('identifier')}>
+              <svg className={`absolute left-3 w-4 h-4 ${focusedField === 'identifier' ? 'text-[#cc3333]' : 'text-black/40'}`} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <Input
+                id="identifier" type="text" autoComplete="username" required
+                value={identifier} disabled={loading || success}
+                onFocus={() => setFocusedField('identifier')} onBlur={() => setFocusedField(null)}
                 onChange={(e) => setIdentifier(e.target.value)}
-                className="w-full h-12 pl-11 pr-4 bg-transparent border-none text-neutral-200 placeholder:text-neutral-600 focus-visible:ring-0 shadow-none text-sm rounded-xl"
+                className="w-full h-11 pl-10 pr-4 bg-transparent border-none text-black placeholder:text-black/30 focus-visible:ring-0 shadow-none text-sm font-bold"
                 placeholder="name@company.com or username"
               />
             </div>
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-xs font-medium text-neutral-400 uppercase tracking-widest">
+
+          {/* Password */}
+          <div className="space-y-1.5">
+            <Label htmlFor="password" className="text-[10px] font-black text-black uppercase tracking-widest">
               Password
             </Label>
-            <div className={`relative flex items-center rounded-xl border transition-colors ${focusedField === 'password' ? 'border-neutral-500 bg-[#1c1c1f]' : 'border-neutral-800 bg-[#141417]'}`}>
-              <Lock className={`absolute left-4 w-4 h-4 transition-colors ${focusedField === 'password' ? 'text-neutral-300' : 'text-neutral-600'}`} />
-              <Input 
-                id="password" 
-                type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
-                required 
-                value={password}
-                disabled={loading || success}
-                onFocus={() => setFocusedField('password')}
-                onBlur={() => setFocusedField(null)}
+            <div className={inputBase('password')}>
+              <Lock className={`absolute left-3 w-4 h-4 ${focusedField === 'password' ? 'text-[#cc3333]' : 'text-black/40'}`} />
+              <Input
+                id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required
+                value={password} disabled={loading || success}
+                onFocus={() => setFocusedField('password')} onBlur={() => setFocusedField(null)}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-12 pl-11 pr-12 bg-transparent border-none text-neutral-200 placeholder:text-neutral-600 focus-visible:ring-0 shadow-none text-sm rounded-xl"
+                className="w-full h-11 pl-10 pr-12 bg-transparent border-none text-black placeholder:text-black/30 focus-visible:ring-0 shadow-none text-sm font-bold"
                 placeholder="••••••••"
               />
               <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-pressed={showPassword}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-4 text-neutral-500 hover:text-neutral-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 rounded-sm transition-colors"
+                type="button" onClick={() => setShowPassword(!showPassword)}
+                aria-pressed={showPassword} aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-3 text-black/40 hover:text-[#cc3333] focus:outline-none transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
 
+          {/* Error */}
           {errorMsg && (
-            <div className="flex items-center gap-2 text-red-400 text-xs font-medium bg-red-950/30 border border-red-900/50 p-3 rounded-lg animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-2 text-[#cc3333] text-xs font-black bg-[#cc3333]/10 border-[2px] border-[#cc3333] p-3">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
-          <Button 
-            type="submit" 
-            disabled={loading || success}
-            className="w-full h-12 rounded-xl bg-white text-black hover:bg-neutral-200 transition-colors text-sm font-semibold tracking-wide flex items-center justify-center mt-2 group"
+          {/* Submit */}
+          <Button
+            type="submit" disabled={loading || success}
+            className="w-full h-12 bg-[#cc3333] hover:bg-black text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1 active:shadow-none font-black uppercase tracking-wide rounded-none transition-all mt-1"
           >
             {success ? (
-              <div className="flex items-center gap-2 text-green-700">
-                <CheckCircle2 className="w-5 h-5" />
-                <span>Authenticated</span>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5" /> Authenticated
               </div>
             ) : loading ? (
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                <span>Signing In...</span>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Signing In...
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <span>Sign In</span>
-                <LogIn className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity" />
+                Sign In <LogIn className="w-4 h-4" />
               </div>
             )}
           </Button>
         </form>
 
-        <div className="my-6 relative flex items-center py-2">
-          <div className="flex-grow border-t border-neutral-800"></div>
-          <span className="flex-shrink-0 mx-4 text-xs font-medium uppercase tracking-widest text-neutral-500">Or continue with</span>
-          <div className="flex-grow border-t border-neutral-800"></div>
+        {/* Divider */}
+        <div className="my-5 flex items-center">
+          <div className="flex-1 h-[2px] bg-black/10" />
+          <span className="mx-4 text-[10px] font-black uppercase tracking-widest text-black/40">Or continue with</span>
+          <div className="flex-1 h-[2px] bg-black/10" />
         </div>
 
+        {/* OAuth */}
         <div className="space-y-3">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={handleGoogleSignIn}
+          <Button
+            type="button" variant="outline" onClick={handleGoogleSignIn}
             disabled={loading || success}
-            className="w-full h-11 rounded-xl bg-[#18181b] border-neutral-800 hover:bg-[#202024] hover:border-neutral-700 text-neutral-300 transition-colors text-sm font-medium"
+            className="w-full h-11 bg-white border-[3px] border-black shadow-[3px_3px_0_0_#000] hover:bg-black hover:text-white text-black font-black uppercase tracking-wide rounded-none transition-all text-sm"
           >
             <svg className="w-4 h-4 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -240,31 +189,22 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
             </svg>
             Google
           </Button>
-
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={handleGithubSignIn}
-            disabled={loading || success}
-            className="w-full h-11 rounded-xl bg-[#18181b] border-neutral-800 hover:bg-[#202024] hover:border-neutral-700 text-neutral-300 transition-colors text-sm font-medium"
-          >
-            <Github className="w-4 h-4 mr-3" />
-            GitHub
-          </Button>
-
           <div className="w-full relative">
             <WalletConnect />
           </div>
         </div>
       </div>
 
-      <p className="mt-8 text-center text-sm text-neutral-500 font-medium">
+      {/* Toggle */}
+      <p className="mt-6 text-center text-sm text-black/60 font-bold">
         Need to create an account?{' '}
-        <button onClick={onToggleMode} className="text-white hover:text-neutral-300 transition-colors ml-1 font-semibold focus:outline-none">
-          Register Here
+        <button
+          onClick={onToggleMode}
+          className="text-[#cc3333] hover:text-black font-black transition-colors ml-1 focus:outline-none underline underline-offset-2"
+        >
+          Register Here →
         </button>
       </p>
-      
     </div>
   );
 }

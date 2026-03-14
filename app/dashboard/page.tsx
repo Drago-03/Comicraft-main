@@ -521,9 +521,9 @@ export default function DashboardPage() {
                 label: 'Drafts',
                 value: profile?.stats.drafts || 0,
                 icon: PenLine,
-                color: 'emerald',
-                gradient: 'from-emerald-500/10 to-emerald-600/5',
-                border: 'border-emerald-500/15',
+                color: 'red',
+                gradient: 'from-red-500/10 to-red-600/5',
+                border: 'border-red-500/15',
               },
             ].map((stat) => {
               const Icon = stat.icon;
@@ -656,7 +656,7 @@ export default function DashboardPage() {
                                     variant="outline"
                                     className={`text-[10px] ${
                                       story.status === 'published'
-                                        ? 'border-emerald-500/30 text-emerald-400'
+                                        ? 'border-red-500/30 text-red-400'
                                         : 'border-white/10 text-white/30'
                                     }`}
                                   >
@@ -755,7 +755,7 @@ export default function DashboardPage() {
                                   variant="outline"
                                   className={`text-[9px] ${
                                     comic.status === 'published'
-                                      ? 'border-emerald-500/30 text-emerald-400'
+                                      ? 'border-red-500/30 text-red-400'
                                       : 'border-amber-500/20 text-amber-400/60'
                                   }`}
                                 >
@@ -810,7 +810,7 @@ export default function DashboardPage() {
                                   variant="outline"
                                   className={`text-[9px] ${
                                     (nft.status === 'minted' || nft.tokenId)
-                                      ? 'border-emerald-500/30 text-emerald-400'
+                                      ? 'border-red-500/30 text-red-400'
                                       : 'border-white/10 text-white/30'
                                   }`}
                                 >
@@ -894,7 +894,7 @@ export default function DashboardPage() {
                           <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl">
                             <CardHeader className="pb-3">
                               <CardTitle className="text-sm flex items-center gap-2 text-white/90">
-                                <Wallet className="w-4 h-4 text-emerald-400" />
+                                <Wallet className="w-4 h-4 text-red-400" />
                                 Ethereum Balance
                               </CardTitle>
                             </CardHeader>
@@ -1040,7 +1040,7 @@ export default function DashboardPage() {
                         <motion.span
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="text-xs text-emerald-400"
+                          className="text-xs text-red-400"
                         >
                           Changes saved successfully
                         </motion.span>

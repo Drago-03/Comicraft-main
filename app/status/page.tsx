@@ -28,7 +28,7 @@ interface HealthData {
 
 const StatusIndicator = ({ status }: { status: 'ok' | 'degraded' | 'error' }) => {
   const colors = {
-    ok: 'bg-green-500',
+    ok: 'bg-red-500',
     degraded: 'bg-yellow-500',
     error: 'bg-red-500',
   };
@@ -37,7 +37,7 @@ const StatusIndicator = ({ status }: { status: 'ok' | 'degraded' | 'error' }) =>
 
 const StatusBadge = ({ status }: { status: 'operational' | 'degraded' | 'offline' }) => {
   const styles = {
-    operational: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200',
+    operational: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200',
     degraded: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200',
     offline: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200',
   };

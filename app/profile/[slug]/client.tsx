@@ -125,7 +125,7 @@ function moderationBadge(status?: string) {
     if (!status) return null;
     const map: Record<string, { label: string; className: string }> = {
         pending: { label: 'Pending Review', className: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
-        approved: { label: 'Approved', className: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
+        approved: { label: 'Approved', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
         rejected: { label: 'Rejected', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
     };
     const s = map[status];
@@ -606,8 +606,8 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                             label: 'Total Views',
                             value: stats.totalViews,
                             icon: Eye,
-                            color: 'text-emerald-400',
-                            bg: 'bg-emerald-500/10',
+                            color: 'text-red-400',
+                            bg: 'bg-red-500/10',
                         },
                         {
                             label: 'Total Likes',

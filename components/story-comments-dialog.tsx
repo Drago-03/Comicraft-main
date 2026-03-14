@@ -278,7 +278,7 @@ export default function StoryCommentsDialog({
                                   onClick={() =>
                                     handleModerateComment(comment.id, 'approve')
                                   }
-                                  className="text-green-600 hover:text-green-700"
+                                  className="text-red-600 hover:text-red-700"
                                   title="Approve comment"
                                 >
                                   <AlertTriangle className="w-4 h-4" />

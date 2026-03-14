@@ -20,7 +20,7 @@ const moods = [
   { id: 'dark', label: '🌑 Dark', color: 'border-purple-500/40 bg-purple-500/10 text-purple-300' },
   { id: 'whimsical', label: '✨ Whimsical', color: 'border-pink-500/40 bg-pink-500/10 text-pink-300' },
   { id: 'tense', label: '🔥 Tense', color: 'border-red-500/40 bg-red-500/10 text-red-300' },
-  { id: 'hopeful', label: '🌅 Hopeful', color: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300' },
+  { id: 'hopeful', label: '🌅 Hopeful', color: 'border-red-500/40 bg-red-500/10 text-red-300' },
   { id: 'mysterious', label: '🔮 Mysterious', color: 'border-indigo-500/40 bg-indigo-500/10 text-indigo-300' },
 ];
 
@@ -115,13 +115,10 @@ export default function ShaktiSparkPage() {
   }, [generatedContent, selectedGenre, prompt, router]);
 
   return (
-    <div className="min-h-screen relative bg-black text-white font-sans overflow-hidden">
+    <div className="min-h-screen relative bg-black text-black font-sans overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(245,158,11,0.08),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(168,85,247,0.06),_transparent_50%)]" />
-        <div className="absolute w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] mix-blend-overlay" />
-      </div>
+        
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -137,14 +134,14 @@ export default function ShaktiSparkPage() {
                 <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-amber-400" />
                 </div>
-                <h1 className="text-3xl font-black text-white uppercase tracking-tight">
+                <h1 className="text-3xl font-black text-black uppercase tracking-tight">
                   Shakti Spark
                 </h1>
               </div>
-              <p className="text-white/50">Instant ideas and short story sparks.</p>
+              <p className="text-black/70 font-bold">Instant ideas and short story sparks.</p>
             </motion.div>
             <Link href="/create">
-              <button className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300">
+              <button className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-black opacity-20 backdrop-blur-sm text-black/80 font-bold hover:text-black hover:bg-white/10 transition-all duration-300">
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
                 Back to Forge
               </button>
@@ -156,24 +153,24 @@ export default function ShaktiSparkPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl p-6 mb-5"
+            className="bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] p-0 p-6 mb-5"
           >
             {/* Prompt */}
             <div className="mb-5">
-              <label className="block text-sm font-semibold text-white/80 mb-2">
+              <label className="block text-sm font-semibold text-black/90 font-bold mb-2">
                 Your idea seed
               </label>
               <Textarea
                 placeholder="A young alchemist discovers that the city's water supply is turning people into glass sculptures..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/25 rounded-xl resize-none focus:border-amber-500/40 focus:ring-amber-500/20 transition-all"
+                className="min-h-[120px] bg-white/5 border-black opacity-20 text-black placeholder:text-black/25 rounded-xl resize-none focus:border-amber-500/40 focus:ring-amber-500/20 transition-all"
               />
             </div>
 
             {/* Genre Pills */}
             <div className="mb-5">
-              <label className="block text-sm font-semibold text-white/80 mb-2">Genre</label>
+              <label className="block text-sm font-semibold text-black/90 font-bold mb-2">Genre</label>
               <div className="flex flex-wrap gap-2">
                 {genres.map((genre) => (
                   <button
@@ -184,7 +181,7 @@ export default function ShaktiSparkPage() {
                       border
                       ${selectedGenre === genre
                         ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 shadow-sm shadow-amber-500/10'
-                        : 'bg-white/5 border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10'
+                        : 'bg-white/5 border-black opacity-20 text-black/70 font-bold hover:text-black/90 font-bold hover:bg-white/10'
                       }
                     `}
                   >
@@ -196,8 +193,8 @@ export default function ShaktiSparkPage() {
 
             {/* Mood Selector */}
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-white/80 mb-2">
-                Mood <span className="text-white/30 font-normal">(optional)</span>
+              <label className="block text-sm font-semibold text-black/90 font-bold mb-2">
+                Mood <span className="text-black/30 font-normal">(optional)</span>
               </label>
               <div className="flex flex-wrap gap-2">
                 {moods.map((mood) => (
@@ -207,7 +204,7 @@ export default function ShaktiSparkPage() {
                     className={`
                       px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200
                       border
-                      ${selectedMood === mood.id ? mood.color : 'bg-white/5 border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10'}
+                      ${selectedMood === mood.id ? mood.color : 'bg-white/5 border-black opacity-20 text-black/70 font-bold hover:text-black/90 font-bold hover:bg-white/10'}
                     `}
                   >
                     {mood.label}
@@ -226,7 +223,7 @@ export default function ShaktiSparkPage() {
                 w-full py-3.5 rounded-xl font-bold text-base
                 bg-gradient-to-r from-amber-500 to-orange-600
                 hover:from-amber-400 hover:to-orange-500
-                text-white shadow-lg shadow-amber-500/20
+                text-black shadow-lg shadow-amber-500/20
                 border border-amber-400/20
                 flex items-center justify-center gap-2
                 transition-all duration-300
@@ -261,33 +258,33 @@ export default function ShaktiSparkPage() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-                className="rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl overflow-hidden"
+                className="bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] p-0 overflow-hidden"
               >
                 {/* Output Header */}
-                <div className="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between">
+                <div className="px-6 py-4 border-b border-black flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-amber-400" />
-                    <span className="font-semibold text-white/90 text-sm">Generated Spark</span>
+                    <span className="font-semibold text-black font-bold uppercase text-base text-sm">Generated Spark</span>
                   </div>
-                  <span className="text-xs text-white/30">
+                  <span className="text-xs text-black/30">
                     {generatedContent.split(/\s+/).length} words
                   </span>
                 </div>
 
                 {/* Output Content */}
                 <div className="p-6">
-                  <div className="prose prose-invert prose-sm max-w-none text-white/80 leading-relaxed whitespace-pre-wrap">
+                  <div className="prose  prose-sm max-w-none text-black/90 font-bold leading-relaxed whitespace-pre-wrap">
                     {generatedContent}
                   </div>
                 </div>
 
                 {/* Output Actions */}
-                <div className="px-6 py-4 border-t border-white/[0.06] flex flex-wrap gap-3">
+                <div className="px-6 py-4 border-t border-black flex flex-wrap gap-3">
                   <Button
                     onClick={handleSaveDraft}
                     variant="outline"
                     size="sm"
-                    className="bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10 rounded-lg"
+                    className="bg-white/5 border-black opacity-20 text-black/80 font-bold hover:text-black hover:bg-white/10 rounded-lg"
                   >
                     <BookOpen className="w-4 h-4 mr-1.5" />
                     Save as Draft
@@ -296,7 +293,7 @@ export default function ShaktiSparkPage() {
                     onClick={handleOpenInVedaScript}
                     variant="outline"
                     size="sm"
-                    className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/15 rounded-lg"
+                    className="bg-red-500/10 border-red-500/20 text-red-400 hover:text-red-300 hover:bg-red-500/15 rounded-lg"
                   >
                     <ArrowRight className="w-4 h-4 mr-1.5" />
                     Open in VedaScript Engine
@@ -305,7 +302,7 @@ export default function ShaktiSparkPage() {
                     onClick={handleCopy}
                     variant="outline"
                     size="sm"
-                    className="bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10 rounded-lg"
+                    className="bg-white/5 border-black opacity-20 text-black/80 font-bold hover:text-black hover:bg-white/10 rounded-lg"
                   >
                     {copied ? <Check className="w-4 h-4 mr-1.5" /> : <Copy className="w-4 h-4 mr-1.5" />}
                     {copied ? 'Copied' : 'Copy idea'}

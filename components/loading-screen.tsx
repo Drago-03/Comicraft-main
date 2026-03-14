@@ -55,7 +55,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-[-20%] rounded-full border-[2px] border-dashed border-emerald-500/30 opacity-70 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+              className="absolute inset-[-20%] rounded-full border-[2px] border-dashed border-red-500/30 opacity-70 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]"
             />
             <motion.div
               animate={{ rotate: -360 }}

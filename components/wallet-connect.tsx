@@ -240,7 +240,7 @@ export default function WalletConnect() {
             </div>
 
             <div className="p-4 bg-white/5 border-t border-white/5 flex items-center justify-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <ShieldCheck className="w-4 h-4 text-red-400" />
               <p className="text-[11px] text-white/40 font-medium">We never store your private keys. Transactions happen securely in your wallet.</p>
             </div>
           </DialogContent>
@@ -256,7 +256,7 @@ export default function WalletConnect() {
           variant="outline"
           className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white transition-all h-10 font-medium"
         >
-          <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+          <div className="h-2 w-2 rounded-full bg-red-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
           <span className="text-sm">{ensName || truncateAddress(account)}</span>
           <ChevronDown className="h-4 w-4 opacity-50 ml-1" />
         </Button>
@@ -275,7 +275,7 @@ export default function WalletConnect() {
           <div className="flex flex-col overflow-hidden">
             <span className="text-sm font-semibold truncate text-white">{ensName || truncateAddress(account)}</span>
             <span className="text-xs text-white/50 bg-white/5 px-2 py-0.5 rounded-full w-fit mt-1 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
               {networkName || 'Ethereum'}
             </span>
           </div>

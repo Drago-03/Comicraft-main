@@ -162,7 +162,7 @@ export default function AccessControlPage() {
         switch (role) {
             case 'admin': return <ShieldAlert className="w-4 h-4 text-red-400" />;
             case 'moderator': return <ShieldCheck className="w-4 h-4 text-amber-400" />;
-            default: return <UserIcon className="w-4 h-4 text-emerald-400" />;
+            default: return <UserIcon className="w-4 h-4 text-red-400" />;
         }
     };
 
@@ -177,7 +177,7 @@ export default function AccessControlPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-                        <Shield className="w-8 h-8 text-emerald-400" />
+                        <Shield className="w-8 h-8 text-red-400" />
                         Superadmin Access Control
                     </h1>
                     <p className="text-white/60 mt-1">
@@ -192,7 +192,7 @@ export default function AccessControlPage() {
                             placeholder="Search users..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-emerald-500"
+                            className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-red-500"
                         />
                     </div>
                     <Button variant="outline" size="icon" onClick={fetchUsers} disabled={loading} className="border-white/10 hover:bg-white/10">
@@ -249,7 +249,7 @@ export default function AccessControlPage() {
                                                 <div className="flex flex-col gap-1">
                                                     <span className="text-sm text-white/80">{user.email || 'No email provided'}</span>
                                                     {user.wallet?.address && (
-                                                        <span className="text-xs font-mono text-emerald-400/80 bg-emerald-400/10 px-2 py-0.5 rounded-full w-fit">
+                                                        <span className="text-xs font-mono text-red-400/80 bg-red-400/10 px-2 py-0.5 rounded-full w-fit">
                                                             {user.wallet.address.substring(0, 6)}...{user.wallet.address.substring(user.wallet.address.length - 4)}
                                                         </span>
                                                     )}
@@ -268,7 +268,7 @@ export default function AccessControlPage() {
                                                     value={user.role}
                                                     onValueChange={(val) => initiateRoleChange(user._id, val)}
                                                 >
-                                                    <SelectTrigger className="w-[140px] ml-auto bg-black border-white/20 text-white focus:ring-emerald-500 h-9">
+                                                    <SelectTrigger className="w-[140px] ml-auto bg-black border-white/20 text-white focus:ring-red-500 h-9">
                                                         <div className="flex items-center gap-2">
                                                             {getRoleIcon(user.role)}
                                                             <SelectValue placeholder="Select role" />
@@ -277,7 +277,7 @@ export default function AccessControlPage() {
                                                     <SelectContent className="bg-zinc-950 border-white/10 text-white">
                                                         <SelectItem value="user" className="focus:bg-white/10 focus:text-white cursor-pointer">
                                                             <div className="flex items-center gap-2">
-                                                                <UserIcon className="w-4 h-4 text-emerald-400" />
+                                                                <UserIcon className="w-4 h-4 text-red-400" />
                                                                 User
                                                             </div>
                                                         </SelectItem>
@@ -327,7 +327,7 @@ export default function AccessControlPage() {
                                 onChange={(e) => setAdminPassword(e.target.value)}
                                 placeholder="••••••••"
                                 required
-                                className="bg-black/50 border-white/20 text-white focus-visible:ring-emerald-500"
+                                className="bg-black/50 border-white/20 text-white focus-visible:ring-red-500"
                                 autoFocus
                             />
                         </div>
@@ -348,7 +348,7 @@ export default function AccessControlPage() {
                             <Button
                                 type="submit"
                                 disabled={isUpdating || !adminPassword}
-                                className="bg-emerald-600 hover:bg-emerald-500 text-white"
+                                className="bg-red-600 hover:bg-red-500 text-white"
                             >
                                 {isUpdating ? 'Applying Change...' : 'Confirm Role Update'}
                             </Button>

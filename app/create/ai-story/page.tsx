@@ -90,9 +90,9 @@ export default function AIStoryGeneratorPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-screen w-full items-center justify-center bg-black">
+        <div className="flex h-screen w-full items-center justify-center bg-[#EEDFCA]">
           <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-            <PenSquare className="w-12 h-12 text-emerald-500" />
+            <PenSquare className="w-12 h-12 text-[#cc3333]" />
           </motion.div>
         </div>
       }
@@ -604,46 +604,43 @@ function AIStoryContent() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-black text-white font-sans"
+      className="min-h-screen text-black font-sans"
     >
       <GuidedTour steps={AI_STORY_TOUR_STEPS} tourId="ai-story-creation" enabled={true} autoStart={true} />
 
       {/* Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(16,185,129,0.06),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(59,130,246,0.05),_transparent_50%)]" />
-      </div>
+      
 
       <div className="relative z-10">
         {/* ═══ TOP BAR ═══ */}
-        <div className="border-b border-white/[0.06] bg-black/80 backdrop-blur-xl sticky top-0 z-30">
+        <div className="border-b border-black bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] backdrop-blur-xl sticky top-0 z-30">
           <div className="max-w-[1800px] mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                  <PenSquare className="w-5 h-5 text-emerald-400" />
+                <div className="w-9 h-9 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                  <PenSquare className="w-5 h-5 text-red-400" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-white tracking-tight">VedaScript Engine</h1>
-                  <p className="text-xs text-white/40">Deep narrative control for AI-native stories.</p>
+                  <h1 className="text-lg font-bold text-black tracking-tight font-black uppercase text-xl">VedaScript Engine</h1>
+                  <p className="text-xs text-black/60 font-bold">Deep narrative control for AI-native stories.</p>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2" data-tour="save-export">
-              <Button size="sm" variant="outline" onClick={handleSaveDraft} className="bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10 rounded-lg">
+              <Button size="sm" variant="outline" onClick={handleSaveDraft} className="bg-white/5 border-black opacity-20 text-black/80 font-bold hover:text-black hover:bg-white/10 rounded-lg">
                 <Save className="w-4 h-4 mr-1.5" />
                 Save Draft
               </Button>
-              <Button size="sm" variant="outline" onClick={handleDownloadParameters} className="bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/20 rounded-lg">
+              <Button size="sm" variant="outline" onClick={handleDownloadParameters} className="bg-red-500/10 border-red-500/20 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg">
                 <Download className="w-4 h-4 mr-1.5" />
                 Parameters
               </Button>
-              <Button size="sm" variant="outline" onClick={handleCopyStory} className="bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10 rounded-lg">
+              <Button size="sm" variant="outline" onClick={handleCopyStory} className="bg-white/5 border-black opacity-20 text-black/80 font-bold hover:text-black hover:bg-white/10 rounded-lg">
                 <Download className="w-4 h-4 mr-1.5" />
                 Export
               </Button>
               <Link href="/create">
-                <button className="group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all text-sm">
+                <button className="group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-black opacity-20 text-black/70 font-bold hover:text-black hover:bg-white/10 transition-all text-sm">
                   <ArrowLeft className="w-3.5 h-3.5" />
                   Forge
                 </button>
@@ -659,14 +656,14 @@ function AIStoryContent() {
             {/* ── LEFT: Story Structure & Details ── */}
             <div className="lg:col-span-4 space-y-5 sticky top-[72px] h-[calc(100vh-100px)] overflow-y-auto no-scrollbar pointer-events-auto pb-8 pr-2" data-tour="canvas">
               {/* Story Structure */}
-              <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl overflow-hidden shrink-0">
-                <div className="px-4 py-3 border-b border-white/[0.06] flex items-center justify-between">
+              <div className="bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] p-0 overflow-hidden shrink-0">
+                <div className="px-4 py-3 border-b border-black flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Layers className="w-4 h-4 text-blue-400" />
-                    <span className="font-semibold text-sm text-white/90">Story Structure</span>
+                    <span className="font-semibold text-sm text-black font-bold uppercase text-base">Story Structure</span>
                   </div>
                   <Button variant="ghost" size="icon" onClick={handleAddChapter} className="h-6 w-6 hover:bg-white/10">
-                    <Plus className="w-4 h-4 text-emerald-400" />
+                    <Plus className="w-4 h-4 text-red-400" />
                   </Button>
                 </div>
 
@@ -679,23 +676,23 @@ function AIStoryContent() {
                           className={`
                             group relative p-3 rounded-xl border transition-all cursor-pointer select-none
                             ${activeChapterId === chapter.id
-                              ? 'bg-white/10 border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
-                              : 'bg-white/5 border-white/5 hover:bg-white/[0.07] hover:border-white/10'}
+                              ? 'bg-white/10 border-red-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
+                              : 'bg-white/5 border-black opacity-20 hover:bg-white/[0.07] hover:border-black opacity-20'}
                           `}
                         >
                           <div className="flex items-center gap-3">
-                            <GripVertical className="w-4 h-4 text-white/20 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <GripVertical className="w-4 h-4 text-black/20 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity" />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-medium text-emerald-400/80 uppercase tracking-wider">
+                                <span className="text-xs font-medium text-red-400/80 uppercase tracking-wider">
                                   Chapter {chapter.index}
                                 </span>
                                 {chapters.length > 1 && (
                                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button onClick={(e) => { e.stopPropagation(); handleDuplicateChapter(chapter.id); }} className="p-1 hover:text-white text-white/40">
+                                    <button onClick={(e) => { e.stopPropagation(); handleDuplicateChapter(chapter.id); }} className="p-1 hover:text-black text-black/60 font-bold">
                                       <Copy className="w-3 h-3" />
                                     </button>
-                                    <button onClick={(e) => { e.stopPropagation(); handleDeleteChapter(chapter.id); }} className="p-1 hover:text-red-400 text-white/40">
+                                    <button onClick={(e) => { e.stopPropagation(); handleDeleteChapter(chapter.id); }} className="p-1 hover:text-red-400 text-black/60 font-bold">
                                       <Trash2 className="w-3 h-3" />
                                     </button>
                                   </div>
@@ -707,7 +704,7 @@ function AIStoryContent() {
                                   const val = e.target.value;
                                   setChapters(prev => prev.map(c => c.id === chapter.id ? { ...c, title: val } : c));
                                 }}
-                                className="bg-transparent border-none p-0 text-sm font-semibold text-white/90 w-full focus:ring-0 placeholder:text-white/20"
+                                className="bg-transparent border-none p-0 text-sm font-semibold text-black font-bold uppercase text-base w-full focus:ring-0 placeholder:text-black/20"
                                 placeholder="Chapter Title"
                                 onClick={(e) => e.stopPropagation()}
                               />
@@ -721,24 +718,24 @@ function AIStoryContent() {
               </div>
 
               {/* Story Details */}
-              <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl overflow-hidden shrink-0" data-tour="story-details">
-                <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
+              <div className="bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] p-0 overflow-hidden shrink-0" data-tour="story-details">
+                <div className="px-5 py-4 border-b border-black flex items-center gap-2">
                   <FileText className="w-4 h-4 text-amber-400" />
-                  <span className="font-semibold text-sm text-white/90">Story Details</span>
+                  <span className="font-semibold text-sm text-black font-bold uppercase text-base">Story Details</span>
                 </div>
                 <div className="p-5 space-y-4">
                   <div>
-                    <Label className="text-xs font-semibold text-white/60 mb-1.5 block">Title</Label>
+                    <Label className="text-xs font-semibold text-black/70 font-bold mb-1.5 block">Title</Label>
                     <Input
                       placeholder="Your story title..."
                       value={storyPrompt.title}
                       onChange={(e) => setStoryPrompt({ ...storyPrompt, title: e.target.value })}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/25 rounded-lg"
+                      className="bg-white/5 border-black opacity-20 text-black placeholder:text-black/25 rounded-lg"
                     />
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-1.5">
-                      <Label className="text-xs font-semibold text-white/60 block">Genres</Label>
+                      <Label className="text-xs font-semibold text-black/70 font-bold block">Genres</Label>
                       <div className="flex items-center gap-2">
                         {isLocked && (
                           <span className="text-[10px] text-amber-400/70 flex items-center gap-1">
@@ -746,7 +743,7 @@ function AIStoryContent() {
                             Locked
                           </span>
                         )}
-                        <span className="text-[10px] text-white/40">{selectedGenres.length}/2 selected</span>
+                        <span className="text-[10px] text-black/60 font-bold">{selectedGenres.length}/2 selected</span>
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
@@ -761,8 +758,8 @@ function AIStoryContent() {
                               px-3 py-1 rounded-full text-xs font-medium border transition-all flex items-center gap-1.5
                               ${isLocked ? 'cursor-not-allowed opacity-60' : ''}
                               ${isSelected
-                                ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
-                                : 'bg-white/5 border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10'}
+                                ? 'bg-red-500/15 border-red-500/30 text-red-300'
+                                : 'bg-white/5 border-black opacity-20 text-black/70 font-bold hover:text-black/90 font-bold hover:bg-white/10'}
                             `}
                           >
                             {g}
@@ -773,7 +770,7 @@ function AIStoryContent() {
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs font-semibold text-white/60 mb-1.5 block">
+                    <Label className="text-xs font-semibold text-black/70 font-bold mb-1.5 block">
                       {isLocked ? `Chapter ${activeChapter?.index || 1} Prompt` : 'Input Prompt for Story'}
                     </Label>
                     <Textarea
@@ -783,7 +780,7 @@ function AIStoryContent() {
                       }
                       value={storyDescription}
                       onChange={(e) => setStoryDescription(e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/25 rounded-lg resize-none h-24 text-sm"
+                      className="bg-white/5 border-black opacity-20 text-black placeholder:text-black/25 rounded-lg resize-none h-24 text-sm"
                     />
                     {isLocked && (
                       <p className="text-[10px] text-amber-400/50 mt-1">Each chapter can have a different prompt, but genres & parameters stay locked.</p>
@@ -796,15 +793,15 @@ function AIStoryContent() {
 
             {/* ── RIGHT: Story Content Editor ── */}
             <div className="lg:col-span-8 space-y-4 sticky top-[72px]" data-tour="editor">
-              <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl overflow-hidden">
+              <div className="bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] p-0 overflow-hidden">
                 {/* Editor Header */}
-                <div className="px-5 py-3 border-b border-white/[0.06] flex items-center justify-between">
+                <div className="px-5 py-3 border-b border-black flex items-center justify-between">
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setEditorTab('chapter')}
                       className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${editorTab === 'chapter'
-                        ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                        : 'text-white/50 hover:text-white/80'
+                        ? 'bg-red-500/15 text-red-300 border border-red-500/30'
+                        : 'text-black/70 font-bold hover:text-black/90 font-bold'
                         }`}
                     >
                       Current Chapter
@@ -813,13 +810,13 @@ function AIStoryContent() {
                       onClick={() => setEditorTab('compiled')}
                       className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${editorTab === 'compiled'
                         ? 'bg-blue-500/15 text-blue-300 border border-blue-500/30'
-                        : 'text-white/50 hover:text-white/80'
+                        : 'text-black/70 font-bold hover:text-black/90 font-bold'
                         }`}
                     >
                       Compiled Story
                     </button>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-white/30">
+                  <div className="flex items-center gap-3 text-xs text-black/30">
                     <span className="flex items-center gap-1"><Hash className="w-3 h-3" />{totalWordCount} words</span>
                   </div>
                 </div>
@@ -828,7 +825,7 @@ function AIStoryContent() {
                 <div className="min-h-[500px]">
                   {editorTab === 'chapter' ? (
                     <div className="p-5 h-full flex flex-col">
-                      <div className="mb-2 flex items-center justify-between text-xs text-white/40">
+                      <div className="mb-2 flex items-center justify-between text-xs text-black/60 font-bold">
                         <span>Editing: {activeChapter?.title || 'Chapter'}</span>
                         <span>{activeChapter?.content?.split(/\s+/).filter(Boolean).length || 0} words</span>
                       </div>
@@ -836,34 +833,34 @@ function AIStoryContent() {
                         placeholder={`Write ${activeChapter?.title || 'Chapter'} here...`}
                         value={activeChapter?.content || ''}
                         onChange={(e) => updateActiveChapter({ content: e.target.value })}
-                        className="flex-1 w-full min-h-[400px] bg-transparent border-0 text-white/90 placeholder:text-white/20 resize-none focus:ring-0 focus-visible:ring-0 text-sm leading-relaxed p-0 font-serif"
+                        className="flex-1 w-full min-h-[400px] bg-transparent border-0 text-black font-bold uppercase text-base placeholder:text-black/20 resize-none focus:ring-0 focus-visible:ring-0 text-sm leading-relaxed p-0 font-serif"
                       />
                     </div>
                   ) : (
                     <div className="p-5">
                       {chapters.some(ch => ch.content.trim()) ? (
-                        <div className="prose prose-invert prose-sm max-w-none text-white/80 leading-relaxed font-serif space-y-8">
+                        <div className="prose  prose-sm max-w-none text-black/90 font-bold leading-relaxed font-serif space-y-8">
                           {chapters.map((ch, idx) => (
                             <div key={ch.id}>
-                              {idx > 0 && <hr className="border-white/10 my-6" />}
-                              <h2 className="text-lg font-bold text-white/90 mb-3 font-sans">
+                              {idx > 0 && <hr className="border-black opacity-20 my-6" />}
+                              <h2 className="text-lg font-bold text-black font-bold uppercase text-base mb-3 font-sans">
                                 Chapter {idx + 1}: {ch.title}
                               </h2>
                               {ch.content.trim() ? (
-                                <div className="whitespace-pre-wrap text-white/75 leading-[1.8]">
+                                <div className="whitespace-pre-wrap text-black/75 leading-[1.8]">
                                   {ch.content}
                                 </div>
                               ) : (
-                                <p className="text-white/30 italic text-sm">No content yet for this chapter.</p>
+                                <p className="text-black/30 italic text-sm">No content yet for this chapter.</p>
                               )}
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center h-[400px] text-white/30">
+                        <div className="flex flex-col items-center justify-center h-[400px] text-black/30">
                           <AlignLeft className="w-10 h-10 mb-3 opacity-20" />
                           <p className="text-sm">No content generated yet.</p>
-                          <p className="text-xs mt-1 text-white/20">Generate chapters to see the compiled story preview</p>
+                          <p className="text-xs mt-1 text-black/20">Generate chapters to see the compiled story preview</p>
                         </div>
                       )}
                     </div>
@@ -871,7 +868,7 @@ function AIStoryContent() {
                 </div>
 
                 {/* Editor Footer */}
-                <div className="px-5 py-4 border-t border-white/[0.06] space-y-3">
+                <div className="px-5 py-4 border-t border-black space-y-3">
                   <AnimatePresence>
                     {generationError && (
                       <motion.div
@@ -893,10 +890,9 @@ function AIStoryContent() {
                     data-tour="generate-btn"
                     className={`
                       w-full py-3 rounded-xl font-bold text-sm
-                      bg-gradient-to-r from-emerald-600 to-emerald-700
-                      hover:from-emerald-500 hover:to-emerald-600
-                      text-white shadow-lg shadow-emerald-500/15
-                      border border-emerald-400/15
+                      bg-red-500 border-4 border-black text-white hover:bg-red-600 active:translate-y-1 shadow-[4px_4px_0_0_#000]
+                      hover:from-red-500 hover:to-red-600
+                      text-black 
                       flex items-center justify-center gap-2
                       transition-all duration-300
                       disabled:opacity-40 disabled:cursor-not-allowed
@@ -929,19 +925,19 @@ function AIStoryContent() {
                         group relative flex items-center justify-center gap-2
                         py-3 px-4 rounded-xl font-semibold text-sm
                         bg-gradient-to-b from-white/[0.09] to-white/[0.04]
-                        border border-white/15
-                        text-white/80 hover:text-white
+                        border border-black opacity-20
+                        text-black/90 font-bold hover:text-black
                         shadow-[0_2px_12px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)]
                         hover:shadow-[0_4px_20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.12)]
-                        hover:border-white/25
+                        hover:border-black opacity-20
                         transition-all duration-200
                         disabled:opacity-40 disabled:cursor-not-allowed
                       "
                     >
                       {isSavingDraft ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                        <Loader2 className="w-4 h-4 animate-spin text-red-400" />
                       ) : (
-                        <BookmarkCheck className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+                        <BookmarkCheck className="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform" />
                       )}
                       {isSavingDraft ? 'Saving…' : 'Save as Draft'}
                     </motion.button>
@@ -955,9 +951,9 @@ function AIStoryContent() {
                       className="
                         group relative flex items-center justify-center gap-2
                         py-3 px-4 rounded-xl font-semibold text-sm
-                        bg-gradient-to-b from-blue-600/90 to-blue-700/80
+                        bg-gradient-to-b bg-[#cc3333] border-4 border-black text-white hover:bg-black active:translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-[6px_6px_0_0_#000]
                         border border-blue-400/30
-                        text-white
+                        text-black
                         shadow-[0_2px_12px_rgba(59,130,246,0.25),inset_0_1px_0_rgba(255,255,255,0.12)]
                         hover:shadow-[0_4px_20px_rgba(59,130,246,0.35),inset_0_1px_0_rgba(255,255,255,0.15)]
                         hover:from-blue-500/90 hover:to-blue-600/80
@@ -978,7 +974,7 @@ function AIStoryContent() {
                   <div className="flex gap-2">
                     <button
                       onClick={handleCopyStory}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/5 border border-white/10 text-white/50 text-sm hover:text-white/80 hover:bg-white/10 transition-all"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/5 border border-black opacity-20 text-black/70 font-bold text-sm hover:text-black/90 font-bold hover:bg-white/10 transition-all"
                     >
                       {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                       {copied ? 'Copied' : 'Copy'}
@@ -999,7 +995,7 @@ function AIStoryContent() {
 
           {/* ── BOTTOM: Advanced VedaScript Parameters ── */}
           <div className="mt-5" data-tour="parameters">
-            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl overflow-hidden">
+            <div className="bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] p-0 overflow-hidden">
               {/* Summary Bar */}
               <div className="px-6 py-5 flex items-center justify-between bg-white/[0.02]">
                 <div className="flex items-center gap-4">
@@ -1007,9 +1003,9 @@ function AIStoryContent() {
                     <Settings2 className="w-5 h-5 text-purple-400" />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-white/90">
+                    <h3 className="text-base font-semibold text-black font-bold uppercase text-base">
                       Advanced VedaScript Parameters
-                      <span className="text-white/30 font-normal text-sm ml-2">(Optional)</span>
+                      <span className="text-black/30 font-normal text-sm ml-2">(Optional)</span>
                       {isLocked && (
                         <span className="text-amber-400/70 font-normal text-xs ml-2 inline-flex items-center gap-1">
                           <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
@@ -1017,13 +1013,13 @@ function AIStoryContent() {
                         </span>
                       )}
                     </h3>
-                    <p className="text-sm text-white/40">{selectedParameters.size} active parameters modifying the AI behavior</p>
+                    <p className="text-sm text-black/60 font-bold">{selectedParameters.size} active parameters modifying the AI behavior</p>
                   </div>
                 </div>
                 <Button
                   variant="outline"
                   onClick={() => isLocked ? toast({ title: 'Parameters Locked', description: 'Parameters are locked after first chapter generation for story consistency.', variant: 'destructive' }) : setIsParamsExpanded(!isParamsExpanded)}
-                  className={`bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10 ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
+                  className={`bg-white/5 border-black opacity-20 text-black/80 font-bold hover:text-black hover:bg-white/10 ${isLocked ? 'opacity-60 cursor-not-allowed' : ''}`}
                 >
                   {isLocked ? 'Locked' : isParamsExpanded ? 'Hide Parameters' : 'Configure Parameters'}
                   {!isLocked && (isParamsExpanded ? <ChevronDown className="w-4 h-4 ml-2" /> : <ChevronRight className="w-4 h-4 ml-2" />)}
@@ -1037,7 +1033,7 @@ function AIStoryContent() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="border-t border-white/[0.06]"
+                    className="border-t border-black"
                   >
                     <div className="p-6">
                       <ParameterPanel
@@ -1049,20 +1045,20 @@ function AIStoryContent() {
                         showStats={true}
                       />
                     </div>
-                    <div className="px-6 py-4 border-t border-white/[0.06] flex justify-end gap-3 bg-black/40 backdrop-blur-md">
+                    <div className="px-6 py-4 border-t border-black flex justify-end gap-3 bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] backdrop-blur-md">
                       <Button
                         variant="ghost"
                         onClick={() => {
                           setSelectedParameters(new Set());
                           setParameterValues({});
                         }}
-                        className="text-white/50 hover:text-white hover:bg-white/10"
+                        className="text-black/70 font-bold hover:text-black hover:bg-white/10"
                       >
                         Reset to Defaults
                       </Button>
                       <Button
                         onClick={() => setIsParamsExpanded(false)}
-                        className="bg-purple-600 hover:bg-purple-500 text-white border-0"
+                        className="bg-purple-600 hover:bg-purple-500 text-black border-0"
                       >
                         Apply Settings
                       </Button>

@@ -152,7 +152,7 @@ export function UserNav() {
         size="sm"
         asChild
         aria-label="Login or create account"
-        className="flex items-center gap-2 px-5 py-2 rounded-full border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:bg-emerald-500 hover:text-black hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all duration-300 uppercase tracking-wider text-xs"
+        className="flex items-center gap-2 px-5 py-2 rounded-full border border-red-500/50 bg-red-500/10 text-red-400 font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:bg-red-500 hover:text-black hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all duration-300 uppercase tracking-wider text-xs"
       >
         <Link href="/sign-in">Login</Link>
       </Button>
@@ -173,7 +173,7 @@ export function UserNav() {
         className="w-72 p-0 overflow-hidden border border-white/10 shadow-2xl bg-black/95 backdrop-blur-xl rounded-xl"
         align="end"
       >
-        <DropdownMenuLabel className="bg-emerald-500/10 text-emerald-400 border-b border-white/10 py-3 font-semibold uppercase tracking-wider text-xs flex items-center justify-between">
+        <DropdownMenuLabel className="bg-red-500/10 text-red-400 border-b border-white/10 py-3 font-semibold uppercase tracking-wider text-xs flex items-center justify-between">
           <span>User Controls</span>
           {role && role !== 'user' && roleBadgeStyles[role] && (
             <span className={`text-[9px] px-1.5 py-0.5 rounded border ${roleBadgeStyles[role].className}`}>
@@ -225,7 +225,7 @@ export function UserNav() {
             {!account && (
               <DropdownMenuItem
                 onClick={() => connectWallet()}
-                className="cursor-pointer focus:bg-emerald-500/10 focus:text-emerald-400 text-emerald-500 rounded-none transition-all uppercase py-2 font-semibold"
+                className="cursor-pointer focus:bg-red-500/10 focus:text-red-400 text-red-500 rounded-none transition-all uppercase py-2 font-semibold"
               >
                 <Wallet className="mr-2 h-4 w-4" />
                 <span>Connect Web3 Wallet</span>
@@ -313,7 +313,7 @@ export function UserNav() {
             <p className="text-[10px] font-semibold uppercase text-white/50 tracking-wider mb-1">
               Active Identity
             </p>
-            <div className="text-xs font-mono uppercase tracking-widest bg-black/50 border border-white/5 rounded-md px-3 py-1.5 overflow-hidden text-ellipsis whitespace-nowrap text-emerald-400">
+            <div className="text-xs font-mono uppercase tracking-widest bg-black/50 border border-white/5 rounded-md px-3 py-1.5 overflow-hidden text-ellipsis whitespace-nowrap text-red-400">
               {account ? truncateAddress(account) : session?.user?.email}
             </div>
           </div>

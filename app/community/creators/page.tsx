@@ -311,7 +311,7 @@ export default function CreatorsPage() {
         );
       default:
         return (
-          <Badge className="bg-green-500/20 text-green-600 border-green-500">
+          <Badge className="bg-red-500/20 text-red-600 border-red-500">
             <BookOpen className="h-3 w-3 mr-1" />
             Creator
           </Badge>
@@ -327,12 +327,12 @@ export default function CreatorsPage() {
       transition={{ duration: 0.3, delay: index * 0.05 }}
       className="w-full relative group"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <Card className="bg-black/60 border border-white/10 backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-300 hover:border-emerald-500/30 relative z-10">
+      <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-blue-500/10 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <Card className="bg-black/60 border border-white/10 backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-300 hover:border-red-500/30 relative z-10">
         {creator.featured && (
           <div className="absolute top-3 right-3 z-10">
-            <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 font-bold">
-              <Star className="h-3 w-3 mr-1.5 fill-emerald-400" />
+            <Badge className="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 font-bold">
+              <Star className="h-3 w-3 mr-1.5 fill-red-400" />
               Featured
             </Badge>
           </div>
@@ -341,9 +341,9 @@ export default function CreatorsPage() {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 text-center md:text-left">
             <div className="relative group/avatar cursor-pointer shrink-0">
-              <div className="absolute inset-0 bg-emerald-500 rounded-full blur-md opacity-0 group-hover/avatar:opacity-40 transition-opacity" />
+              <div className="absolute inset-0 bg-red-500 rounded-full blur-md opacity-0 group-hover/avatar:opacity-40 transition-opacity" />
               <Link href={`/profile/${creator.username.replace('@', '')}`}>
-                <Avatar className="w-24 h-24 border-2 border-white/10 group-hover/avatar:border-emerald-500/40 transition-colors">
+                <Avatar className="w-24 h-24 border-2 border-white/10 group-hover/avatar:border-red-500/40 transition-colors">
                   <AvatarImage
                     src={creator.avatar}
                     alt={`${creator.name}'s profile picture`}
@@ -366,10 +366,10 @@ export default function CreatorsPage() {
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
                   <div>
-                    <Link href={`/profile/${creator.username.replace('@', '')}`} className="hover:text-emerald-400 transition-colors">
+                    <Link href={`/profile/${creator.username.replace('@', '')}`} className="hover:text-red-400 transition-colors">
                       <h3 className="font-bold text-2xl text-white tracking-tight">{creator.name}</h3>
                     </Link>
-                    <p className="text-sm font-medium text-emerald-400/80">{creator.username}</p>
+                    <p className="text-sm font-medium text-red-400/80">{creator.username}</p>
                   </div>
                   <div>{renderBadge(creator.badge)}</div>
                 </div>
@@ -404,7 +404,7 @@ export default function CreatorsPage() {
                   <span className="text-xs font-semibold uppercase tracking-wider text-white/40 mb-1">Rating</span>
                   <span className="font-bold text-lg text-white flex items-center justify-center md:justify-start">
                     {creator.rating}
-                    <Star className="h-4 w-4 text-emerald-400 ml-1.5" fill="currentColor" />
+                    <Star className="h-4 w-4 text-red-400 ml-1.5" fill="currentColor" />
                   </span>
                 </div>
               </div>
@@ -429,18 +429,18 @@ export default function CreatorsPage() {
     <div className="space-y-8 max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
         <div className="flex-1 w-full relative group">
-          <Search className="absolute left-3.5 top-3.5 h-5 w-5 text-white/40 group-focus-within:text-emerald-400 transition-colors" />
+          <Search className="absolute left-3.5 top-3.5 h-5 w-5 text-white/40 group-focus-within:text-red-400 transition-colors" />
           <Input
             type="search"
             placeholder="Search creators by designation or tags..."
-            className="pl-11 h-12 bg-black/50 border-white/10 focus-visible:ring-emerald-500 rounded-xl text-white placeholder:text-white/20 transition-all hover:bg-black/70 w-full"
+            className="pl-11 h-12 bg-black/50 border-white/10 focus-visible:ring-red-500 rounded-xl text-white placeholder:text-white/20 transition-all hover:bg-black/70 w-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex gap-3 w-full sm:w-auto">
           <Select value={filterOption} onValueChange={setFilterOption}>
-            <SelectTrigger className="w-full sm:w-[160px] h-12 bg-black/50 border-white/10 focus:ring-emerald-500 rounded-xl text-white">
+            <SelectTrigger className="w-full sm:w-[160px] h-12 bg-black/50 border-white/10 focus:ring-red-500 rounded-xl text-white">
               <SelectValue placeholder="Filter Protocols" />
             </SelectTrigger>
             <SelectContent className="bg-black/90 border-white/10 text-white backdrop-blur-xl">
@@ -518,13 +518,13 @@ export default function CreatorsPage() {
 
       {filteredCreators.length > 0 &&
         filteredCreators.length < creators.length && (
-          <div className="text-center mt-8 text-sm font-medium text-emerald-400/80 bg-emerald-500/10 inline-block px-4 py-2 rounded-full border border-emerald-500/20 mx-auto w-fit block">
+          <div className="text-center mt-8 text-sm font-medium text-red-400/80 bg-red-500/10 inline-block px-4 py-2 rounded-full border border-red-500/20 mx-auto w-fit block">
             Displaying {filteredCreators.length} of {creators.length} known entities
           </div>
         )}
 
       <div className="mt-20 p-10 border border-white/10 rounded-3xl bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 blur-xl" />
+        <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 blur-xl" />
         
         <div className="flex items-center justify-center flex-col mb-10 relative z-10">
           <div className="inline-flex items-center justify-center p-3 bg-white/5 border border-white/10 rounded-2xl mb-6">
@@ -538,8 +538,8 @@ export default function CreatorsPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 relative z-10">
           <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center text-center hover:bg-white/10 transition-colors">
-            <div className="p-4 bg-emerald-500/10 rounded-xl mb-4">
-              <BookOpen className="h-8 w-8 text-emerald-400" />
+            <div className="p-4 bg-red-500/10 rounded-xl mb-4">
+              <BookOpen className="h-8 w-8 text-red-400" />
             </div>
             <h3 className="text-lg font-bold mb-2">Transmit Data</h3>
             <p className="text-sm text-white/60 leading-relaxed">

@@ -44,8 +44,8 @@ export default function FeedbackPage() {
         </h1>
         {submitted && (
           <div
-            className="mb-6 p-4 rounded-xl border-4 border-green-500 
-          bg-green-500/10 text-green-600 dark:text-green-400 
+            className="mb-6 p-4 rounded-xl border-4 border-red-500 
+          bg-red-500/10 text-red-600 dark:text-red-400 
           font-bold text-center uppercase animate-fade-in"
           >
             Thank You! Your Feedback Has Been Submitted.

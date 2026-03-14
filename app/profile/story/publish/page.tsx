@@ -445,7 +445,7 @@ function PublishStoryContent() {
           <h2 className="text-xl font-bold text-white">Couldn't Load Story</h2>
           <p className="text-white/50 text-sm">{loadError}</p>
           <Link href="/create/ai-story">
-            <button className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm transition-colors">
+            <button className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-medium text-sm transition-colors">
               Back to VedaScript Engine
             </button>
           </Link>
@@ -468,9 +468,9 @@ function PublishStoryContent() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 300, delay: 0.1 }}
-            className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-500/20 to-blue-500/20 border border-emerald-500/30 flex items-center justify-center"
+            className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-red-500/20 to-blue-500/20 border border-red-500/30 flex items-center justify-center"
           >
-            <CheckCircle2 className="w-12 h-12 text-emerald-400" />
+            <CheckCircle2 className="w-12 h-12 text-red-400" />
           </motion.div>
           <div>
             <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Story Published!</h1>
@@ -787,7 +787,7 @@ function PublishStoryContent() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-white/50">Cover image</span>
-                    <span className={`font-medium ${coverImage ? 'text-emerald-400' : 'text-red-400'}`}>
+                    <span className={`font-medium ${coverImage ? 'text-red-400' : 'text-red-400'}`}>
                       {coverImage ? 'Added' : 'Required'}
                     </span>
                   </div>

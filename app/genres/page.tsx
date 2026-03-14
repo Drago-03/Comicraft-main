@@ -202,7 +202,7 @@ const quizQuestions = [
   {
     id: 4,
     question: "The world is ending. What caused it?",
-    icon: <Globe className="w-12 h-12 mx-auto text-emerald-400" />,
+    icon: <Globe className="w-12 h-12 mx-auto text-red-400" />,
     options: [
       { text: "A tyrannical government pushed too far", genre: "Dystopian" },
       { text: "Ancient magic awakened", genre: "Fantasy" },

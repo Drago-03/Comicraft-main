@@ -192,19 +192,25 @@ export default function RootLayout({
           <QueryProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="light"
+              defaultTheme="dark"
+              forcedTheme="dark"
               enableSystem={false}
               disableTransitionOnChange={false}
               storageKey="comicraft-theme"
             >
               <AnimatedLayout>
                 <ClientLayout>
-                  <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#EEDFCA' }}>
+                  <div className="min-h-screen bg-[#EEDFCA] flex flex-col relative z-0">
+                    {/* global comic dotted background */}
+                    <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-[-1]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '6px 6px' }}></div>
+                    {/* global subtle noise overlay */}
+                    <div className="fixed inset-0 pointer-events-none opacity-[0.4] mix-blend-multiply z-[-1]" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
+                    
                     <Header />
                     <main
                       id="main-content"
                       tabIndex={-1}
-                      className="flex-grow focus:outline-2 focus:outline-primary"
+                      className="container mx-auto px-4 pb-6 flex-grow focus:outline-2 focus:outline-primary relative z-10"
                     >
                       <React.Suspense fallback={null}>
                         <GlobalLoadingWrapper>

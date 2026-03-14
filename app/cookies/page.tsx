@@ -14,7 +14,7 @@ import { FloatingGithub } from '../terms/page';
 const FloatingDoodles = () => (
   <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
     <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-orange-200 to-amber-200 rounded-full blur-3xl opacity-20 animate-float"></div>
-    <div className="absolute bottom-40 right-20 w-40 h-40 bg-gradient-to-r from-lime-200 to-emerald-200 rounded-full blur-3xl opacity-20 animate-float-delayed"></div>
+    <div className="absolute bottom-40 right-20 w-40 h-40 bg-gradient-to-r from-lime-200 to-red-200 rounded-full blur-3xl opacity-20 animate-float-delayed"></div>
     <div className="absolute top-1/2 left-1/3 w-36 h-36 bg-gradient-to-r from-sky-200 to-blue-200 rounded-full blur-3xl opacity-20 animate-float-slow"></div>
   </div>
 );
