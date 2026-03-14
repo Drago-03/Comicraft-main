@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin, supabaseAnon } = require('../config/supabase');
 const logger = require('../utils/logger');
 const { refresh } = require('../middleware/auth');
 const crypto = require('crypto');
@@ -107,7 +107,7 @@ router.post('/signup', async (req, res) => {
       assignedRole = 'admin';
     }
 
-    if (!supabaseAdmin) {
+    if (!supabaseAdmin || !supabaseAnon) {
       return res.status(503).json({ error: 'Authentication service not configured' });
     }
 
@@ -133,7 +133,7 @@ router.post('/signup', async (req, res) => {
     }
 
     // Sign in to get tokens
-    const { data: signInData, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+    const { data: signInData, error: signInError } = await supabaseAnon.auth.signInWithPassword({
       email,
       password,
     });
@@ -237,11 +237,11 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Missing email or password' });
     }
 
-    if (!supabaseAdmin) {
+    if (!supabaseAdmin || !supabaseAnon) {
       return res.status(503).json({ error: 'Authentication service not configured' });
     }
 
-    const { data, error } = await supabaseAdmin.auth.signInWithPassword({
+    const { data, error } = await supabaseAnon.auth.signInWithPassword({
       email,
       password,
     });
@@ -369,7 +369,7 @@ router.post('/wallet-login', async (req, res) => {
     const walletPassword = `wallet_${normalizedAddress}_${process.env.JWT_SECRET || 'comicraft'}`;
 
     // Try to sign in first (existing user)
-    const { data: signInData, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+    const { data: signInData, error: signInError } = await supabaseAnon.auth.signInWithPassword({
       email: walletEmail,
       password: walletPassword,
     });
@@ -419,7 +419,7 @@ router.post('/wallet-login', async (req, res) => {
     }
 
     // Now sign in to get session tokens
-    const { data: newSignIn, error: newSignInError } = await supabaseAdmin.auth.signInWithPassword({
+    const { data: newSignIn, error: newSignInError } = await supabaseAnon.auth.signInWithPassword({
       email: walletEmail,
       password: walletPassword,
     });
@@ -497,7 +497,7 @@ router.post('/login-username', async (req, res) => {
       loginEmail = profile.email;
     }
 
-    const { data, error } = await supabaseAdmin.auth.signInWithPassword({
+    const { data, error } = await supabaseAnon.auth.signInWithPassword({
       email: loginEmail,
       password,
     });
