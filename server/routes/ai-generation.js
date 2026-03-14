@@ -65,7 +65,7 @@ const logger = require('../utils/logger');
  *         description: Generation failed
  */
 
-router.post('/', async (req, res) => {
+router.post('/generate', async (req, res) => {
     const correlationId = req.correlationId || `gen-${Date.now()}`;
     const startTime = Date.now();
 
