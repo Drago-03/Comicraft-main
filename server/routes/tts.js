@@ -1,30 +1,35 @@
 /**
- * TTS Routes – Sarvam AI Bulbul v3
+ * TTS Routes – ElevenLabs Text-to-Speech
  *
  * POST /api/v1/tts/generate   Generate (or reuse cached) narration audio for a story/chapter
  * GET  /api/v1/tts/audio      Fetch existing audio metadata for a story/chapter
+ * GET  /api/v1/tts/speakers   List available voices
+ *
+ * NOTE: Sarvam AI Bulbul v3 (bulbulService) is still in the codebase but no longer
+ *       actively used by this route. ElevenLabs is now the primary TTS provider.
  */
 
 const express = require('express');
 const router = express.Router();
 const { authRequired } = require('../middleware/auth');
 const { supabaseAdmin } = require('../config/supabase');
-const bulbulService = require('../services/bulbulService');
+const elevenlabsService = require('../services/elevenlabsService');
 const logger = require('../utils/logger');
 
 // ---------------------------------------------------------------------------
 // Helper: upload audio buffer to Supabase Storage
 // ---------------------------------------------------------------------------
-async function uploadAudioToSupabase({ audioBuffer, storyId, chapterIndex, speaker, languageCode }) {
+async function uploadAudioToSupabase({ audioBuffer, storyId, chapterIndex, voiceId, mimeType }) {
     if (!supabaseAdmin) throw new Error('Supabase not configured');
 
     const bucket = 'tts-audio';
-    const filePath = `stories/${storyId}/chapters/${chapterIndex}/bulbul-v3-${speaker}-${languageCode}.wav`;
+    const ext = mimeType === 'audio/mpeg' ? 'mp3' : 'wav';
+    const filePath = `stories/${storyId}/chapters/${chapterIndex}/elevenlabs-${voiceId}.${ext}`;
 
     const { error: uploadError } = await supabaseAdmin.storage
         .from(bucket)
         .upload(filePath, audioBuffer, {
-            contentType: 'audio/wav',
+            contentType: mimeType,
             upsert: true,
         });
 
@@ -37,7 +42,7 @@ async function uploadAudioToSupabase({ audioBuffer, storyId, chapterIndex, speak
 // ---------------------------------------------------------------------------
 // Helper: upsert audio record in story_audio table
 // ---------------------------------------------------------------------------
-async function upsertAudioRecord({ storyId, chapterIndex, audioUrl, speaker, languageCode, pace, sampleRate }) {
+async function upsertAudioRecord({ storyId, chapterIndex, audioUrl, voiceId, modelId }) {
     if (!supabaseAdmin) throw new Error('Supabase not configured');
 
     const { error } = await supabaseAdmin.from('story_audio').upsert(
@@ -45,10 +50,10 @@ async function upsertAudioRecord({ storyId, chapterIndex, audioUrl, speaker, lan
             story_id: storyId,
             chapter_index: chapterIndex,
             audio_url: audioUrl,
-            speaker,
-            language_code: languageCode,
-            pace,
-            sample_rate: sampleRate,
+            speaker: voiceId,            // Reuse the speaker column for ElevenLabs voice ID
+            language_code: 'multilingual', // ElevenLabs multilingual model
+            pace: 1.0,                   // Not applicable to ElevenLabs, kept for schema compat
+            sample_rate: 44100,          // Default MP3 sample rate
             updated_at: new Date().toISOString(),
         },
         { onConflict: 'story_id,chapter_index,speaker,language_code' }
@@ -67,12 +72,12 @@ async function upsertAudioRecord({ storyId, chapterIndex, audioUrl, speaker, lan
  *   post:
  *     tags:
  *       - TTS
- *     summary: Generate or retrieve cached Bulbul v3 narration audio
+ *     summary: Generate narration audio using ElevenLabs
  *     description: |
- *       Converts story/chapter text to speech using Sarvam AI Bulbul v3.
- *       If audio already exists for the same story + chapter + speaker + language,
+ *       Converts story/chapter text to speech using ElevenLabs TTS.
+ *       If audio already exists for the same story + chapter + voice,
  *       the cached URL is returned immediately without calling the TTS API.
- *       For texts longer than 2500 chars, the service automatically chunks and concatenates.
+ *       For texts longer than 5000 chars, the service automatically chunks and concatenates.
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -94,24 +99,25 @@ async function upsertAudioRecord({ storyId, chapterIndex, audioUrl, speaker, lan
  *                 description: Chapter index (0-based)
  *               text:
  *                 type: string
- *                 description: Text to narrate (chunked automatically if >2500 chars)
- *               languageCode:
+ *                 description: Text to narrate (chunked automatically if >5000 chars)
+ *               voiceId:
  *                 type: string
- *                 default: en-IN
- *                 enum: [en-IN, hi-IN, bn-IN, ta-IN, te-IN, gu-IN, kn-IN, ml-IN, mr-IN, pa-IN, od-IN]
- *               speaker:
+ *                 default: 21m00Tcm4TlvDq8ikWAM
+ *                 description: ElevenLabs voice ID (default Rachel)
+ *               modelId:
  *                 type: string
- *                 default: Shubh
- *                 description: Bulbul v3 speaker voice name
- *               pace:
+ *                 default: eleven_multilingual_v2
+ *                 description: ElevenLabs model to use
+ *               stability:
  *                 type: number
- *                 default: 1.0
- *                 minimum: 0.5
- *                 maximum: 2.0
- *               sampleRate:
- *                 type: integer
- *                 default: 24000
- *                 enum: [8000, 16000, 22050, 24000, 32000, 44100, 48000]
+ *                 default: 0.5
+ *                 minimum: 0
+ *                 maximum: 1
+ *               similarityBoost:
+ *                 type: number
+ *                 default: 0.75
+ *                 minimum: 0
+ *                 maximum: 1
  *               forceRegenerate:
  *                 type: boolean
  *                 default: false
@@ -128,32 +134,37 @@ async function upsertAudioRecord({ storyId, chapterIndex, audioUrl, speaker, lan
  *                   type: string
  *                 cached:
  *                   type: boolean
- *                 speaker:
+ *                 voiceId:
  *                   type: string
- *                 languageCode:
+ *                 modelId:
  *                   type: string
- *                 pace:
- *                   type: number
- *                 sampleRate:
- *                   type: integer
+ *                 provider:
+ *                   type: string
  *       400:
  *         description: Validation error
  *       401:
  *         description: Unauthorized
  *       503:
- *         description: TTS service unavailable (missing SARVAM_API_KEY)
+ *         description: TTS service unavailable (missing ELEVENLABS_API_KEY)
  */
 router.post('/generate', authRequired, async (req, res) => {
     const {
         storyId,
         chapterIndex = 0,
         text,
-        languageCode = bulbulService.DEFAULT_LANGUAGE,
-        speaker = bulbulService.DEFAULT_SPEAKER,
-        pace = bulbulService.DEFAULT_PACE,
-        sampleRate = bulbulService.DEFAULT_SAMPLE_RATE,
+        voiceId = elevenlabsService.DEFAULT_VOICE_ID,
+        modelId = elevenlabsService.DEFAULT_MODEL,
+        stability = elevenlabsService.DEFAULT_STABILITY,
+        similarityBoost = elevenlabsService.DEFAULT_SIMILARITY_BOOST,
+        // Backward compatibility: map old bulbul params to ElevenLabs
+        speaker,         // Old param — map to voiceId if present
+        languageCode,    // Old param — ignored (ElevenLabs is multilingual)
+        pace,            // Old param — ignored (ElevenLabs doesn't have pace)
         forceRegenerate = false,
     } = req.body;
+
+    // Handle backward compatibility: if old 'speaker' param is sent, use default voice
+    const effectiveVoiceId = voiceId || elevenlabsService.DEFAULT_VOICE_ID;
 
     // --- Validate required fields ---
     if (!storyId) {
@@ -163,22 +174,13 @@ router.post('/generate', authRequired, async (req, res) => {
         return res.status(400).json({ error: 'text must be a non-empty string', code: 'VALIDATION_ERROR' });
     }
 
-    // --- Check if SARVAM_API_KEY is configured ---
-    if (!process.env.SARVAM_API_KEY) {
+    // --- Check if ELEVENLABS_API_KEY is configured ---
+    if (!process.env.ELEVENLABS_API_KEY) {
         return res.status(503).json({
-            error: 'Text-to-speech service is not configured. SARVAM_API_KEY is missing.',
+            error: 'Text-to-speech service is not configured. ELEVENLABS_API_KEY is missing.',
             code: 'TTS_NOT_CONFIGURED',
         });
     }
-
-    const normalizedSpeaker = bulbulService.BULBUL_SPEAKERS.includes(speaker)
-        ? speaker
-        : bulbulService.DEFAULT_SPEAKER;
-    const normalizedLang = bulbulService.BULBUL_LANGUAGES.includes(languageCode)
-        ? languageCode
-        : bulbulService.DEFAULT_LANGUAGE;
-    const normalizedPace = Math.min(2.0, Math.max(0.5, Number(pace) || 1.0));
-    const normalizedRate = bulbulService.DEFAULT_SAMPLE_RATE; // normalised later in service
 
     // --- Cache check (skip if forceRegenerate) ---
     if (!forceRegenerate && supabaseAdmin) {
@@ -187,32 +189,31 @@ router.post('/generate', authRequired, async (req, res) => {
             .select('audio_url, pace, sample_rate')
             .eq('story_id', storyId)
             .eq('chapter_index', chapterIndex)
-            .eq('speaker', normalizedSpeaker)
-            .eq('language_code', normalizedLang)
+            .eq('speaker', effectiveVoiceId)
+            .eq('language_code', 'multilingual')
             .maybeSingle();
 
         if (existing?.audio_url) {
             return res.json({
                 audioUrl: existing.audio_url,
                 cached: true,
-                speaker: normalizedSpeaker,
-                languageCode: normalizedLang,
-                pace: existing.pace,
-                sampleRate: existing.sample_rate,
+                voiceId: effectiveVoiceId,
+                modelId,
+                provider: 'elevenlabs',
             });
         }
     }
 
-    // --- Generate audio using Bulbul v3 ---
+    // --- Generate audio using ElevenLabs ---
     try {
-        logger.info(`[TTS] Generating audio for story=${storyId} chapter=${chapterIndex} speaker=${normalizedSpeaker}`);
+        logger.info(`[TTS] Generating audio for story=${storyId} chapter=${chapterIndex} voice=${effectiveVoiceId}`);
 
-        const { audioBuffer } = await bulbulService.generateSpeech({
+        const { audioBuffer, mimeType } = await elevenlabsService.generateSpeech({
             text: text.trim(),
-            languageCode: normalizedLang,
-            speaker: normalizedSpeaker,
-            pace: normalizedPace,
-            sampleRate: normalizedRate,
+            voiceId: effectiveVoiceId,
+            modelId,
+            stability,
+            similarityBoost,
         });
 
         // --- Upload to Supabase Storage ---
@@ -220,8 +221,8 @@ router.post('/generate', authRequired, async (req, res) => {
             audioBuffer,
             storyId,
             chapterIndex,
-            speaker: normalizedSpeaker,
-            languageCode: normalizedLang,
+            voiceId: effectiveVoiceId,
+            mimeType,
         });
 
         if (!audioUrl) {
@@ -233,10 +234,8 @@ router.post('/generate', authRequired, async (req, res) => {
             storyId,
             chapterIndex,
             audioUrl,
-            speaker: normalizedSpeaker,
-            languageCode: normalizedLang,
-            pace: normalizedPace,
-            sampleRate: normalizedRate,
+            voiceId: effectiveVoiceId,
+            modelId,
         });
 
         logger.info(`[TTS] Audio ready: ${audioUrl}`);
@@ -244,21 +243,20 @@ router.post('/generate', authRequired, async (req, res) => {
         return res.json({
             audioUrl,
             cached: false,
-            speaker: normalizedSpeaker,
-            languageCode: normalizedLang,
-            pace: normalizedPace,
-            sampleRate: normalizedRate,
+            voiceId: effectiveVoiceId,
+            modelId,
+            provider: 'elevenlabs',
         });
     } catch (err) {
         logger.error('[TTS] Generation error:', err.message);
 
-        if (err.message.includes('SARVAM_API_KEY')) {
+        if (err.message.includes('ELEVENLABS_API_KEY')) {
             return res.status(503).json({ error: err.message, code: 'TTS_NOT_CONFIGURED' });
         }
         if (err.message.includes('timed out')) {
             return res.status(504).json({ error: 'TTS service timed out. Please try again.', code: 'TTS_TIMEOUT' });
         }
-        if (err.message.includes('Sarvam API error')) {
+        if (err.message.includes('ElevenLabs API error')) {
             return res.status(502).json({ error: err.message, code: 'TTS_API_ERROR' });
         }
 
@@ -289,15 +287,10 @@ router.post('/generate', authRequired, async (req, res) => {
  *           type: integer
  *           default: 0
  *       - in: query
- *         name: speaker
+ *         name: voiceId
  *         schema:
  *           type: string
- *           default: Shubh
- *       - in: query
- *         name: languageCode
- *         schema:
- *           type: string
- *           default: en-IN
+ *           default: 21m00Tcm4TlvDq8ikWAM
  *     responses:
  *       200:
  *         description: Audio record found or null
@@ -306,9 +299,13 @@ router.get('/audio', async (req, res) => {
     const {
         storyId,
         chapterIndex = 0,
-        speaker = bulbulService.DEFAULT_SPEAKER,
-        languageCode = bulbulService.DEFAULT_LANGUAGE,
+        voiceId = elevenlabsService.DEFAULT_VOICE_ID,
+        // Backward compat: accept old param names
+        speaker,
+        languageCode,
     } = req.query;
+
+    const effectiveVoiceId = voiceId || speaker || elevenlabsService.DEFAULT_VOICE_ID;
 
     if (!storyId) {
         return res.status(400).json({ error: 'storyId query param is required', code: 'VALIDATION_ERROR' });
@@ -323,8 +320,7 @@ router.get('/audio', async (req, res) => {
         .select('audio_url, speaker, language_code, pace, sample_rate, updated_at')
         .eq('story_id', storyId)
         .eq('chapter_index', Number(chapterIndex))
-        .eq('speaker', speaker)
-        .eq('language_code', languageCode)
+        .eq('speaker', effectiveVoiceId)
         .maybeSingle();
 
     if (error) {
@@ -334,24 +330,38 @@ router.get('/audio', async (req, res) => {
 
     return res.json({
         audioUrl: data?.audio_url || null,
-        speaker: data?.speaker || null,
-        languageCode: data?.language_code || null,
-        pace: data?.pace || null,
-        sampleRate: data?.sample_rate || null,
+        voiceId: data?.speaker || null,
+        modelId: data?.language_code || null,
+        provider: 'elevenlabs',
         updatedAt: data?.updated_at || null,
     });
 });
 
 // ---------------------------------------------------------------------------
-// GET /api/v1/tts/speakers  – list all valid speakers
+// GET /api/v1/tts/speakers  – list all valid voices
 // ---------------------------------------------------------------------------
-router.get('/speakers', (req, res) => {
-    res.json({
-        speakers: bulbulService.BULBUL_SPEAKERS,
-        defaultSpeaker: bulbulService.DEFAULT_SPEAKER,
-        languages: bulbulService.BULBUL_LANGUAGES,
-        defaultLanguage: bulbulService.DEFAULT_LANGUAGE,
-    });
+router.get('/speakers', async (req, res) => {
+    try {
+        const voices = await elevenlabsService.fetchVoices();
+        res.json({
+            provider: 'elevenlabs',
+            voices,
+            defaultVoiceId: elevenlabsService.DEFAULT_VOICE_ID,
+            models: elevenlabsService.ELEVENLABS_MODELS,
+            defaultModel: elevenlabsService.DEFAULT_MODEL,
+            formats: elevenlabsService.ELEVENLABS_OUTPUT_FORMATS,
+            defaultFormat: elevenlabsService.DEFAULT_OUTPUT_FORMAT,
+        });
+    } catch (err) {
+        logger.error('[TTS] Error fetching voices:', err.message);
+        res.json({
+            provider: 'elevenlabs',
+            voices: elevenlabsService.ELEVENLABS_VOICES,
+            defaultVoiceId: elevenlabsService.DEFAULT_VOICE_ID,
+            models: elevenlabsService.ELEVENLABS_MODELS,
+            defaultModel: elevenlabsService.DEFAULT_MODEL,
+        });
+    }
 });
 
 module.exports = router;

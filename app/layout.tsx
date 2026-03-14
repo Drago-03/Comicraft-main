@@ -20,6 +20,7 @@ import { Toaster } from '@/components/ui/toaster';
 import BackToTop from '@/components/back-to-top';
 import MadhavaHelpBot from '@/components/madhava-helpbot';
 import { GlobalLoadingWrapper } from '@/components/global-loading-wrapper';
+import { AuthSync } from '@/components/auth-sync';
 
 // Optimize font loading
 const inter = Inter({
@@ -179,6 +180,7 @@ export default function RootLayout({
         className={`${inter.className} ${comicNeue.variable} bg-background-light text-ink font-display optimize-paint`}
         suppressHydrationWarning
       >
+        <AuthSync />
         {/* Skip link for keyboard users to jump to main content */}
         <a
           href="#main-content"
