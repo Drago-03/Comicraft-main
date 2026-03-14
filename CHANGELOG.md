@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Active full support: 1.1.0 (latest). See `SECURITY.md` for the support policy.
 
+## [1.1.2] - 2026-03-14
+
+### Fixed
+
+- **Cloudflare Static Generation** (`app/auth/callback/route.ts`): Added `force-dynamic` to prevent build crashes related to `request.url` usage during static export.
+- **Frontend Health Status** (`components/footer.tsx`): Improved `/api/health` proxy parsing logic to correctly display "System Operational" instead of "System Offline" when the backend is live.
+
+### Changed
+
+- **Footer UI** (`components/footer.tsx`): Removed Alchemy reference from the footer credits.
+- **Documentation**: Integrated IQai ADK-TS Tokenization Platform into `README.md` and `docs/ARCHITECTURE.md`.
+- **Community & Legal**: Created a new `COOKIE_POLICY.md` and `CODE_OF_CONDUCT.md` from scratch.
+
+## [1.1.1] - 2026-03-14
+
+### Changed
+
+- **Navigation & UI Updates** (`components/header.tsx`, `components/footer.tsx`): Removed the `Upload Story` buttons, as well as the `Atlas` and `Prime` links from both the main navigation header and the footer.
+
+### Added
+
+- **Global Live Search** (`components/global-search.tsx`, `components/header.tsx`): Implemented a new global search component live in the header. Placed right next to the `Create` button, allowing users to search for stories across the platform seamlessly.
+
 ## [1.1.0] - 2026-03-14
 
 ### Changed

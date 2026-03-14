@@ -10,7 +10,6 @@
   <img src="https://img.shields.io/github/license/Drago-03/Comicraft-main?style=flat-square" alt="License"/>
   <img src="https://img.shields.io/badge/website-comicraft.xyz-0052cc?style=flat-square" alt="Website"/>
   <a href="mailto:mantejarora@gmail.com"><img src="https://img.shields.io/badge/contact-mantejarora%40gmail.com-orange?style=flat-square" alt="Contact Us"/></a>
-  <a href="https://discord.gg/JK29FZRm"><img src="https://img.shields.io/discord/1245696768829601812?label=Discord&logo=discord&style=flat-square" alt="Discord"/></a>
 </p>
 </p>
   <b>Built by Indie Hub</b> ✨
@@ -95,7 +94,7 @@ AI, and decentralized technology.
 
 - **Frontend:** Next.js, React, TailwindCSS, shadcn/ui
 - **Backend:** Node.js, Express.js API (Render), Cloudflare Workers
-- **AI:** Google Gemini (chairman model for story generation), Groq LPU (narrow tasks — parameter validation, classification, outlines), Sarvam AI (Text-to-Speech)
+- **AI:** Google Gemini (chairman model for story generation), Groq LPU (narrow tasks — parameter validation, classification, outlines), IQai ADK-TS Agent Tokenization Platform, Sarvam AI (Text-to-Speech)
 - **Blockchain:** Ethereum Mainnet via Alchemy, Solidity Smart Contracts, WalletConnect, MetaMask
 - **Database & Storage:** Supabase (PostgreSQL) with Row Level Security, Supabase Storage (avatars, story-covers, comic-panels, nft-metadata), IPFS via Pinata
 - **Hosting:** Cloudflare Pages (frontend), Render (backend API)
@@ -278,6 +277,7 @@ graph TD
     A[User Interface - Next.js] -->|Prompt with 70+ Params| B[Backend API - Node.js]
     B -->|Story Generation| C[Google Gemini Chairman]
     B -->|Validation & Outlines| D[Groq LPU Engine]
+    B -->|Smart Agent Workflows| IQAI[IQai ADK-TS]
     C -->|Structured JSON Story| B
     D -->|Classification Data| B
     B -->|Metadata & Auth| E[Supabase PostgreSQL]
@@ -555,10 +555,6 @@ The VedaScript Engine exposes **71 tunable parameters** across **10 categories**
 ## Resources
 
 - **Website:** [comicraft.xyz](https://www.comicraft.xyz)
-- **Docs:** [Wiki](https://github.com/IndieHub25/Comicraft/wiki)
-- **Community Hub:** [GitHub Discussions](https://github.com/IndieHub25/Comicraft/discussions)
-- **Discord Support:** [Join our Discord](https://discord.gg/JK29FZRm)
-
 ---
 
 ## License

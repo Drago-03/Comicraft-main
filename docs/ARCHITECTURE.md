@@ -200,6 +200,7 @@ graph TB
 
     Database --> Supabase[(Supabase PostgreSQL)]
     External --> GroqAPI[Groq AI API]
+    External --> IQAI[IQai ADK-TS]
     External --> BlockchainAPI[Blockchain API]
 
     Services --> Response[API Response]
