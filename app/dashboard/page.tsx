@@ -43,7 +43,7 @@ import {
   updateUserSettings,
 } from '@/lib/api-client';
 import { apiFetch, authHeaders, API_BASE_URL } from '@/lib/api-client';
-import { useWallet } from '@/hooks/use-wallet';
+import { useWeb3 } from '@/components/providers/web3-provider';
 
 // ─────────────────────────────────────────────────────────────────────────
 // Types
@@ -197,7 +197,7 @@ export default function DashboardPage() {
   const [tabLoading, setTabLoading] = useState(false);
   const [tabError, setTabError] = useState<string | null>(null);
 
-  const { address } = useWallet();
+  const { account: address, connected: walletConnected, balance: walletBalance } = useWeb3();
 
   // Settings
   const [settingsForm, setSettingsForm] = useState<{
@@ -281,7 +281,7 @@ export default function DashboardPage() {
       switch (tab) {
         case 'stories': {
           const [storiesRes, draftsRes] = await Promise.all([
-            apiFetch('/api/v1/stories?limit=20', { method: 'GET', headers: authHeaders() }),
+            apiFetch('/api/v1/stories/mine?limit=20', { method: 'GET', headers: authHeaders() }),
             getUserDrafts(),
           ]);
           if (storiesRes.ok) {
@@ -354,7 +354,7 @@ export default function DashboardPage() {
     } finally {
       setTabLoading(false);
     }
-  }, []);
+  }, [address]);
 
   useEffect(() => {
     loadTabData(activeTab);

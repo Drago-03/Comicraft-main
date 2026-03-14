@@ -45,6 +45,12 @@ export default function StoryClient({ id }: { id: string }) {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
+    // The static export generates a dummy page for id='default'; redirect to gallery
+    if (id === 'default') {
+      if (typeof window !== 'undefined') window.location.href = '/gallery';
+      return;
+    }
+
     let cancelled = false;
     async function fetchStory() {
       setNotFound(false);
@@ -55,7 +61,19 @@ export default function StoryClient({ id }: { id: string }) {
         if (!res.ok) throw new Error('Story not found');
         const data = await res.json();
         if (cancelled) return;
-        setStory(data);
+        // Map Supabase column names to component-expected fields
+        setStory({
+          id: data.id,
+          title: data.title,
+          genre: data.genre,
+          author_name: data.author_name || data.profiles?.display_name || data.profiles?.username,
+          description: data.description,
+          cover_image: data.cover_image,
+          views: data.views ?? 0,
+          likes: data.likes_count ?? data.likes ?? 0,
+          content: data.content,
+          parameters: data.parameters,
+        });
       } catch {
         if (cancelled) return;
         setNotFound(true);

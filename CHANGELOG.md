@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.1.4 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.1.5 (latest). See `SECURITY.md` for the support policy.
+
+## [1.1.5] - 2026-03-14
+
+### Fixed
+
+- **Dashboard Stories Filter** (`app/dashboard/page.tsx`): The stories tab was fetching all platform stories (`/api/v1/stories`) including other users' content like "The Birth of Blockchain". Changed to `/api/v1/stories/mine` so only the authenticated user's own stories are displayed.
+- **Wallet Connection State** (`app/dashboard/page.tsx`): Replaced the disconnected `useWallet` hook with the centralized `useWeb3` context from `Web3Provider`. The dashboard wallet tab, collectibles tab, and portfolio now correctly reflect the wallet connection state set by the navbar `WalletConnect` component.
+- **Story Preview Page** (`app/stories/[id]/client.tsx`): Fixed story preview at `/stories/<id>` — the Supabase response field `likes_count` was not mapped to the component's `likes` prop. Also added a redirect for the static export dummy `id=default` page to prevent a broken empty page.
+- **IQai ADK Peer Dependencies** (`server/.npmrc`): Fixed malformed `.npmrc` file (had literal `\n` in cache/store paths) and added `legacy-peer-deps=true` to resolve the `@iqai/adk@0.8.1` vs `@opentelemetry/instrumentation-express` peer dependency conflict on Render deployment.
+- **Server Lockfile** (`server/yarn.lock`): Removed stale `yarn.lock` since the project uses npm. The corrected `.npmrc` allows `npm install` to complete without errors and generate a proper `package-lock.json`.
 
 ## [1.1.4] - 2026-03-14
 
