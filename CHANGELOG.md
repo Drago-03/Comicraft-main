@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.1.2 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.1.3 (latest). See `SECURITY.md` for the support policy.
+
+## [1.1.3] - 2026-03-14
+
+### Fixed
+
+- **Footer Health Status** (`components/footer.tsx`): The health check now tries two endpoints sequentially — the Next.js proxy `/api/health` first, then the backend directly — so the footer correctly shows "System Operational" even when the proxy has a cold-start delay on Render.
+- **OAuth Redirect URL** (`components/auth/sign-in-form.tsx`, `components/auth/sign-up-form.tsx`): Fixed Google and GitHub OAuth buttons not working. The `redirectTo` URL was previously hardcoded to `NEXT_PUBLIC_URL` (which is `http://localhost:3000` locally), causing callbacks to fail in production. It now always uses `window.location.origin` so it works correctly on both `localhost` and `comicraft.xyz`.
+- **Backend MongoDB Warning** (`server/config/db.js`, `.env.local`): Added real `MONGODB_URI` to `.env.local` so MongoDB connects silently without a warning on startup.
+- **Backend Supabase Login** (`server/config/supabase.js`, `server/routes/auth.js`): Added `supabaseAnon` client and used it for all `signInWithPassword` calls so email/wallet logins work correctly.
+
+### Changed
+
+- **Footer — Atlas in Resources** (`components/footer.tsx`): Moved the "Atlas" link from the Explore section into the Resources section where it belongs.
+- **Footer — Google Sign-In** (`components/auth/sign-in-form.tsx`): Added `queryParams: { access_type: 'offline', prompt: 'consent' }` to Google OAuth to ensure tokens are always refreshed.
 
 
 ## [1.1.2] - 2026-03-14

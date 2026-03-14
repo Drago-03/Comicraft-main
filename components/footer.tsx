@@ -31,28 +31,41 @@ export function Footer({ version }: { version?: string }) {
 
   useEffect(() => {
     const checkHealth = async () => {
-      try {
-        const res = await fetch('/api/health', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data && typeof data.status === 'string') {
-            const status = data.status.toLowerCase();
-            if (['ok', 'healthy', 'operational', 'up', 'online'].includes(status)) {
-              setHealthStatus('ok');
-            } else if (['degraded', 'partial'].includes(status)) {
-              setHealthStatus('degraded');
+      // Try the Next.js proxy first; if unavailable, try backend directly
+      const endpoints = [
+        '/api/health',
+        `${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com'}/api/health`,
+      ];
+
+      for (const url of endpoints) {
+        try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 6000);
+          const res = await fetch(url, { cache: 'no-store', signal: controller.signal });
+          clearTimeout(timeout);
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data && typeof data.status === 'string') {
+              const status = data.status.toLowerCase();
+              if (['ok', 'healthy', 'operational', 'up', 'online'].includes(status)) {
+                setHealthStatus('ok');
+              } else if (['degraded', 'partial'].includes(status)) {
+                setHealthStatus('degraded');
+              } else {
+                setHealthStatus('down');
+              }
             } else {
               setHealthStatus('down');
             }
-          } else {
-            setHealthStatus('down');
+            return; // Success — stop trying
           }
-        } else {
-          setHealthStatus('down');
+        } catch {
+          // This endpoint failed, try the next one
         }
-      } catch {
-        setHealthStatus('down');
       }
+      // All endpoints failed
+      setHealthStatus('down');
     };
     checkHealth();
   }, []);
@@ -143,7 +156,6 @@ export function Footer({ version }: { version?: string }) {
                   { href: '/create', label: 'Forge' },
                   { href: '/marketplace', label: 'Bazaar' },
                   { href: '/community', label: 'Commons' },
-                  { href: '/docs', label: 'Atlas' },
                   { href: '/community/creators', label: 'Top Creators' },
                   { href: '#', label: 'Upload Story', isUpload: true },
                 ].map((link) => (
@@ -199,6 +211,7 @@ export function Footer({ version }: { version?: string }) {
               </h3>
               <ul className="space-y-4 pl-0 list-none">
                 {[
+                  { href: '/docs', label: 'Atlas' },
                   { href: '/docs', label: 'Documentation' },
                   { href: '/faq', label: 'FAQ' },
                   { href: '/buy/CRAFTS', label: 'Buy CRAFTS' },

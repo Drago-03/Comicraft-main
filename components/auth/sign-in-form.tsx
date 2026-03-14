@@ -86,14 +86,16 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
 
   const handleGoogleSignIn = async () => {
     try {
-      // Use the canonical app URL if available, otherwise fallback to current origin
-      const baseUrl = process.env.NEXT_PUBLIC_URL || (typeof window !== 'undefined' ? window.location.origin : '');
-      const redirectTo = `${baseUrl}/auth/callback`;
+      const redirectTo = `${window.location.origin}/auth/callback`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
       if (error) throw error;
@@ -104,9 +106,7 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
 
   const handleGithubSignIn = async () => {
     try {
-      // Use the canonical app URL if available, otherwise fallback to current origin
-      const baseUrl = process.env.NEXT_PUBLIC_URL || (typeof window !== 'undefined' ? window.location.origin : '');
-      const redirectTo = `${baseUrl}/auth/callback`;
+      const redirectTo = `${window.location.origin}/auth/callback`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',

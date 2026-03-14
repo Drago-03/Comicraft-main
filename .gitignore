@@ -167,3 +167,10 @@ path/
 
 # Nested dependency directories
 **/node_modules/
+
+# Server build artifacts & temp files
+server/yarn.lock
+server/.npmrc
+server/.npm-local-cache/
+server/.npmrc
+server/yarn-error.log
