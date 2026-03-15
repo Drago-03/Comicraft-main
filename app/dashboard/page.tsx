@@ -24,6 +24,7 @@ import {
   Shield,
   User,
   LogOut,
+  DollarSign,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -479,12 +480,20 @@ export default function DashboardPage() {
                 </>
               )}
             </div>
-            <Link href="/create">
-              <Button className="text-xs bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-black border-0 shadow-lg shadow-blue-500/10">
-                <Plus className="w-3.5 h-3.5 mr-1.5" />
-                Create New
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/dashboard/royalties">
+                <Button className="text-xs bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 shadow-lg">
+                  <DollarSign className="w-3.5 h-3.5 mr-1.5" />
+                  Earnings
+                </Button>
+              </Link>
+              <Link href="/create">
+                <Button className="text-xs bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-black border-0 shadow-lg shadow-blue-500/10">
+                  <Plus className="w-3.5 h-3.5 mr-1.5" />
+                  Create New
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Quick Stats Cards */}

@@ -902,6 +902,7 @@ app.use('/api/v1/eth-mainnet', require('./routes/eth-mainnet'));
 app.use('/api/v1/wallets', require('./routes/wallets'));
 app.use('/api/v1/marketplace', require('./routes/marketplace'));
 app.use('/api/v1/users', require('./routes/users'));
+app.use('/api/v1/submissions', require('./routes/submissions'));
 app.use('/api/v1/admin', require('./routes/admin'));
 app.use('/api/v1/ai', require('./routes/ai-generation'));
 app.use('/api/helpbot', require('./routes/helpbot'));

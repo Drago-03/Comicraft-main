@@ -36,6 +36,7 @@ function createNoopClient() {
         resetPasswordForEmail: async () => ({ data: null, error: null }),
         updateUser: async () => ({ data: null, error: null }),
         exchangeCodeForSession: async () => ({ data: null, error: null }),
+        setSession: async () => ({ data: { user: null, session: null }, error: null }),
     };
 
     const handler: ProxyHandler<any> = {

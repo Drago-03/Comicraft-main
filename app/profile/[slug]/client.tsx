@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
     BookOpen,
     Bookmark,
@@ -27,7 +27,13 @@ import {
     MapPin,
     Shield,
     Coins,
+    ShieldCheck,
+    Clock,
+    XCircle,
+    AlertCircle,
+    Loader2
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -100,6 +106,17 @@ interface DraftItem {
     version: number;
     updatedAt: string;
     createdAt: string;
+}
+
+interface SubmissionItem {
+    id: string;
+    status: string;
+    kavach_results?: any;
+    submitted_at: string;
+    stories?: {
+        title: string;
+        content: string;
+    };
 }
 
 /* ───────────── Helpers ───────────── */
@@ -197,8 +214,114 @@ function StoryCard({ story, showStatus }: { story: StoryItem; showStatus?: boole
     return cardContent;
 }
 
+/* ───────────── Submission Tracker Component ───────────── */
+function SubmissionsTracker() {
+    const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        let channel: any;
+        const fetchSubmissions = async () => {
+            try {
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+                const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+                // Currently backend doesn't have a /my-submissions endpoint. Wait, actually I can just run a Supabase query if I have RLS.
+                // Or I can query Supabase directly from the client. Let's do that!
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) return;
+
+                const { data, error } = await supabase
+                    .from('submissions')
+                    .select('*, stories(title, content)')
+                    .eq('user_id', user.id)
+                    .order('submitted_at', { ascending: false });
+                
+                if (data) setSubmissions(data);
+
+                // Setup realtime
+                channel = supabase
+                  .channel('public:submissions:my_user')
+                  .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'submissions', filter: `user_id=eq.${user.id}` }, (payload: any) => {
+                      setSubmissions((prev) => prev.map(s => s.id === payload.new.id ? { ...s, ...payload.new } : s));
+                  })
+                  .subscribe();
+            } catch (err) {
+                console.error("Error fetching submissions:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSubmissions();
+        return () => { if (channel) channel.unsubscribe(); };
+    }, []);
+
+    if (loading) return <div className="p-8 text-center text-slate-500"><Loader2 className="w-6 h-6 animate-spin mx-auto" /></div>;
+    
+    if (submissions.length === 0) {
+        return (
+            <div className="p-12 text-center text-slate-500 bg-slate-900/30 rounded-xl border border-slate-800 border-dashed">
+                <ShieldCheck className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                <p className="font-medium">No active submissions</p>
+                <p className="text-sm mt-1 text-slate-600">Stories sent for KAVACH review will appear here.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-4">
+            {submissions.map(sub => (
+                <div key={sub.id} className="bg-slate-950 border border-slate-800 rounded-xl p-5 shadow-lg relative overflow-hidden">
+                    {sub.status === 'in_review' && <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 animate-pulse" />}
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 className="text-lg font-bold text-slate-100">{sub.stories?.title || 'Unknown Title'}</h3>
+                            <p className="text-xs text-slate-500">Submitted {new Date(sub.submitted_at).toLocaleDateString()}</p>
+                        </div>
+                        <Badge variant="outline" className={
+                            sub.status === 'approved' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                            sub.status === 'rejected' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                            sub.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                            sub.status === 'revision_requested' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
+                            'bg-blue-500/20 text-blue-400 border-blue-500/30'
+                        }>
+                            {sub.status.replace('_', ' ').toUpperCase()}
+                        </Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 text-xs">
+                        {['plagiarism', 'content_policy', 'copyright', 'metadata_validation', 'ai_fingerprint'].map(step => {
+                            const stepData = sub.kavach_results?.[step];
+                            const status = stepData?.status || 'pending';
+                            const title = step.replace('_', ' ');
+                            
+                            let color = 'text-slate-600';
+                            if (status === 'passed') color = 'text-green-500';
+                            if (status === 'running') color = 'text-blue-500 animate-pulse';
+                            if (status === 'failed' || status === 'flagged') color = 'text-red-500';
+
+                            return (
+                                <div key={step} className="bg-slate-900/50 p-2 rounded flex flex-col items-center text-center justify-center border border-slate-800/50">
+                                    {status === 'running' && <Loader2 className={`w-4 h-4 mb-1 ${color}`} />}
+                                    {status === 'passed' && <CheckCircle2 className={`w-4 h-4 mb-1 ${color}`} />}
+                                    {(status === 'failed' || status === 'flagged') && <XCircle className={`w-4 h-4 mb-1 ${color}`} />}
+                                    {status === 'pending' && <Clock className={`w-4 h-4 mb-1 ${color}`} />}
+                                    <span className={`capitalize ${color}`}>{title}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
 /* ───────────── Main Component ───────────── */
 export default function ProfilePageClient({ slug }: { slug: string }) {
+    const searchParams = useSearchParams();
+    const defaultTab = searchParams.get('tab') || 'stories';
     const [user, setUser] = useState<UserProfile | null>(null);
     const [stories, setStories] = useState<StoryItem[]>([]);
     const [drafts, setDrafts] = useState<DraftItem[]>([]);
@@ -666,7 +789,7 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
 
                 {/* ─── Content Tabs ─── */}
                 <div className="mt-8">
-                    <Tabs defaultValue="stories" className="w-full">
+                    <Tabs defaultValue={defaultTab} className="w-full">
                         <div className="flex justify-center md:justify-start mb-6">
                             <TabsList className="bg-slate-900 border border-slate-800">
                                 <TabsTrigger value="stories" className="gap-2">
@@ -676,12 +799,17 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                                     <Bookmark className="w-4 h-4" /> Saved
                                 </TabsTrigger>
                                 {isOwner && (
-                                    <TabsTrigger value="drafts" className="gap-2">
-                                        <Bookmark className="w-4 h-4 text-amber-400" /> Drafts
-                                        {drafts.length > 0 && (
-                                            <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-400">{drafts.length}</span>
-                                        )}
-                                    </TabsTrigger>
+                                    <>
+                                        <TabsTrigger value="drafts" className="gap-2">
+                                            <Bookmark className="w-4 h-4 text-amber-400" /> Drafts
+                                            {drafts.length > 0 && (
+                                                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-400">{drafts.length}</span>
+                                            )}
+                                        </TabsTrigger>
+                                        <TabsTrigger value="submissions" className="gap-2">
+                                            <ShieldCheck className="w-4 h-4 text-purple-400" /> Submissions
+                                        </TabsTrigger>
+                                    </>
                                 )}
                                 <TabsTrigger value="activity" className="gap-2">
                                     <Activity className="w-4 h-4" /> Activity
@@ -774,6 +902,13 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                                         </a>
                                     </div>
                                 )}
+                            </TabsContent>
+                        )}
+                        
+                        {/* Submissions Tab */}
+                        {isOwner && (
+                            <TabsContent value="submissions" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <SubmissionsTracker />
                             </TabsContent>
                         )}
 

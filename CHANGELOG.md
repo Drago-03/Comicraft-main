@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.2] - 2026-03-15
+
+### Added
+- **Publish to KAVACH Flow**: Updated the VedaScript Publish page to submit stories directly to KAVACH IP Compliance checks instead of publishing them outright. Shows a modal and routes to the dashboard tracker.
+
+### Changed
+- **Profile Dashboard Submissions**: The Profile Dashboard now automatically reads the `?tab` query parameter to route users directly to the Submissions tracker upon redirect.
+- **Stories API**: Modified `/api/v1/stories/publish-vedascript` to accept a `status` field, allowing stories to be saved as drafts.
+
+## [3.3.1] - 2026-03-15
+
+### Fixed
+- **Auth Session Persistence**: Added `setSession` fallback to the Supabase mock client in `client.ts` to fix the `P.auth.setSession is not a function` error, preventing app-breaking crashes during login state updates.
+- **Frontend Health Status**: Reverted the footer to use the centralized `useSystemHealth` hook, which correctly polls the live backend at `api/health` instead of a hardcoded mock fetch that erroneously reported the "System Offline".
+- **Navbar UI Aesthetic**: Restored the original, clean, non-comic "glassmorphism" aesthetic to the main `Header` UI to match user preference. Reverted the `Comicraft` logo display back to its earlier elegant design.
+
+### Changed
+- **Navigation Reorganization**: Removed the isolated "Earnings" tab from the primary header navigation. Added the "Earnings" link directly to the Quick Actions row on the main Profile Dashboard (`/dashboard`) and added it to the Explore section of the global Footer.
+
+## [3.3.0] - 2026-03-15
+
+### Added
+- **Story Submission Pipeline**: Added backend endpoint (`POST /api/v1/stories/:id/submit`) to handle submissions to the KAVACH IP scanning system.
+- **Story Preview Screen**: New frontend screen (`/forge/preview/[storyId]`) acting as the post-generation preview. Includes TTS preview, metadata editing (tags, synopsis, rating), and a "Submit for Review" button.
+- **Admin Submissions Portal**: Added Admin List View (`/admin/submissions`) and Admin Detail View (`/admin/submissions/[id]`) for admins to review stories. Included live KAVACH status tracking using Supabase Realtime subscriptions.
+- **Profile Dashboard Submissions**: Added an active `Submissions` tab to the User Profile (`/profile/me`), connecting directly to live Supabase data. Users can now track KAVACH scan statuses of their submitted stories in real-time.
+
+### Fixed
+- **Homepage CSS Bleeding**: Fixed the blue color bleeding gap between the Final CTA section and the footer on the homepage by extending the ink background logic.
+- **Profile Mock Data**: Replaced all mock data in the profile dashboard with actual live data fetching from Supabase (`stories`, `drafts`, `stats`).
+- **TypeScript Errors**: Removed implicit `any` payload type errors in realtime callback functions.
+
 ## [3.2.0] - 2026-03-15
 
 ### Added

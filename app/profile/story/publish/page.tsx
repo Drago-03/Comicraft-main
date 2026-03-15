@@ -369,6 +369,7 @@ function PublishStoryContent() {
         .map(c => `## ${c.title}\n\n${c.content}`)
         .join('\n\n---\n\n');
 
+      // 1. Create the story as a draft
       const res = await fetch(`${baseUrl}/api/v1/stories/publish-vedascript`, {
         method: 'POST',
         headers: {
@@ -385,21 +386,47 @@ function PublishStoryContent() {
           tags,
           coverImageUrl,
           compiledContent,
+          status: 'draft' // Save as draft initially for KAVACH
         }),
       });
 
-      if (res.ok) {
-        const json = await res.json();
-        const sid = json.id || json.data?.id || null;
-        setPublishedStoryId(sid);
-        setPublishedCoverUrl(coverImageUrl);
-        setPublishSuccess(true);
-        if (typeof window !== 'undefined') localStorage.removeItem('draftKey');
-        toast({ title: '🎉 Story Published!', description: 'Your story is now live on Comicraft.' });
-      } else {
+      if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || err.message || 'Publish failed');
+        throw new Error(err.error || err.message || 'Draft creation failed');
       }
+
+      const json = await res.json();
+      const sid = json.id || json.data?.id || null;
+      setPublishedStoryId(sid);
+      setPublishedCoverUrl(coverImageUrl);
+
+      if (!sid) {
+         throw new Error('No story ID returned from creation');
+      }
+
+      // 2. Submit for KAVACH review
+      const submitRes = await fetch(`${baseUrl}/api/v1/stories/${sid}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          tags,
+          content_rating: 'all_ages',
+          language: 'en'
+        }),
+      });
+
+      if (!submitRes.ok) {
+        const err = await submitRes.json().catch(() => ({}));
+        throw new Error(err.error || err.message || 'KAVACH Submit failed');
+      }
+
+      setPublishSuccess(true);
+      if (typeof window !== 'undefined') localStorage.removeItem('draftKey');
+      toast({ title: 'Submitted to KAVACH!', description: 'Your story has been sent for IP compliance review.' });
+
     } catch (error) {
       const msg = (error as Error).message;
       console.error('Publish error:', error);
@@ -468,33 +495,27 @@ function PublishStoryContent() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 300, delay: 0.1 }}
-            className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-red-500/20 to-blue-500/20 border border-red-500/30 flex items-center justify-center"
+            className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-indigo-500/20 to-blue-500/20 border border-indigo-500/30 flex items-center justify-center"
           >
-            <CheckCircle2 className="w-12 h-12 text-red-400" />
+            <CheckCircle2 className="w-12 h-12 text-indigo-400" />
           </motion.div>
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Story Published!</h1>
-            <p className="text-white/50">Your story is now live on Comicraft.</p>
+            <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Submitted to KAVACH</h1>
+            <p className="text-white/50">Your story is now undergoing deep IP compliance checks. Check your dashboard for live progress.</p>
           </div>
           <div className="flex flex-col gap-3">
             <button
-              onClick={() => setShowMintModal(true)}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-semibold transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"
+              onClick={() => router.push('/profile/me?tab=submissions')}
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
             >
-              <Sparkles className="w-5 h-5" /> Mint as NFT
-            </button>
-            <button
-              onClick={() => router.push('/profile/me')}
-              className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 font-medium transition-all"
-            >
-              View Profile
+              Go to Dashboard Tracker
             </button>
             {publishedStoryId && (
               <button
                 onClick={() => router.push(`/stories/${publishedStoryId}`)}
                 className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 font-medium transition-all"
               >
-                View Story
+                Preview Draft
               </button>
             )}
           </div>

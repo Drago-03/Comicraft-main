@@ -129,7 +129,7 @@ export default function Home() {
   ];
 
   return (
-    <main className="flex min-h-[calc(100vh-80px)] w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] mb-0 pt-[100px] flex-col overflow-hidden bg-background-light font-display text-ink">
+    <main className="flex min-h-[calc(100vh-80px)] w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] mb-0 pt-[100px] flex-col overflow-x-hidden bg-background-light font-display text-ink">
 
       {/* Load Spline Viewer */}
       <Script
@@ -580,7 +580,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           FINAL CTA — Begin Your Journey
           ═══════════════════════════════════════ */}
-      <section className="relative py-32 bg-ink overflow-hidden">
+      <section className="relative pt-32 pb-[200px] -mb-[150px] bg-ink overflow-hidden">
         {/* Halftone BG */}
         <div className="absolute inset-0 pointer-events-none opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8'/%3E%3C/svg%3E")` }} />
 
