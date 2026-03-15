@@ -176,7 +176,7 @@ function AIStoryContent() {
     }
   }, [searchParams]);
 
-  // ── Load import from Shakti Spark and Saved Drafts ──────────────
+  // ── Load import from KavyaScript and Saved Drafts ──────────────
   useEffect(() => {
     try {
       // First check for imports
@@ -369,6 +369,32 @@ function AIStoryContent() {
     // Pass temperature if set by user, otherwise default
     if (!userStoryContext.modelTemperature) {
       userStoryContext.modelTemperature = 0.85;
+    }
+
+    // ── Smart Defaults: always applied so the AI stays focused on the plot ──
+    // These 5 core parameters ensure coherent, well-structured stories
+    // even when the user doesn't explicitly configure any parameters.
+    if (!userStoryContext.narrativePOV) {
+      userStoryContext.narrativePOV = 'third-person-limited';
+    }
+    if (!userStoryContext.tense) {
+      userStoryContext.tense = 'past';
+    }
+    if (!userStoryContext.structureTemplate) {
+      userStoryContext.structureTemplate = 'three-act';
+    }
+    if (!userStoryContext.pacing) {
+      userStoryContext.pacing = 'moderate';
+    }
+    if (!userStoryContext.tone) {
+      userStoryContext.tone = ['dramatic', 'immersive'];
+    }
+    // Ensure prose density and dialogue balance for readable output
+    if (!userStoryContext.proseDensity) {
+      userStoryContext.proseDensity = 'balanced';
+    }
+    if (!userStoryContext.dialogueToDescriptionRatio) {
+      userStoryContext.dialogueToDescriptionRatio = 40; // 40% dialogue, 60% description
     }
 
     const panelParams = userStoryContext as PanelParameters;

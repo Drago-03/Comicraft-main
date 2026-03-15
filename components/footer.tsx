@@ -131,13 +131,15 @@ export function Footer({ version }: { version?: string }) {
               </h3>
               <ul className="space-y-4 pl-0 list-none">
                 {[
-                  { href: '/', label: 'Prime' },
+                  { href: '/aboutus', label: 'About Us' },
                   { href: '/genres', label: 'Worlds' },
                   { href: '/create', label: 'Forge' },
                   { href: '/marketplace', label: 'Bazaar' },
                   { href: '/community', label: 'Commons' },
-                  { href: '/docs', label: 'Atlas' },
-                  { href: '/community/creators', label: 'Top Creators' },
+                  { href: '/kavach', label: 'KAVACH' },
+                  { href: '/blogs', label: 'Blogs' },
+                  { href: '/governance', label: 'Governance' },
+                  { href: '/trading', label: 'Trading Space' },
                   { href: '#', label: 'Upload Story', isUpload: true },
                 ].map((link) => (
                   <li key={link.label}>
@@ -195,6 +197,10 @@ export function Footer({ version }: { version?: string }) {
                   { href: '/docs', label: 'Documentation' },
                   { href: '/faq', label: 'FAQ' },
                   { href: '/buy/CRAFTS', label: 'Buy CRAFTS' },
+                  { href: '/ip-licensing', label: 'IP Licensing' },
+                  { href: '/whitelabel', label: 'White Label API' },
+                  { href: '/creator-fund', label: 'Creator Fund' },
+                  { href: '/reader-rewards', label: 'Reader Rewards' },
                   { href: '/feedback', label: 'Feedback' },
                 ].map((link) => (
                   <li key={link.href}>
