@@ -113,14 +113,14 @@ export function Header() {
   };
 
   const navItems: NavItem[] = [
-    { type: 'link', href: '/', label: 'Prime' },
-    { type: 'link', href: '/genres', label: 'Worlds' },
-    { type: 'link', href: '/create', label: 'Forge' },
+    { type: 'link', href: '/', label: 'Home' },
+    { type: 'link', href: '/genres', label: 'Genres' },
+    { type: 'link', href: '/create', label: 'Create' },
     { type: 'link', href: '/gallery', label: 'Gallery' },
-    { type: 'link', href: '/marketplace', label: 'Bazaar' },
-    { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS' },
-    { type: 'link', href: '/community', label: 'Commons' },
-    { type: 'link', href: '/docs', label: 'Atlas' },
+    { type: 'link', href: '/marketplace', label: 'Marketplace' },
+    { type: 'link', href: '/buy/CRAFTS', label: 'Buy CRAFTS' },
+    { type: 'link', href: '/community', label: 'Community' },
+    { type: 'link', href: '/docs', label: 'Docs' },
     ...(account
       ? [
         {
@@ -158,7 +158,7 @@ export function Header() {
             aria-label="Comicraft home"
             className="flex items-center mr-4 sm:mr-8"
           >
-            <ComiCraftLogo variant="full" colorScheme="color" size={32} animate />
+            <ComiCraftLogo variant="full" colorScheme="color" size={48} animate />
           </Link>
 
           <nav role="navigation" aria-label="Primary navigation" className="hidden lg:flex items-center space-x-2">
