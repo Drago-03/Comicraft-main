@@ -326,72 +326,52 @@ async function generateImage({ prompt, modelId = 'gemini-2.5-flash-image' }) {
     }
 
     const requestId = `gen-img-${Date.now()}`;
-    logger.info(`[${requestId}] Generating image with Gemini model: ${modelId}`);
+    logger.info(`[${requestId}] Generating image with model: ${modelId}`);
 
+    // The Generativelanguage API uses :generateContent with responseModalities
+    // (NOT :predict, which is the Vertex AI endpoint)
+    const url = `${GEMINI_CONFIG.baseUrl}/${modelId}:generateContent?key=${GEMINI_CONFIG.apiKey}`;
+    
     const requestBody = {
-        instances: [
-            { prompt: prompt }
-        ],
-        parameters: {
-            sampleCount: 1,
-            outputOptions: { mimeType: "image/png" }
+        contents: [{
+            parts: [{ text: prompt }]
+        }],
+        generationConfig: {
+            responseModalities: ['IMAGE', 'TEXT'],
         }
     };
 
-    try {
-        let response = await fetch(
-            `${GEMINI_CONFIG.baseUrl}/${modelId}:predict?key=${GEMINI_CONFIG.apiKey}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requestBody),
-                signal: AbortSignal.timeout(TIMEOUT_MS),
-            }
-        );
+    console.log(`[GEMINI IMAGE DEBUG] URL: ${url.replace(GEMINI_CONFIG.apiKey, '***')}`);
+    console.log(`[GEMINI IMAGE DEBUG] Prompt: ${prompt.substring(0, 100)}...`);
 
-        // Fallback to generateContent just in case
-        if (!response.ok && response.status !== 429) {
-            const fallbackBody = {
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: {
-                    responseModalities: ['IMAGE'],
-                }
-            };
-            const fallbackResponse = await fetch(
-                `${GEMINI_CONFIG.baseUrl}/${modelId}:generateContent?key=${GEMINI_CONFIG.apiKey}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(fallbackBody),
-                    signal: AbortSignal.timeout(TIMEOUT_MS),
-                }
-            );
-            if (fallbackResponse.ok) {
-                response = fallbackResponse;
-                const json = await response.json();
-                if (json.candidates?.[0]?.content?.parts?.[0]?.inlineData) {
-                    const inlineData = json.candidates[0].content.parts[0].inlineData;
-                    return Buffer.from(inlineData.data, 'base64');
-                }
-            }
-        }
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody),
+            signal: AbortSignal.timeout(TIMEOUT_MS),
+        });
 
         if (!response.ok) {
             const errorText = await response.text();
+            console.error(`[GEMINI IMAGE] API error ${response.status}: ${errorText}`);
             throw new Error(`Gemini Image API error ${response.status}: ${errorText}`);
         }
 
         const json = await response.json();
 
-        if (json.predictions && json.predictions[0] && json.predictions[0].bytesBase64Encoded) {
-            const base64Str = json.predictions[0].bytesBase64Encoded;
-            return Buffer.from(base64Str, 'base64');
-        } else if (json.candidates?.[0]?.content?.parts?.[0]?.inlineData) {
-            const inlineData = json.candidates[0].content.parts[0].inlineData;
-            return Buffer.from(inlineData.data, 'base64');
+        // Extract image data from the response candidates
+        const parts = json.candidates?.[0]?.content?.parts || [];
+        for (const part of parts) {
+            if (part.inlineData && part.inlineData.data) {
+                logger.info(`[${requestId}] Image generated successfully (${part.inlineData.mimeType})`);
+                return Buffer.from(part.inlineData.data, 'base64');
+            }
         }
-        
-        throw new Error('Unexpected response format from Gemini Image API');
+
+        // If no image was found in the response
+        console.error(`[GEMINI IMAGE] No image data in response:`, JSON.stringify(json).substring(0, 500));
+        throw new Error('No image data returned from Gemini API');
     } catch (error) {
         logger.error(`[${requestId}] Gemini Image generation failed: ${error.message}`);
         throw error;
