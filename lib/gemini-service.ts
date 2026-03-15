@@ -68,7 +68,13 @@ export class GeminiService {
                         panelIndex: request.panelIndex,
                         mode: 'story-only',
                     },
-                    userInput: request.storySoFar,
+                    // Send the user's story concept as userInput so buildChairmanPrompt
+                    // gets it in BOTH userInput AND config.customPremise.
+                    // For first chapter: storySoFar is empty, so use customPremise directly.
+                    // For subsequent chapters: storySoFar has the previous story context.
+                    userInput: request.storySoFar
+                        || (request.parameters as Record<string, unknown>)?.customPremise as string
+                        || '',
                     storyMemory: request.storyMemory,
                 }),
             });
