@@ -247,93 +247,12 @@ function buildChairmanPrompt(userInput, config, groqContext = {}) {
         sections.push(``);
     }
 
-    // 4. LENGTH & STRUCTURE CONSTRAINTS (critical for chapter control)
-    sections.push(`## LENGTH & STRUCTURE REQUIREMENTS`);
-    const chapterCount = config.chapterCount || 1;
-    const wordCount = config.targetWordCount || 800;
-    sections.push(`- Generate EXACTLY ${chapterCount} chapter(s)`);
-    sections.push(`- Target word count: approximately ${wordCount} words total`);
-    sections.push(`- Length category: ${config.targetLength || 'short'}`);
-    if (chapterCount === 1) {
-        sections.push(`- Write as a single continuous narrative (no chapter headers)`);
-    } else {
-        sections.push(`- Format each chapter with: ## Chapter [N]: [Title]`);
-    }
-    sections.push(``);
-
-    // 5. Genre & Tone
-    sections.push(`## GENRE & TONE`);
-    sections.push(`- Genre: ${config.primaryGenre || 'fantasy'}${config.secondaryGenres?.length ? ` + ${config.secondaryGenres.join(', ')}` : ''}`);
-    if (config.tone) sections.push(`- Tone: ${Array.isArray(config.tone) ? config.tone.join(', ') : config.tone}`);
-    if (config.pacing) sections.push(`- Pacing: ${config.pacing}`);
-    if (config.humorLevel) sections.push(`- Humor level: ${config.humorLevel}`);
-    sections.push(``);
-
-    // 6. Characters (only if specified)
-    if (config.mainCharacterCount || config.protagonistArchetype || config.antagonistType) {
-        sections.push(`## CHARACTERS`);
-        if (config.mainCharacterCount) sections.push(`- Main characters: ${config.mainCharacterCount}`);
-        if (config.supportingCharacterCount) sections.push(`- Supporting: ${config.supportingCharacterCount}`);
-        if (config.protagonistArchetype) sections.push(`- Protagonist type: ${config.protagonistArchetype}`);
-        if (config.antagonistType) sections.push(`- Antagonist: ${config.antagonistType}`);
-        sections.push(``);
-    }
-
-    // 7. Plot structure (only if specified)
-    if (config.structureTemplate || config.endingStyle || config.twistIntensity || config.themes) {
-        sections.push(`## PLOT`);
-        if (config.structureTemplate) sections.push(`- Structure: ${config.structureTemplate}`);
-        if (config.endingStyle) sections.push(`- Ending: ${config.endingStyle}`);
-        if (config.twistIntensity) sections.push(`- Twist intensity: ${config.twistIntensity}`);
-        if (config.themes) sections.push(`- Themes: ${Array.isArray(config.themes) ? config.themes.join(', ') : config.themes}`);
-        sections.push(``);
-    }
-
-    // 8. Style (only if specified)
-    if (config.proseDensity || config.narrativePOV || config.tense) {
-        sections.push(`## STYLE`);
-        if (config.narrativePOV) sections.push(`- POV: ${config.narrativePOV}`);
-        if (config.tense) sections.push(`- Tense: ${config.tense}`);
-        if (config.proseDensity) sections.push(`- Prose density: ${config.proseDensity}`);
-        if (config.dialogueToDescriptionRatio) sections.push(`- Dialogue:Description ratio: ${config.dialogueToDescriptionRatio}:${100 - config.dialogueToDescriptionRatio}`);
-        sections.push(``);
-    }
-
-    // 9. Comic panels (if applicable)
-    if (config.mode && config.mode.includes('comic')) {
-        sections.push(`## COMIC PANEL BREAKDOWN`);
-        sections.push(`- Panel Layout: ${config.panelLayoutStyle || 'standard'}`);
-        sections.push(`- Target Panels: ${config.comicPanelCount || 24}`);
-        sections.push(`- Visual Tone: ${config.visualTone || 'dynamic'}`);
-        sections.push(``);
-    }
-
-    // 10. Safety (minimal, only if set)
-    if (config.nsfwToggle || config.blockRealPeopleTrademarks) {
-        sections.push(`## CONSTRAINTS`);
-        if (config.nsfwToggle) sections.push(`- Content level: ${config.nsfwToggle}`);
-        if (config.blockRealPeopleTrademarks) sections.push(`- No real people or trademarked characters`);
-        sections.push(``);
-    }
-
-    // 11. Final reminder — CRITICALLY IMPORTANT for plot adherence
-    sections.push(`## CRITICAL INSTRUCTIONS (DO NOT IGNORE)`);
-    sections.push(`1. **FOLLOW THE USER'S CONCEPT EXACTLY** — Your story MUST directly follow the plot, characters, setting, and themes described in "USER'S STORY CONCEPT" above. Do not invent a completely different story.`);
-    sections.push(`2. Every scene, character, and event must serve the user's stated premise. If they described specific characters, USE those characters. If they described a specific plot, FOLLOW that plot.`);
-    sections.push(`3. Stay within ${wordCount} words (±20%)`);
-    sections.push(`4. Generate exactly ${chapterCount} chapter(s)`);
-    sections.push(`5. Write ONLY the story — no meta-commentary, no author notes, no preamble`);
-    sections.push(`6. Be creative within the user's concept — add depth and detail, but do NOT deviate from their premise`);
-    if (config.generationSeed) {
-        sections.push(`[Generation Seed: ${config.generationSeed} — use this for creative variation within the user's premise]`);
-    }
-
     sections.push(`## IMPORTANT REMINDERS`);
     sections.push(`1. Your story MUST be about the user's concept described above.`);
     sections.push(`2. Stay closely within the boundaries of the .toon profile constraints.`);
     sections.push(`3. Be creative and original — generate a UNIQUE story every time.`);
     sections.push(``);
-    sections.push(`BEGIN WRITING THE USER'S STORY:`);
+    sections.push(`BEGIN WRITING:`);
 
     return sections.join('\n');
 }
@@ -473,7 +392,7 @@ async function orchestrateGeneration({
         const chairmanPrompt = buildChairmanPrompt(userInput, config, groqContext);
 
         let generatedContent;
-        const geminiConfigured = !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
+        const geminiConfigured = !!process.env.GEMINI_API_KEY;
 
         if (geminiConfigured) {
             // Use Gemini as chairman
