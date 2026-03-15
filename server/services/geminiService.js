@@ -319,8 +319,87 @@ Return JSON ONLY (no markdown):
     }
 }
 
+async function generateImage({ prompt, modelId = 'gemini-2.5-flash-image' }) {
+    if (!GEMINI_CONFIG.apiKey) {
+        throw new Error('Gemini API key not configured');
+    }
+
+    const requestId = `gen-img-${Date.now()}`;
+    logger.info(`[${requestId}] Generating image with Gemini model: ${modelId}`);
+
+    const requestBody = {
+        instances: [
+            { prompt: prompt }
+        ],
+        parameters: {
+            sampleCount: 1,
+            outputOptions: { mimeType: "image/png" }
+        }
+    };
+
+    try {
+        let response = await fetch(
+            `${GEMINI_CONFIG.baseUrl}/${modelId}:predict?key=${GEMINI_CONFIG.apiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody),
+                signal: AbortSignal.timeout(TIMEOUT_MS),
+            }
+        );
+
+        // Fallback to generateContent just in case
+        if (!response.ok && response.status !== 429) {
+            const fallbackBody = {
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: {
+                    responseModalities: ['IMAGE'],
+                }
+            };
+            const fallbackResponse = await fetch(
+                `${GEMINI_CONFIG.baseUrl}/${modelId}:generateContent?key=${GEMINI_CONFIG.apiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(fallbackBody),
+                    signal: AbortSignal.timeout(TIMEOUT_MS),
+                }
+            );
+            if (fallbackResponse.ok) {
+                response = fallbackResponse;
+                const json = await response.json();
+                if (json.candidates?.[0]?.content?.parts?.[0]?.inlineData) {
+                    const inlineData = json.candidates[0].content.parts[0].inlineData;
+                    return Buffer.from(inlineData.data, 'base64');
+                }
+            }
+        }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Gemini Image API error ${response.status}: ${errorText}`);
+        }
+
+        const json = await response.json();
+
+        if (json.predictions && json.predictions[0] && json.predictions[0].bytesBase64Encoded) {
+            const base64Str = json.predictions[0].bytesBase64Encoded;
+            return Buffer.from(base64Str, 'base64');
+        } else if (json.candidates?.[0]?.content?.parts?.[0]?.inlineData) {
+            const inlineData = json.candidates[0].content.parts[0].inlineData;
+            return Buffer.from(inlineData.data, 'base64');
+        }
+        
+        throw new Error('Unexpected response format from Gemini Image API');
+    } catch (error) {
+        logger.error(`[${requestId}] Gemini Image generation failed: ${error.message}`);
+        throw error;
+    }
+}
+
 module.exports = {
     generateContent,
+    generateImage,
     checkGeminiHealth,
     extractOutlineFromPremise,
     extractMetadata,

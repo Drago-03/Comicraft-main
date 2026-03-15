@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Copy, Check, ArrowRight, BookOpen, ArrowLeft, Zap } from 'lucide-react';
+import { Sparkles, Copy, Check, ArrowRight, BookOpen, ArrowLeft, Zap, Play, Square, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -34,6 +34,10 @@ export default function KavyaScriptPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState('');
   const [copied, setCopied] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isTtsLoading, setIsTtsLoading] = useState(false);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   const handleSpark = useCallback(async () => {
     if (!prompt.trim()) {
@@ -43,6 +47,11 @@ export default function KavyaScriptPage() {
 
     setIsGenerating(true);
     setGeneratedContent('');
+    setAudioUrl(null);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
@@ -113,6 +122,46 @@ export default function KavyaScriptPage() {
     }));
     router.push('/create/ai-story');
   }, [generatedContent, selectedGenre, prompt, router]);
+
+  const handlePlayTts = async () => {
+    if (isPlaying && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    if (audioUrl && audioRef.current) {
+      audioRef.current.play();
+      setIsPlaying(true);
+      return;
+    }
+
+    setIsTtsLoading(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+      const response = await fetch(`${apiUrl}/api/v1/ai/poetry/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ poem: generatedContent })
+      });
+
+      if (!response.ok) throw new Error('Failed to generate audio');
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setAudioUrl(url);
+
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => setIsPlaying(false);
+      await audio.play();
+      setIsPlaying(true);
+    } catch (error) {
+      toast({ title: 'TTS Error', description: 'Failed to generate speech', variant: 'destructive' });
+    } finally {
+      setIsTtsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen relative bg-black text-white font-sans overflow-hidden">
@@ -283,6 +332,26 @@ export default function KavyaScriptPage() {
 
                 {/* Output Actions */}
                 <div className="px-6 py-4 border-t border-white/[0.06] flex flex-wrap gap-3">
+                  <Button
+                    onClick={handlePlayTts}
+                    disabled={isTtsLoading}
+                    variant="outline"
+                    size="sm"
+                    className={`rounded-lg transition-all ${
+                      isPlaying 
+                        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30 hover:text-amber-200' 
+                        : 'bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {isTtsLoading ? (
+                      <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                    ) : isPlaying ? (
+                      <Square className="w-4 h-4 mr-1.5 fill-current" />
+                    ) : (
+                      <Play className="w-4 h-4 mr-1.5 fill-current" />
+                    )}
+                    {isTtsLoading ? 'Generating Audio...' : isPlaying ? 'Stop reading' : 'Read aloud'}
+                  </Button>
                   <Button
                     onClick={handleSaveDraft}
                     variant="outline"

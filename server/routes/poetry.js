@@ -8,7 +8,6 @@
 const router = require('express').Router();
 const { authRequired } = require('../middleware/auth');
 const geminiService = require('../services/geminiService');
-const sharp = require('sharp');
 const logger = require('../utils/logger');
 
 /**
@@ -230,10 +229,17 @@ router.post('/render', async (req, res) => {
 
     svgContent += '</svg>';
 
-    // Convert SVG to PNG using sharp
-    const pngBuffer = await sharp(Buffer.from(svgContent))
-      .png({ quality: 95 })
-      .toBuffer();
+    // Convert SVG to PNG using sharp (lazy loaded to prevent startup crashes on Render)
+    let pngBuffer;
+    try {
+      const sharp = require('sharp');
+      pngBuffer = await sharp(Buffer.from(svgContent))
+        .png({ quality: 95 })
+        .toBuffer();
+    } catch (e) {
+      logger.error('sharp module is not installed or failed to load. Please run npm install sharp.', { error: e.message });
+      return res.status(500).json({ error: 'Image processing library missing on server.' });
+    }
 
     res.setHeader('Content-Type', 'image/png');
     res.setHeader('Content-Disposition', `inline; filename="poem-${Date.now()}.png"`);
@@ -307,6 +313,66 @@ Return ONLY the revised poem text, nothing else.`;
   } catch (error) {
     logger.error('Poetry iterate error', { component: 'poetry', error: error.message });
     return res.status(500).json({ error: 'Poetry iteration failed' });
+  }
+});
+
+// ── POST /api/v1/ai/poetry/tts ─────────────────────────────────────────────
+/**
+ * @swagger
+ * /api/v1/ai/poetry/tts:
+ *   post:
+ *     tags: [Poetry]
+ *     summary: Generate Text-to-Speech audio for a poem
+ *     description: Converts the poem text to high-quality audio using ElevenLabs TTS.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [poem]
+ *             properties:
+ *               poem:
+ *                 type: string
+ *               voiceId:
+ *                 type: string
+ *                 description: ElevenLabs voice ID
+ *     responses:
+ *       200:
+ *         description: Audio generated successfully
+ *         content:
+ *           audio/mpeg:
+ *             schema:
+ *               type: string
+ *               format: binary
+ */
+router.post('/tts', async (req, res) => {
+  try {
+    const { poem, voiceId } = req.body;
+
+    if (!poem) {
+      return res.status(400).json({ error: 'poem text is required' });
+    }
+
+    try {
+      const elevenlabsService = require('../services/elevenlabsService');
+      
+      // We stream the audio directly back to the client
+      const audioBuffer = await elevenlabsService.generateSpeech({
+        text: poem,
+        voiceId: voiceId || process.env.ELEVENLABS_DEFAULT_VOICE_ID,
+      });
+
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Content-Disposition', `inline; filename="poem-tts-${Date.now()}.mp3"`);
+      return res.send(audioBuffer);
+    } catch (e) {
+      logger.error('ElevenLabs TTS error in KavyaScript', { error: e.message });
+      return res.status(500).json({ error: 'Failed to generate audio via ElevenLabs.' });
+    }
+  } catch (error) {
+    logger.error('Poetry TTS error', { component: 'poetry', error: error.message });
+    return res.status(500).json({ error: 'Poetry TTS generation failed' });
   }
 });
 

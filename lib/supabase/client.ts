@@ -55,6 +55,8 @@ function createNoopClient() {
     return new Proxy({}, handler) as any;
 }
 
+let browserClient: any;
+
 export function createClient() {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -71,11 +73,16 @@ export function createClient() {
         throw new Error('Supabase configuration is missing. Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.');
     }
 
-    return createBrowserClient(supabaseUrl, supabaseAnonKey, {
+    // Cache the client so we don't recreate it on every render, avoiding lock steal errors
+    if (browserClient) return browserClient;
+
+    browserClient = createBrowserClient(supabaseUrl, supabaseAnonKey, {
         auth: {
             flowType: 'implicit',
             storageKey: 'comicraft-auth',
         },
     });
+
+    return browserClient;
 }
 
