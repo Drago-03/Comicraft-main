@@ -513,7 +513,7 @@ export default function SettingsPage() {
 
                     <div className="flex justify-end gap-3">
                       {saveStatus === 'saved' && (
-                        <span className="text-sm text-emerald-400 self-center">✓ Changes saved!</span>
+                        <span className="text-sm text-red-400 self-center">✓ Changes saved!</span>
                       )}
                       {saveStatus === 'error' && (
                         <span className="text-sm text-red-400 self-center">Failed to save</span>
@@ -953,8 +953,8 @@ export default function SettingsPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center p-3 border rounded-md bg-card">
                       <div className="flex items-center gap-3">
-                        <div className="bg-emerald-500/10 p-1.5 rounded-full">
-                          <AtSign className="h-4 w-4 text-emerald-500" />
+                        <div className="bg-red-500/10 p-1.5 rounded-full">
+                          <AtSign className="h-4 w-4 text-red-500" />
                         </div>
                         <div>
                           <p className="text-sm font-medium">

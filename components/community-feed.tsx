@@ -37,11 +37,11 @@ function PostActions({ post, onVote }: { post: CommunityPost; onVote: (id: strin
           onClick={() => onVote(post.id, post.userVote === 'up' ? null : 'up')}
           aria-label={post.userVote === 'up' ? "Remove upvote" : "Upvote"}
           aria-pressed={post.userVote === 'up'}
-          className={`p-1.5 rounded-full hover:bg-white/10 hover:text-emerald-400 transition-colors ${post.userVote === 'up' ? 'text-emerald-400 bg-emerald-400/10' : ''}`}
+          className={`p-1.5 rounded-full hover:bg-white/10 hover:text-red-400 transition-colors ${post.userVote === 'up' ? 'text-red-400 bg-red-400/10' : ''}`}
         >
           <ChevronUp className="w-4 h-4" />
         </button>
-        <span className={`text-sm font-semibold min-w-[2ch] text-center ${post.userVote === 'up' ? 'text-emerald-400' : post.userVote === 'down' ? 'text-rose-400' : 'text-white/70'}`}>{post.likes}</span>
+        <span className={`text-sm font-semibold min-w-[2ch] text-center ${post.userVote === 'up' ? 'text-red-400' : post.userVote === 'down' ? 'text-rose-400' : 'text-white/70'}`}>{post.likes}</span>
         <button
           onClick={() => onVote(post.id, post.userVote === 'down' ? null : 'down')}
           aria-label={post.userVote === 'down' ? "Remove downvote" : "Downvote"}
@@ -71,7 +71,7 @@ function PostCard({ post, onVote }: { post: CommunityPost; onVote: (id: string, 
         <div className="flex justify-between items-start mb-4">
           <div className="flex gap-3 items-center">
             <div className="relative">
-              <Avatar className="h-12 w-12 border-2 border-emerald-500/30">
+              <Avatar className="h-12 w-12 border-2 border-red-500/30">
                 <AvatarImage src={post.author.avatar} /><AvatarFallback>{post.author.name[0]}</AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-1 -right-1 bg-black text-[10px] font-bold text-amber-400 border border-amber-500/50 rounded-full w-5 h-5 flex items-center justify-center">
@@ -92,13 +92,13 @@ function PostCard({ post, onVote }: { post: CommunityPost; onVote: (id: string, 
         {post.title && <h3 className="text-xl font-bold mb-2 text-white">{post.title}</h3>}
         <p className="text-white/70 leading-relaxed mb-4">{post.content}</p>
         {post.storyPreview && (
-          <div className="bg-white/5 border-l-2 border-emerald-500 p-4 rounded-r-xl mb-4 text-white/60 italic text-sm">
+          <div className="bg-white/5 border-l-2 border-red-500 p-4 rounded-r-xl mb-4 text-white/60 italic text-sm">
             "{post.storyPreview}"
           </div>
         )}
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {post.genre?.map(g => <Badge key={g} className="bg-emerald-500/10 text-emerald-400 border-none hover:bg-emerald-500/20">{g}</Badge>)}
+          {post.genre?.map(g => <Badge key={g} className="bg-red-500/10 text-red-400 border-none hover:bg-red-500/20">{g}</Badge>)}
           {post.tags?.map(t => <Badge key={t} className="bg-white/5 text-white/50 border-white/10 hover:bg-white/10">#{t}</Badge>)}
         </div>
         <PostActions post={post} onVote={onVote} />
@@ -179,18 +179,18 @@ export default function CommunityFeed() {
   const filtered = posts.filter(p => filter === 'all' || p.type === (filter.endsWith('s') ? filter.slice(0, -1) : filter));
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-red-500/30">
 
       {/* Background Ambience */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-emerald-500/10 blur-[150px] rounded-full translate-x-1/3 -translate-y-1/3" />
+        <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-red-500/10 blur-[150px] rounded-full translate-x-1/3 -translate-y-1/3" />
         <div className="absolute bottom-0 left-0 w-[40vw] h-[40vw] bg-blue-500/10 blur-[150px] rounded-full -translate-x-1/3 translate-y-1/3" />
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]" />
       </div>
 
       <div className="container mx-auto px-6 py-12 relative z-10 max-w-7xl">
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-semibold tracking-wider text-emerald-400 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-semibold tracking-wider text-red-400 mb-4">
             <Hexagon className="w-3 h-3" /> NEURAL SYNDICATE
           </div>
           <h1 className="text-5xl md:text-6xl font-bold tracking-tighter">Community Nexus</h1>
@@ -232,11 +232,11 @@ export default function CommunityFeed() {
 
             {/* User Profile / XP Card */}
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md relative overflow-hidden group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-blue-500 blur-xl opacity-20 group-hover:opacity-30 transition-opacity" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-blue-500 blur-xl opacity-20 group-hover:opacity-30 transition-opacity" />
               <div className="relative">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="relative">
-                    <Avatar className="h-16 w-16 border-2 border-emerald-500">
+                    <Avatar className="h-16 w-16 border-2 border-red-500">
                       <AvatarImage src={`https://api.dicebear.com/7.x/personas/svg?seed=${profile?.username || 'You'}`} />
                       <AvatarFallback>{profile?.username ? profile.username[0].toUpperCase() : 'U'}</AvatarFallback>
                     </Avatar>
@@ -246,7 +246,7 @@ export default function CommunityFeed() {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg text-white">{profile?.username || 'Guest Creator'}</h3>
-                    <p className="text-sm text-emerald-400">{profile?.rank || 'Novice Scribe'}</p>
+                    <p className="text-sm text-red-400">{profile?.rank || 'Novice Scribe'}</p>
                   </div>
                 </div>
 
@@ -257,7 +257,7 @@ export default function CommunityFeed() {
                   <div className="w-full bg-black/50 rounded-full h-3 border border-white/10 overflow-hidden relative">
                     <motion.div
                       initial={{ width: 0 }} animate={{ width: `${Math.min(100, ((profile?.xp || 0) / (profile?.nextLevelXp || 2000)) * 100)}%` }} transition={{ duration: 1, delay: 0.5 }}
-                      className="h-full bg-gradient-to-r from-emerald-500 to-blue-500 relative"
+                      className="h-full bg-gradient-to-r from-red-500 to-blue-500 relative"
                     >
                       <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite] skew-x-12" />
                     </motion.div>
@@ -282,7 +282,7 @@ export default function CommunityFeed() {
                       </motion.div>
                     </div>
                     <div>
-                      <h4 className="font-bold group-hover:text-emerald-400 transition-colors line-clamp-1">{nft.title}</h4>
+                      <h4 className="font-bold group-hover:text-red-400 transition-colors line-clamp-1">{nft.title}</h4>
                       <p className="text-xs text-white/50">By {nft.author}</p>
                     </div>
                   </div>

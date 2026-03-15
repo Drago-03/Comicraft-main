@@ -222,16 +222,16 @@ export default function UploadPage() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-emerald-500/30 font-sans">
+        <div className="min-h-screen bg-black text-white selection:bg-red-500/30 font-sans">
             {/* Background Decor */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/10 blur-[120px] rounded-full mix-blend-screen" />
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-red-500/10 blur-[120px] rounded-full mix-blend-screen" />
                 <div className="absolute bottom-[-20%] right-[-10%] w-[40%] h-[60%] bg-blue-500/10 blur-[120px] rounded-full mix-blend-screen" />
             </div>
 
             <div className="relative z-10 max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
                 <div className="text-center max-w-2xl mx-auto mb-16">
-                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-emerald-400 text-sm font-medium mb-6">
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-red-400 text-sm font-medium mb-6">
                         <Hexagon className="w-4 h-4" /> Interactive Upload
                     </motion.div>
                     <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
@@ -264,9 +264,9 @@ export default function UploadPage() {
 
                         {/* Story Details Form Sidebar */}
                         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-md relative overflow-hidden group">
-                           <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                           <div className="absolute inset-0 bg-gradient-to-tr from-red-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                             <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-white relative z-10">
-                                <AlertCircle className="w-5 h-5 text-emerald-400" /> Metacore Settings
+                                <AlertCircle className="w-5 h-5 text-red-400" /> Metacore Settings
                             </h2>
 
                             <div className="space-y-6 relative z-10">
@@ -276,14 +276,14 @@ export default function UploadPage() {
                                         <button
                                             type="button"
                                             onClick={() => setFormatType('storybook')}
-                                            className={`flex-1 flex justify-center items-center gap-2 py-2 rounded-lg text-sm transition-colors ${formatType === 'storybook' ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-white/50 hover:text-white/80'}`}
+                                            className={`flex-1 flex justify-center items-center gap-2 py-2 rounded-lg text-sm transition-colors ${formatType === 'storybook' ? 'bg-red-500/20 text-red-400 font-bold' : 'text-white/50 hover:text-white/80'}`}
                                         >
                                             <Book className="w-4 h-4" /> Storybook
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setFormatType('comic_book')}
-                                            className={`flex-1 flex justify-center items-center gap-2 py-2 rounded-lg text-sm transition-colors ${formatType === 'comic_book' ? 'bg-emerald-500/20 text-emerald-400 font-bold' : 'text-white/50 hover:text-white/80'}`}
+                                            className={`flex-1 flex justify-center items-center gap-2 py-2 rounded-lg text-sm transition-colors ${formatType === 'comic_book' ? 'bg-red-500/20 text-red-400 font-bold' : 'text-white/50 hover:text-white/80'}`}
                                         >
                                             <Layers className="w-4 h-4" /> Comic Book
                                         </button>
@@ -295,14 +295,14 @@ export default function UploadPage() {
                                     <Input
                                         id="title" value={title} onChange={(e) => setTitle(e.target.value)}
                                         placeholder="Name your universe..."
-                                        className="bg-black/50 border-white/10 focus-visible:ring-emerald-500 h-12 rounded-xl text-white placeholder:text-white/30 transition-all hover:bg-black/70"
+                                        className="bg-black/50 border-white/10 focus-visible:ring-red-500 h-12 rounded-xl text-white placeholder:text-white/30 transition-all hover:bg-black/70"
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="genre" className="text-white/80 font-medium">Core Genre</Label>
                                     <select
                                         id="genre" value={genre} onChange={(e) => setGenre(e.target.value)}
-                                        className="w-full bg-black/50 border border-white/10 focus-visible:ring-emerald-500 h-12 rounded-xl text-white px-3 transition-all hover:bg-black/70"
+                                        className="w-full bg-black/50 border border-white/10 focus-visible:ring-red-500 h-12 rounded-xl text-white px-3 transition-all hover:bg-black/70"
                                     >
                                         <option value="sci-fi">Sci-Fi</option>
                                         <option value="fantasy">Fantasy</option>
@@ -316,11 +316,11 @@ export default function UploadPage() {
 
                                 <div className="space-y-2">
                                     <Label className="text-white/80 font-medium flex justify-between">
-                                        Cover Image <span className="text-emerald-400 font-normal">Required</span>
+                                        Cover Image <span className="text-red-400 font-normal">Required</span>
                                     </Label>
                                     <div
                                       onClick={() => coverInputRef.current?.click()}
-                                      className="w-full h-32 bg-black/50 border border-white/10 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-black/70 hover:border-emerald-500/50 transition-all group overflow-hidden relative"
+                                      className="w-full h-32 bg-black/50 border border-white/10 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-black/70 hover:border-red-500/50 transition-all group overflow-hidden relative"
                                     >
                                         <input
                                             type="file" ref={coverInputRef} className="hidden" accept="image/jpeg,image/png,image/webp"
@@ -341,7 +341,7 @@ export default function UploadPage() {
                                             </div>
                                         ) : (
                                             <>
-                                                <ImageIcon className="w-8 h-8 text-white/40 mb-2 group-hover:text-emerald-400 transition-colors" />
+                                                <ImageIcon className="w-8 h-8 text-white/40 mb-2 group-hover:text-red-400 transition-colors" />
                                                 <span className="text-sm text-white/50 group-hover:text-white/80 transition-colors">Click to upload 16:9 ratio image</span>
                                             </>
                                         )}
@@ -355,7 +355,7 @@ export default function UploadPage() {
                                     <Textarea
                                         id="description" value={description} onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Leave empty and the AI will scan your file to build a dynamic synopsis..."
-                                        className="bg-black/50 border-white/10 focus-visible:ring-emerald-500 min-h-[100px] rounded-xl text-white placeholder:text-white/30 resize-none transition-all hover:bg-black/70"
+                                        className="bg-black/50 border-white/10 focus-visible:ring-red-500 min-h-[100px] rounded-xl text-white placeholder:text-white/30 resize-none transition-all hover:bg-black/70"
                                     />
                                 </div>
 
@@ -366,7 +366,7 @@ export default function UploadPage() {
                                             <Input
                                                 id="characterSetting" value={characterSetting} onChange={(e) => setCharacterSetting(e.target.value)}
                                                 placeholder="e.g., A rogue AI and a weary detective"
-                                                className="bg-black/50 border-white/10 focus-visible:ring-emerald-500 h-10 rounded-xl text-white placeholder:text-white/30 transition-all hover:bg-black/70"
+                                                className="bg-black/50 border-white/10 focus-visible:ring-red-500 h-10 rounded-xl text-white placeholder:text-white/30 transition-all hover:bg-black/70"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -383,7 +383,7 @@ export default function UploadPage() {
                                                         }
                                                     }}
                                                     placeholder="Press Enter to add tag..."
-                                                    className="bg-black/50 border-white/10 focus-visible:ring-emerald-500 h-10 rounded-xl text-white placeholder:text-white/30 transition-all hover:bg-black/70 flex-1"
+                                                    className="bg-black/50 border-white/10 focus-visible:ring-red-500 h-10 rounded-xl text-white placeholder:text-white/30 transition-all hover:bg-black/70 flex-1"
                                                 />
                                                 <Button
                                                   onClick={(e) => {
@@ -401,7 +401,7 @@ export default function UploadPage() {
                                             {tags.length > 0 && (
                                                 <div className="flex flex-wrap gap-2 mt-3">
                                                     {tags.map(tag => (
-                                                        <span key={tag} className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-medium">
+                                                        <span key={tag} className="inline-flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-medium">
                                                             {tag}
                                                             <button onClick={() => setTags(tags.filter(t => t !== tag))} className="hover:text-white transition-colors">
                                                                 <X className="w-3 h-3" />
@@ -418,7 +418,7 @@ export default function UploadPage() {
                             <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
                                 <Button
                                     onClick={handleSubmit} disabled={isSubmitting}
-                                    className="w-full h-14 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-lg rounded-xl transition-all shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] group overflow-hidden relative"
+                                    className="w-full h-14 bg-red-500 hover:bg-red-400 text-black font-bold text-lg rounded-xl transition-all shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] group overflow-hidden relative"
                                 >
                                     {isSubmitting ? (
                                         <span className="flex items-center gap-2 z-10 relative">Initializing Sync <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" /></span>
@@ -445,7 +445,7 @@ export default function UploadPage() {
                       ${file
                                                 ? 'bg-black/40 backdrop-blur-md'
                                                 : isHovering
-                                                    ? 'bg-emerald-500/10 border-emerald-500 shadow-[0_0_50px_rgba(16,185,129,0.1)] cursor-pointer scale-[1.01]'
+                                                    ? 'bg-red-500/10 border-red-500 shadow-[0_0_50px_rgba(16,185,129,0.1)] cursor-pointer scale-[1.01]'
                                                     : 'bg-white/5 hover:border-white/30 cursor-pointer' }
                     `}
                                     >
@@ -460,8 +460,8 @@ export default function UploadPage() {
                                             <div className="w-full h-full flex flex-col">
                                                  <div className="flex justify-between items-center mb-4 bg-white/5 p-4 rounded-2xl border border-white/10">
                                                      <div className="flex items-center gap-3 text-left">
-                                                         <div className="p-3 bg-emerald-500/20 rounded-xl">
-                                                             <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+                                                         <div className="p-3 bg-red-500/20 rounded-xl">
+                                                             <CheckCircle2 className="w-6 h-6 text-red-400" />
                                                          </div>
                                                          <div>
                                                              <p className="font-bold text-white text-lg truncate max-w-sm">{file.name}</p>
@@ -492,7 +492,7 @@ export default function UploadPage() {
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center space-y-6">
-                                                <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity }} className={`w-32 h-32 rounded-3xl flex items-center justify-center transition-colors duration-500 ${isHovering ? 'bg-emerald-500 text-black shadow-[0_0_40px_rgba(16,185,129,0.4)]' : 'bg-white/5 border border-white/10 text-emerald-400'}`}>
+                                                <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity }} className={`w-32 h-32 rounded-3xl flex items-center justify-center transition-colors duration-500 ${isHovering ? 'bg-red-500 text-black shadow-[0_0_40px_rgba(16,185,129,0.4)]' : 'bg-white/5 border border-white/10 text-red-400'}`}>
                                                     <UploadCloud className="w-12 h-12" />
                                                 </motion.div>
                                                 <div className="space-y-3">
@@ -514,9 +514,9 @@ export default function UploadPage() {
                                         <div className="flex items-center gap-2">
                                             <div className="w-3 h-3 rounded-full bg-rose-400/30 border border-rose-400/50" />
                                             <div className="w-3 h-3 rounded-full bg-amber-400/30 border border-amber-400/50" />
-                                            <div className="w-3 h-3 rounded-full bg-emerald-400/30 border border-emerald-400/50" />
+                                            <div className="w-3 h-3 rounded-full bg-red-400/30 border border-red-400/50" />
                                         </div>
-                                        <div className="flex gap-4 text-emerald-400 text-sm font-semibold">
+                                        <div className="flex gap-4 text-red-400 text-sm font-semibold">
                                             <span className="flex items-center gap-1.5"><Type className="w-4 h-4" /> Integrated IDE</span>
                                         </div>
                                     </div>
@@ -527,7 +527,7 @@ export default function UploadPage() {
                                     />
                                     <div className="h-12 border-t border-white/10 bg-black/40 px-6 flex items-center justify-between text-xs text-white/40">
                                         <span className="font-mono bg-white/5 px-2 py-1 rounded-md">{markdownContent.length} bytes processed</span>
-                                        <span className="flex items-center gap-2 text-emerald-500/70"><Save className="w-3 h-3 animate-pulse" /> Daemon syncing</span>
+                                        <span className="flex items-center gap-2 text-red-500/70"><Save className="w-3 h-3 animate-pulse" /> Daemon syncing</span>
                                     </div>
                                 </motion.div>
                             )}

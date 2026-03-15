@@ -48,8 +48,8 @@ const createOptions: CreateOption[] = [
     description: 'Write every word yourself in our distraction-free editor.',
     icon: <PenSquare className="w-8 h-8" />,
     path: '/create?tab=text',
-    gradient: 'from-emerald-500/20 to-green-500/20',
-    accentColor: 'text-emerald-600 dark:text-emerald-400',
+    gradient: 'from-red-500/20 to-red-500/20',
+    accentColor: 'text-red-600 dark:text-red-400',
   },
   {
     id: 'comic',

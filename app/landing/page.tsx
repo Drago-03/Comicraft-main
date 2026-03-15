@@ -96,7 +96,7 @@ export default function LandingPage() {
       {/* Floating doodles */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full blur-3xl opacity-20 animate-float"></div>
-        <div className="absolute bottom-40 right-20 w-40 h-40 bg-gradient-to-r from-blue-200 to-teal-200 rounded-full blur-3xl opacity-20 animate-float-delayed"></div>
+        <div className="absolute bottom-40 right-20 w-40 h-40 bg-gradient-to-r from-blue-200 to-red-200 rounded-full blur-3xl opacity-20 animate-float-delayed"></div>
         <div className="absolute top-1/2 left-1/3 w-36 h-36 bg-gradient-to-r from-yellow-200 to-orange-200 rounded-full blur-3xl opacity-20 animate-float-slow"></div>
       </div>
 
@@ -280,15 +280,15 @@ export default function LandingPage() {
               </h3>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-center">
-                  <Check className="h-5 w-5 mr-2 text-green-500" />
+                  <Check className="h-5 w-5 mr-2 text-red-500" />
                   Choose-your-own-adventure stories
                 </li>
                 <li className="flex items-center">
-                  <Check className="h-5 w-5 mr-2 text-green-500" />
+                  <Check className="h-5 w-5 mr-2 text-red-500" />
                   Reader participation and voting
                 </li>
                 <li className="flex items-center">
-                  <Check className="h-5 w-5 mr-2 text-green-500" />
+                  <Check className="h-5 w-5 mr-2 text-red-500" />
                   Multimedia story elements
                 </li>
               </ul>
@@ -301,15 +301,15 @@ export default function LandingPage() {
               </h3>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-center">
-                  <Check className="h-5 w-5 mr-2 text-green-500" />
+                  <Check className="h-5 w-5 mr-2 text-red-500" />
                   Analytics and performance tracking
                 </li>
                 <li className="flex items-center">
-                  <Check className="h-5 w-5 mr-2 text-green-500" />
+                  <Check className="h-5 w-5 mr-2 text-red-500" />
                   Community engagement tools
                 </li>
                 <li className="flex items-center">
-                  <Check className="h-5 w-5 mr-2 text-green-500" />
+                  <Check className="h-5 w-5 mr-2 text-red-500" />
                   Marketing and promotion support
                 </li>
               </ul>

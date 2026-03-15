@@ -92,19 +92,19 @@ export function ConnectAccountModal({
           >
             <div className="relative w-full max-w-md pointer-events-auto">
               {/* Glow */}
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-emerald-500/30 via-transparent to-blue-500/20 blur-xl opacity-70" />
+              <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-red-500/30 via-transparent to-blue-500/20 blur-xl opacity-70" />
 
               {/* Card */}
               <div className="relative rounded-2xl bg-[#0c0c0e] border border-white/10 shadow-2xl overflow-hidden">
                 {/* Top accent bar */}
-                <div className="h-0.5 w-full bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500" />
+                <div className="h-0.5 w-full bg-gradient-to-r from-red-500 via-blue-500 to-purple-500" />
 
                 <div className="px-7 py-6">
                   {/* Close */}
                   <button
                     onClick={onClose}
                     aria-label="Close"
-                    className="absolute top-4 right-4 p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                    className="absolute top-4 right-4 p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -112,9 +112,9 @@ export function ConnectAccountModal({
                   {/* Icon */}
                   <div className="flex items-center justify-center mb-5">
                     <div className="relative">
-                      <div className="absolute inset-0 rounded-full bg-emerald-500/20 blur-xl" />
-                      <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500/20 to-blue-500/10 border border-emerald-500/30 flex items-center justify-center">
-                        <Shield className="w-8 h-8 text-emerald-400" />
+                      <div className="absolute inset-0 rounded-full bg-red-500/20 blur-xl" />
+                      <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-red-500/20 to-blue-500/10 border border-red-500/30 flex items-center justify-center">
+                        <Shield className="w-8 h-8 text-red-400" />
                       </div>
                     </div>
                   </div>
@@ -139,10 +139,10 @@ export function ConnectAccountModal({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className="w-full py-3 px-5 rounded-xl font-semibold text-sm
-                        bg-gradient-to-r from-emerald-600 to-emerald-700
-                        hover:from-emerald-500 hover:to-emerald-600
-                        text-white shadow-lg shadow-emerald-500/20
-                        border border-emerald-400/20
+                        bg-gradient-to-r from-red-600 to-red-700
+                        hover:from-red-500 hover:to-red-600
+                        text-white shadow-lg shadow-red-500/20
+                        border border-red-400/20
                         flex items-center justify-center gap-2.5
                         transition-all duration-200"
                     >

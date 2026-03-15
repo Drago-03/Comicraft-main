@@ -177,7 +177,7 @@ export const StoryCard = memo(function StoryCard({
                     </div>
                   )}
                   {story.price && (
-                    <div className="ml-auto text-emerald-400 font-bold bg-emerald-400/10 px-2 py-1 rounded">
+                    <div className="ml-auto text-red-400 font-bold bg-red-400/10 px-2 py-1 rounded">
                       {story.price} ETH
                     </div>
                   )}

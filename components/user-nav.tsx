@@ -152,7 +152,7 @@ export function UserNav() {
         size="sm"
         asChild
         aria-label="Login or create account"
-        className="flex items-center gap-2 px-5 py-2 rounded-full border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:bg-emerald-500 hover:text-black hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all duration-300 uppercase tracking-wider text-xs"
+        className="flex items-center gap-1.5 px-6 py-2 rounded-none border-[3px] border-black bg-[#cc3333] text-white font-black shadow-[4px_4px_0_0_#000] hover:bg-black hover:text-white hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_#000] active:translate-y-[2px] active:shadow-[2px_2px_0_0_#000] transition-all uppercase tracking-widest text-[11px]"
       >
         <Link href="/sign-in">Login</Link>
       </Button>
@@ -162,21 +162,21 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" aria-label="User menu" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" aria-label="User menu" className="relative h-9 w-9 rounded-none border-[2px] border-black shadow-[3px_3px_0_0_#000] p-0 hover:translate-y-[-1px] hover:shadow-[4px_4px_0_0_#000] active:translate-y-[1px] active:shadow-[1px_1px_0_0_#000] transition-all overflow-hidden bg-white">
+          <Avatar className="h-full w-full rounded-none">
             <AvatarImage src={dbUser?.avatar || `https://api.dicebear.com/9.x/personas/svg?seed=${encodeURIComponent(generateSeed(dbUser?.id || account || session?.user?.id))}`} alt="User Avatar" />
-            <AvatarFallback>{dbUser?.username?.slice(0, 2).toUpperCase() || "U"}</AvatarFallback>
+            <AvatarFallback className="rounded-none bg-[#EEDFCA] text-black font-black uppercase">{dbUser?.username?.slice(0, 2).toUpperCase() || "U"}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-72 p-0 overflow-hidden border border-white/10 shadow-2xl bg-black/95 backdrop-blur-xl rounded-xl"
+        className="w-72 p-0 overflow-hidden border-[4px] border-black shadow-[8px_8px_0_0_#000] bg-[#EEDFCA] rounded-none z-[100]"
         align="end"
       >
-        <DropdownMenuLabel className="bg-emerald-500/10 text-emerald-400 border-b border-white/10 py-3 font-semibold uppercase tracking-wider text-xs flex items-center justify-between">
+        <DropdownMenuLabel className="bg-[#cc3333] text-white border-b-[4px] border-black py-3 font-black uppercase tracking-widest text-[11px] flex items-center justify-between">
           <span>User Controls</span>
           {role && role !== 'user' && roleBadgeStyles[role] && (
-            <span className={`text-[9px] px-1.5 py-0.5 rounded border ${roleBadgeStyles[role].className}`}>
+            <span className={`text-[9px] px-1.5 py-0.5 border-[2px] border-black shadow-[2px_2px_0_0_#000] bg-white text-black font-bold uppercase`}>
               {roleBadgeStyles[role].label}
             </span>
           )}
@@ -186,7 +186,7 @@ export function UserNav() {
           <DropdownMenuGroup>
             <DropdownMenuItem
               asChild
-              className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-none transition-all"
+              className="cursor-pointer focus:bg-white focus:text-black text-black font-bold hover:translate-x-1 rounded-none transition-all"
             >
               <Link
                 href={`/profile/${dbUser?.username || 'me'}`}
@@ -198,7 +198,7 @@ export function UserNav() {
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
-              className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-none transition-all"
+              className="cursor-pointer focus:bg-white focus:text-black text-black font-bold hover:translate-x-1 rounded-none transition-all"
             >
               <Link
                 href={`/profile/${dbUser?.username || 'me'}`}
@@ -210,7 +210,7 @@ export function UserNav() {
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
-              className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-none transition-all"
+              className="cursor-pointer focus:bg-white focus:text-black text-black font-bold hover:translate-x-1 rounded-none transition-all"
             >
               <Link
                 href="/nft-gallery"
@@ -225,7 +225,7 @@ export function UserNav() {
             {!account && (
               <DropdownMenuItem
                 onClick={() => connectWallet()}
-                className="cursor-pointer focus:bg-emerald-500/10 focus:text-emerald-400 text-emerald-500 rounded-none transition-all uppercase py-2 font-semibold"
+                className="cursor-pointer focus:bg-[#38bdf8] focus:text-black focus:border-[2px] focus:border-black text-[#38bdf8] hover:text-black rounded-none transition-all uppercase py-2 font-black tracking-wider"
               >
                 <Wallet className="mr-2 h-4 w-4" />
                 <span>Connect Web3 Wallet</span>
@@ -233,13 +233,13 @@ export function UserNav() {
             )}
           </DropdownMenuGroup>
 
-          <DropdownMenuSeparator className="h-px bg-white/10 mx-0 my-1" />
+          <DropdownMenuSeparator className="h-[4px] bg-black mx-1 my-2" />
 
           {/* Role-based items */}
           <DropdownMenuGroup>
             <DropdownMenuItem
               asChild
-              className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-none transition-all uppercase py-2"
+              className="cursor-pointer focus:bg-white focus:text-black text-black font-bold hover:translate-x-1 rounded-none transition-all uppercase py-2"
             >
               <Link href="/settings" className="flex items-center w-full">
                 <Settings className="mr-2 h-4 w-4" />
@@ -248,13 +248,13 @@ export function UserNav() {
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
-              className="cursor-pointer focus:bg-primary/10 focus:text-primary rounded-none transition-all uppercase py-2"
+              className="cursor-pointer focus:bg-white focus:text-black text-black font-bold hover:translate-x-1 rounded-none transition-all uppercase py-2"
             >
               <Link href="/notifications" className="flex items-center w-full">
                 <Bell className="mr-2 h-4 w-4" />
                 <span>Notifications</span>
                 {unreadCount > 0 && (
-                  <span className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold rounded-full bg-violet-500 text-white">
+                  <span className="ml-auto inline-flex items-center justify-center min-w-[20px] h-[20px] px-1 text-[10px] font-black tracking-wider border-[2px] border-black shadow-[2px_2px_0_0_#000] rounded-none bg-[#cc3333] text-white">
                     {unreadCount > 99 ? '99+' : unreadCount}
                   </span>
                 )}
@@ -264,7 +264,7 @@ export function UserNav() {
             {isAdmin && (
               <DropdownMenuItem
                 asChild
-                className="cursor-pointer focus:bg-red-500/10 focus:text-red-400 rounded-none transition-all uppercase py-2 text-red-400"
+                className="cursor-pointer focus:bg-black focus:text-white rounded-none transition-all uppercase py-2 text-black font-black bg-[var(--comic-yellow)] border-[2px] border-black mt-2"
               >
                 <Link href="/admin" className="flex items-center w-full">
                   <Shield className="mr-2 h-4 w-4" />
@@ -276,7 +276,7 @@ export function UserNav() {
             {isModOrAdmin && (
               <DropdownMenuItem
                 asChild
-                className="cursor-pointer focus:bg-amber-500/10 focus:text-amber-400 rounded-none transition-all uppercase py-2 text-amber-400"
+                className="cursor-pointer focus:bg-black focus:text-white rounded-none transition-all uppercase py-2 text-black font-black bg-[var(--comic-yellow)] border-[2px] border-black mt-2"
               >
                 <Link href="/admin/moderation" className="flex items-center w-full">
                   <Shield className="mr-2 h-4 w-4" />
@@ -288,7 +288,7 @@ export function UserNav() {
             {isModOrAdmin && (
               <DropdownMenuItem
                 onClick={toggleViewMode}
-                className="cursor-pointer focus:bg-blue-500/10 focus:text-blue-400 rounded-none transition-all uppercase py-2 text-blue-400"
+                className="cursor-pointer focus:bg-black focus:text-white rounded-none transition-all uppercase py-2 text-black font-bold hover:translate-x-1"
               >
                 {isOverridden ? (
                   <><Eye className="mr-2 h-4 w-4" /><span>Switch to Admin View</span></>
@@ -301,31 +301,31 @@ export function UserNav() {
 
           <DropdownMenuItem
             onClick={handleLogout}
-            className="cursor-pointer text-red-500 hover:text-white focus:bg-red-500/20 focus:text-red-400 rounded-lg transition-all uppercase py-2"
+            className="cursor-pointer text-white bg-black hover:bg-[#cc3333] hover:text-white border-[2px] border-transparent hover:border-black rounded-none transition-all uppercase py-2 font-black mt-2"
           >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log Out</span>
           </DropdownMenuItem>
         </div>
 
-        <div className="px-4 py-3 bg-white/5 border-t border-white/10 space-y-3">
+        <div className="px-4 py-3 bg-white border-t-[4px] border-black space-y-3">
           <div>
-            <p className="text-[10px] font-semibold uppercase text-white/50 tracking-wider mb-1">
+            <p className="text-[10px] font-black uppercase text-black/60 tracking-wider mb-1">
               Active Identity
             </p>
-            <div className="text-xs font-mono uppercase tracking-widest bg-black/50 border border-white/5 rounded-md px-3 py-1.5 overflow-hidden text-ellipsis whitespace-nowrap text-emerald-400">
+            <div className="text-xs font-mono uppercase tracking-widest bg-black text-white border-[2px] border-black rounded-none px-3 py-1.5 overflow-hidden text-ellipsis whitespace-nowrap shadow-[3px_3px_0_0_#cc3333]">
               {account ? truncateAddress(account) : session?.user?.email}
             </div>
           </div>
 
           {(session?.user?.last_sign_in_at || account) && (
-            <div className="flex flex-col gap-1 border-t border-white/5 pt-2">
-              <p className="text-[10px] font-semibold uppercase text-white/50 tracking-wider">
+            <div className="flex flex-col gap-1 border-t-[2px] border-black pt-2 border-dashed">
+              <p className="text-[10px] font-black uppercase text-black/60 tracking-wider">
                 Security Info
               </p>
-              <div className="text-[10px] text-white/40 leading-snug">
-                Last Login: {session?.user?.last_sign_in_at ? new Date(session.user.last_sign_in_at).toLocaleString() : 'Active Wallet Session'} <br />
-                Access: {account ? 'On-Chain Web3' : 'Off-Chain Auth'}
+              <div className="text-[10px] text-black font-bold leading-snug">
+                Last Login: <span className="text-[#cc3333]">{session?.user?.last_sign_in_at ? new Date(session.user.last_sign_in_at).toLocaleString() : 'Active Wallet Session'}</span> <br />
+                Access: <span className="text-[#cc3333]">{account ? 'On-Chain Web3' : 'Off-Chain Auth'}</span>
               </div>
             </div>
           )}

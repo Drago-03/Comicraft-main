@@ -47,7 +47,7 @@ const STATUS_CONFIG: Record<string, { className: string; icon: React.ReactNode; 
     label: 'Pending Review',
   },
   approved: {
-    className: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
+    className: 'bg-red-500/10 border-red-500/20 text-red-400',
     icon: <CheckCircle2 className="w-3.5 h-3.5" />,
     label: 'Approved',
   },
@@ -321,7 +321,7 @@ export default function AdminMintRequestsPage() {
                               <button
                                 onClick={() => handleApprove(req.id)}
                                 disabled={actionLoading === req.id}
-                                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                               >
                                 {actionLoading === req.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                                 Approve

@@ -80,7 +80,7 @@ export function TextNFTDetailDialog({
       case 'common':
         return 'bg-gray-500 text-white';
       case 'uncommon':
-        return 'bg-green-500 text-white';
+        return 'bg-red-500 text-white';
       case 'rare':
         return 'bg-blue-500 text-white';
       case 'legendary':
@@ -227,7 +227,7 @@ export function TextNFTDetailDialog({
                   </Button>
                 ) : (
                   <div className="text-center py-4">
-                    <Badge variant="secondary" className="text-green-600">
+                    <Badge variant="secondary" className="text-red-600">
                       <Sparkles className="w-4 h-4 mr-1" />
                       You own this NFT
                     </Badge>

@@ -127,7 +127,7 @@ export default function ModerationPage() {
         <main className="min-h-screen py-12">
             <div className="container max-w-6xl mx-auto px-4">
                 <div className="flex items-center gap-3 mb-8">
-                    <Shield className="w-8 h-8 text-emerald-400" />
+                    <Shield className="w-8 h-8 text-red-400" />
                     <div>
                         <h1 className="text-3xl font-bold text-white">Content Moderation</h1>
                         <p className="text-slate-400 text-sm">
@@ -151,7 +151,7 @@ export default function ModerationPage() {
                 ) : stories.length === 0 ? (
                     <Card className="border-slate-800 bg-slate-950/50">
                         <CardContent className="p-12 text-center">
-                            <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
+                            <CheckCircle2 className="w-12 h-12 text-red-400 mx-auto mb-4" />
                             <p className="text-lg font-medium text-slate-100">All caught up!</p>
                             <p className="text-slate-400 text-sm mt-1">
                                 No pending stories to review.
@@ -207,7 +207,7 @@ export default function ModerationPage() {
                                     <div className="flex items-center gap-3">
                                         <Button
                                             size="sm"
-                                            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
+                                            className="bg-red-600 hover:bg-red-700 text-white gap-1"
                                             disabled={actionLoading === story._id}
                                             onClick={() => handleModerate(story._id, 'approved')}
                                         >

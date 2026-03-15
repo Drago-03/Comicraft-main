@@ -41,43 +41,43 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   const currentSize = sizeClasses[size];
 
   const containerClasses = fullScreen
-    ? 'fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center'
-    : 'flex items-center justify-center p-8';
+    ? 'fixed inset-0 bg-[#EEDFCA] z-50 flex items-center justify-center overflow-hidden'
+    : 'flex items-center justify-center p-8 bg-[#EEDFCA] relative overflow-hidden';
 
   return (
     <ClientOnly>
       <div className={containerClasses}>
-        <div className={`relative ${currentSize.container}`}>
+        {/* Halftone dot texture */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.05]"
+          style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }}
+        />
+        <div className={`relative ${currentSize.container} z-10`}>
           {/* Central loading icon */}
           <div className="absolute inset-0 flex items-center justify-center">
             
-            {/* Outer spinning aura */}
+            {/* Outer spinning borders */}
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-[-20%] rounded-full border-[2px] border-dashed border-emerald-500/30 opacity-70 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+              transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-[-15%] rounded-full border-[3px] border-dashed border-black opacity-30"
             />
             <motion.div
               animate={{ rotate: -360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-[-10%] rounded-full border-[2px] border-dotted border-blue-500/30 opacity-70 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+              transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-[-5%] rounded-full border-[2px] border-dotted border-black opacity-30"
             />
 
             <motion.div
               animate={{
-                scale: [1, 1.1, 1],
-                filter: [
-                  'drop-shadow(0 0 15px rgba(34,211,238,0.3))',
-                  'drop-shadow(0 0 40px rgba(34,211,238,0.8))',
-                  'drop-shadow(0 0 15px rgba(34,211,238,0.3))',
-                ]
+                scale: [1, 1.05, 1],
               }}
               transition={{
-                duration: 2,
+                duration: 1.5,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
-              className="relative rounded-full p-6 flex items-center justify-center bg-black/60 backdrop-blur-xl border border-white/20 shadow-[0_0_30px_rgba(0,0,0,0.8)]"
+              className="relative rounded-full p-6 flex items-center justify-center bg-white border-[4px] border-black shadow-[8px_8px_0_0_#000]"
             >
               <ComiCraftLogo variant="icon" colorScheme="color" size={80} animate={false} />
             </motion.div>
@@ -85,16 +85,16 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
 
           {/* Loading message */}
           <motion.div
-            className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-center"
-            animate={{ opacity: [0.5, 1, 0.5] }}
+            className="absolute -bottom-16 left-1/2 -translate-x-1/2 text-center bg-white border-[2px] border-black shadow-[4px_4px_0_0_#000] px-4 py-1 flex items-center"
+            animate={{ opacity: [0.8, 1, 0.8] }}
             transition={{
-              duration: 2,
+              duration: 1.5,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
           >
             <p
-              className={`${currentSize.text} font-medium text-muted-foreground whitespace-nowrap`}
+              className={`${currentSize.text} font-black italic uppercase tracking-widest text-black whitespace-nowrap`}
             >
               {message}
             </p>

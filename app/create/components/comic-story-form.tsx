@@ -97,7 +97,7 @@ export default function ComicStoryForm() {
       toast({
         title: 'Draft Saved',
         description: 'Your comic has been saved to your device.',
-        className: 'bg-black/80 border border-white/10 text-white backdrop-blur-md',
+        className: 'bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] border border-white/10 text-white backdrop-blur-md',
       });
     } catch (error) {
       console.error('Error saving draft:', error);
@@ -237,7 +237,7 @@ export default function ComicStoryForm() {
               <Button
                 onClick={addPanel}
                 size="sm"
-                className="bg-emerald-500 hover:bg-emerald-600 text-black"
+                className="bg-red-500 hover:bg-red-600 text-black"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Panel

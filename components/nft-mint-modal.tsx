@@ -21,7 +21,7 @@ const MINT_BENEFITS = [
     desc: 'Approved NFTs are curated and featured in the marketplace, improving your visibility.',
   },
   {
-    icon: <DollarSign className="w-5 h-5 text-emerald-400" />,
+    icon: <DollarSign className="w-5 h-5 text-red-400" />,
     title: 'Monetization',
     desc: 'Set a minting fee and earn from your audience and collectors.',
   },
@@ -376,9 +376,9 @@ export function NftMintModal({
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 300, delay: 0.1 }}
-                className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center"
+                className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-red-500/20 to-cyan-500/20 border border-red-500/30 flex items-center justify-center"
               >
-                <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                <CheckCircle2 className="w-10 h-10 text-red-400" />
               </motion.div>
               <div>
                 <h2 id="mint-modal-title" className="text-xl font-bold text-white mb-1">Minting Successful!</h2>
