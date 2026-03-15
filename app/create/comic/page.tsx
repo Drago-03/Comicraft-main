@@ -280,13 +280,21 @@ export default function PanelraEnginePage() {
 
       const res = await generateComicFromSketches(formData);
 
+      console.log('[Panelra] Generation response:', { ok: res.ok, status: res.status, data: res.data });
+
       if (res.ok && (res.data as any)?.success) {
         setResult((res.data as any).data);
         setPhase('complete');
       } else {
-        throw new Error((res.data as any)?.error || 'Generation failed');
+        const errorMsg = (res.data as any)?.error
+          || (res.data as any)?.message
+          || (res.data as any)?.details
+          || `Generation failed (HTTP ${res.status || 'unknown'})`;
+        console.error('[Panelra] Generation failed:', res.data);
+        throw new Error(errorMsg);
       }
     } catch (err: any) {
+      console.error('[Panelra] Error:', err);
       setError(err.message || 'Something went wrong');
       setPhase('error');
     }
