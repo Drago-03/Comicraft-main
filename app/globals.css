@@ -75,13 +75,13 @@
    ───────────────────────────────────────────── */
 .dark {
   --background: #0a0e1a;
-  --foreground: #f0f0f5;
+  --foreground: #E0E0E8;
 
   --card: #131829;
-  --card-foreground: #f0f0f5;
+  --card-foreground: #E0E0E8;
 
   --popover: #131829;
-  --popover-foreground: #f0f0f5;
+  --popover-foreground: #E0E0E8;
 
   --primary: #ff4d6d;
   --primary-foreground: #ffffff;
@@ -96,7 +96,7 @@
   --accent-foreground: #ffffff;
 
   --destructive: #ef4444;
-  --destructive-foreground: #f0f0f5;
+  --destructive-foreground: #E0E0E8;
 
   --border: #2a3150;
   --input: #131829;
@@ -1246,7 +1246,7 @@
 .madhava-header__title {
   font-size: 14px !important;
   font-weight: 700 !important;
-  color: #f0f0f5 !important;
+  color: #E0E0E8 !important;
   text-transform: none !important;
   letter-spacing: 0.5px !important;
   margin: 0;
@@ -1291,7 +1291,7 @@
 
 .madhava-header__btn:hover {
   background: rgba(255, 255, 255, 0.12);
-  color: #f0f0f5;
+  color: #E0E0E8;
 }
 
 /* Messages area */
@@ -1433,7 +1433,7 @@
   border-radius: 10px;
   border: 1px solid rgba(167, 139, 250, 0.2);
   background: rgba(255, 255, 255, 0.05);
-  color: #f0f0f5;
+  color: #E0E0E8;
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;

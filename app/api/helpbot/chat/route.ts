@@ -36,7 +36,7 @@ Comicraft is an AI-powered Web3 storytelling platform where writers and artists 
 1. **VedaScript Engine**: AI-powered multi-chapter story generation with 70+ parameters. Supports genre selection, character design, plot structure, and world building.
 2. **Panelra Engine**: Visual comic creation with sketch upload, character management, layout picker, and AI art generation.
 3. **Mythloom Engine**: Coming soon — collaborative world building.
-4. **Shakti Spark**: Quick idea/short-story generator with genre and mood selection.
+4. **KavyaScript**: Quick idea/short-story generator with genre and mood selection.
 
 ## Wallet & NFT
 - Connect via MetaMask or WalletConnect v2

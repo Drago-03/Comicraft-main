@@ -1,5 +1,5 @@
 'use client';
-// KAVACH Live Pipeline Dashboard — Main Page
+// KAVACH Live Pipeline Dashboard — Main Page (Vintage Comic Theme)
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -14,21 +14,20 @@ function PipelineStep({ step, currentStep, status, events }: {
   const stepEvents = events.filter(e => e.step_number === step.step);
   const isComplete = currentStep > step.step || status === 'completed';
   const isActive = currentStep === step.step && status !== 'completed' && status !== 'failed';
-  const isPending = currentStep < step.step;
 
   return (
     <div className={`pipeline-step ${isComplete ? 'complete' : isActive ? 'active' : 'pending'}`}>
       <div className="step-indicator">
-        <div className={`step-dot ${isComplete ? 'bg-green-500' : isActive ? 'bg-yellow-500 animate-pulse' : 'bg-zinc-600'}`}>
+        <div className={`step-dot ${isComplete ? 'bg-comic-green' : isActive ? 'bg-comic-yellow animate-pulse' : 'bg-muted'}`}>
           {isComplete ? '✓' : isActive ? '⟳' : '○'}
         </div>
         <div className="step-line" />
       </div>
       <div className="step-content">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-sm">{`Step ${step.step}: ${step.name}`}</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full ${
-            isComplete ? 'bg-green-500/20 text-green-400' : isActive ? 'bg-yellow-500/20 text-yellow-400' : 'bg-zinc-700 text-zinc-400'
+          <span className="font-black text-sm uppercase tracking-wider">{`Step ${step.step}: ${step.name}`}</span>
+          <span className={`text-xs px-2 py-0.5 border-2 border-ink font-bold uppercase ${
+            isComplete ? 'bg-comic-green text-white' : isActive ? 'bg-comic-yellow text-ink' : 'bg-muted text-muted-foreground'
           }`}>
             {isComplete ? 'Complete' : isActive ? 'Running' : 'Pending'}
           </span>
@@ -36,7 +35,7 @@ function PipelineStep({ step, currentStep, status, events }: {
         {stepEvents.length > 0 && (
           <div className="mt-1 space-y-0.5">
             {stepEvents.map((ev, i) => (
-              <div key={i} className={`text-xs ${ev.event_type === 'entity_found' || ev.event_type === 'text_match' ? 'text-amber-400' : 'text-zinc-400'}`}>
+              <div key={i} className={`text-xs font-bold ${ev.event_type === 'entity_found' || ev.event_type === 'text_match' ? 'text-comic-red' : 'text-ink/60'}`}>
                 {ev.event_type === 'entity_found' && '⚠ '}{ev.message}
               </div>
             ))}
@@ -51,34 +50,34 @@ function PipelineStep({ step, currentStep, status, events }: {
 function LivePipeline({ scanId, storyTitle }: { scanId: string; storyTitle?: string }) {
   const { events, scan, isConnected } = useKavachRealtime(scanId);
 
-  if (!scan) return <div className="text-zinc-400 text-sm">Loading scan...</div>;
+  if (!scan) return <div className="text-ink/50 text-sm font-bold">Loading scan...</div>;
 
   return (
     <div className="kavach-pipeline-card">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-bold">KAVACH Scan Pipeline</h3>
-          {storyTitle && <p className="text-sm text-zinc-400">"{storyTitle}"</p>}
+          <h3 className="text-lg font-black uppercase tracking-tight">KAVACH Scan Pipeline</h3>
+          {storyTitle && <p className="text-sm text-ink/50 font-bold italic">&quot;{storyTitle}&quot;</p>}
         </div>
         <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-          <span className="text-xs text-zinc-400">{isConnected ? 'Live' : 'Disconnected'}</span>
-          <span className={`text-xs px-2 py-1 rounded font-mono uppercase tracking-wider ${
-            scan.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-            scan.status === 'failed' ? 'bg-red-500/20 text-red-400' :
-            'bg-amber-500/20 text-amber-400'
+          <div className={`w-3 h-3 border-2 border-ink ${isConnected ? 'bg-comic-green animate-pulse' : 'bg-comic-red'}`} />
+          <span className="text-xs font-black uppercase">{isConnected ? 'Live' : 'Disconnected'}</span>
+          <span className={`text-xs px-2 py-1 border-2 border-ink font-black uppercase tracking-wider ${
+            scan.status === 'completed' ? 'bg-comic-green text-white' :
+            scan.status === 'failed' ? 'bg-comic-red text-white' :
+            'bg-comic-yellow text-ink'
           }`}>{scan.status}</span>
         </div>
       </div>
 
       {/* Score Display */}
       {scan.originality_score !== null && (
-        <div className="text-center mb-4 p-3 rounded-lg bg-zinc-800/50">
-          <div className={`text-4xl font-black ${
-            scan.originality_score >= 90 ? 'text-green-400' : scan.originality_score >= 70 ? 'text-blue-400' :
-            scan.originality_score >= 50 ? 'text-amber-400' : 'text-red-400'
-          }`}>{scan.originality_score}<span className="text-lg">/100</span></div>
-          <div className="text-xs text-zinc-400 mt-1">Originality Score</div>
+        <div className="text-center mb-4 p-4 border-4 border-ink bg-card">
+          <div className={`text-5xl font-black ${
+            scan.originality_score >= 90 ? 'text-comic-green' : scan.originality_score >= 70 ? 'text-comic-blue' :
+            scan.originality_score >= 50 ? 'text-comic-yellow' : 'text-comic-red'
+          }`}>{scan.originality_score}<span className="text-xl">/100</span></div>
+          <div className="text-xs font-black uppercase text-ink/50 mt-1 tracking-wider">Originality Score</div>
         </div>
       )}
 
@@ -90,21 +89,21 @@ function LivePipeline({ scanId, storyTitle }: { scanId: string; storyTitle?: str
       </div>
 
       {/* Live Log */}
-      <div className="mt-4 p-3 rounded-lg bg-black/40 max-h-48 overflow-y-auto font-mono text-xs">
-        <div className="text-zinc-500 mb-1">Live Log:</div>
+      <div className="mt-4 p-3 border-4 border-ink bg-ink text-background-light max-h-48 overflow-y-auto font-mono text-xs">
+        <div className="text-background-light/50 mb-1 font-black uppercase text-[10px] tracking-wider">Live Log:</div>
         {events.map((ev, i) => (
           <div key={i} className={`${
-            ev.event_type === 'error' ? 'text-red-400' : ev.event_type === 'entity_found' ? 'text-amber-400' : 'text-zinc-400'
+            ev.event_type === 'error' ? 'text-comic-red' : ev.event_type === 'entity_found' ? 'text-comic-yellow' : 'text-background-light/60'
           }`}>
-            <span className="text-zinc-600">{new Date(ev.created_at).toLocaleTimeString()}</span>{' '}
+            <span className="text-background-light/30">{new Date(ev.created_at).toLocaleTimeString()}</span>{' '}
             {ev.message}
           </div>
         ))}
-        {events.length === 0 && <div className="text-zinc-600">Waiting for events...</div>}
+        {events.length === 0 && <div className="text-background-light/30">Waiting for events...</div>}
       </div>
 
       {scan.status === 'completed' && (
-        <Link href={`/kavach/scan/${scanId}`} className="mt-3 block text-center text-sm text-blue-400 hover:text-blue-300 underline">
+        <Link href={`/kavach/scan/${scanId}`} className="mt-3 block text-center text-sm text-comic-blue font-black uppercase hover:text-comic-red underline">
           View Full Report →
         </Link>
       )}
@@ -113,12 +112,12 @@ function LivePipeline({ scanId, storyTitle }: { scanId: string; storyTitle?: str
 }
 
 // ─── Stats Card ───
-function StatCard({ label, value, color = 'text-white', icon }: { label: string; value: string | number; color?: string; icon: string }) {
+function StatCard({ label, value, color = 'text-ink', icon }: { label: string; value: string | number; color?: string; icon: string }) {
   return (
     <div className="kavach-stat-card">
-      <div className="text-2xl mb-1">{icon}</div>
-      <div className={`text-2xl font-black ${color}`}>{value}</div>
-      <div className="text-xs text-zinc-400 mt-0.5">{label}</div>
+      <div className="text-2xl mb-1 relative z-10">{icon}</div>
+      <div className={`text-3xl font-black relative z-10 ${color}`}>{value}</div>
+      <div className="text-xs font-black uppercase text-ink/50 mt-0.5 tracking-wider relative z-10">{label}</div>
     </div>
   );
 }
@@ -164,31 +163,31 @@ export default function KavachDashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-background-light text-ink font-display">
       {/* Hero Header */}
       <div className="kavach-hero">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-red-600 flex items-center justify-center text-xl font-black">K</div>
+        <div className="max-w-7xl mx-auto px-6 py-10">
+          <div className="flex items-center gap-4 mb-3">
+            <div className="w-14 h-14 border-4 border-ink bg-comic-red flex items-center justify-center text-2xl font-black text-white shadow-[4px_4px_0px_#1a1a2e]">K</div>
             <div>
-              <h1 className="text-3xl font-black tracking-tight">KAVACH</h1>
-              <p className="text-xs text-zinc-400">IP Compliance Engine — Phase 1</p>
+              <h1 className="text-4xl font-black tracking-tighter uppercase italic" style={{ color: '#1a1a2e' }}>KAVACH</h1>
+              <p className="text-xs font-bold uppercase text-ink/50 tracking-widest">IP Compliance Engine — Phase 1</p>
             </div>
           </div>
-          <p className="text-sm text-zinc-400 mt-2 max-w-xl">
+          <p className="text-sm font-bold text-ink/60 mt-2 max-w-xl border-l-4 border-comic-red pl-4">
             Real-time intellectual property scanning powered by Indian law (Copyright Act 1957, IT Act §79, Trademark Act 1999)
             and international law (DMCA §512, Berne Convention, EU DSA).
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         {/* Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard icon="🛡️" label="Blocked Entities" value={totalEntities.toLocaleString()} color="text-amber-400" />
-          <StatCard icon="📊" label="Scans Today" value={scansToday} color="text-blue-400" />
-          <StatCard icon="✨" label="Avg. Originality" value={avgScore ? `${avgScore}%` : '—'} color="text-green-400" />
-          <StatCard icon="⚡" label="Active Scans" value={activeScans.length} color="text-purple-400" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <StatCard icon="🛡️" label="Blocked Entities" value={totalEntities.toLocaleString()} color="text-comic-red" />
+          <StatCard icon="📊" label="Scans Today" value={scansToday} color="text-comic-blue" />
+          <StatCard icon="✨" label="Avg. Originality" value={avgScore ? `${avgScore}%` : '—'} color="text-comic-green" />
+          <StatCard icon="⚡" label="Active Scans" value={activeScans.length} color="text-comic-purple" />
         </div>
 
         {/* Active Pipeline */}
@@ -200,27 +199,27 @@ export default function KavachDashboard() {
         <div className="grid md:grid-cols-2 gap-6">
           {/* Recent Scans */}
           <div className="kavach-card">
-            <h2 className="text-lg font-bold mb-3">Recent Scans</h2>
+            <h2 className="text-xl font-black uppercase tracking-tight mb-4" style={{ color: '#1a1a2e' }}>Recent Scans</h2>
             <div className="space-y-2">
-              {recentScans.length === 0 && <p className="text-sm text-zinc-500">No scans yet. Submit a story to begin.</p>}
+              {recentScans.length === 0 && <p className="text-sm font-bold text-ink/40">No scans yet. Submit a story to begin.</p>}
               {recentScans.slice(0, 10).map(scan => (
                 <Link key={scan.id} href={`/kavach/scan/${scan.id}`}
-                  className="block p-3 rounded-lg bg-zinc-800/50 hover:bg-zinc-800 transition-colors">
+                  className="block p-3 border-2 border-ink/20 hover:border-ink hover:bg-muted transition-all">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-sm font-semibold">{(scan as any).story?.title || 'Untitled'}</div>
-                      <div className="text-xs text-zinc-400">{new Date(scan.created_at).toLocaleString()}</div>
+                      <div className="text-sm font-black">{(scan as any).story?.title || 'Untitled'}</div>
+                      <div className="text-xs text-ink/40 font-bold">{new Date(scan.created_at).toLocaleString()}</div>
                     </div>
                     <div className="flex items-center gap-2">
                       {scan.originality_score != null && (
-                        <span className={`text-sm font-bold ${
-                          scan.originality_score >= 90 ? 'text-green-400' : scan.originality_score >= 70 ? 'text-blue-400' :
-                          scan.originality_score >= 50 ? 'text-amber-400' : 'text-red-400'
+                        <span className={`text-sm font-black ${
+                          scan.originality_score >= 90 ? 'text-comic-green' : scan.originality_score >= 70 ? 'text-comic-blue' :
+                          scan.originality_score >= 50 ? 'text-comic-yellow' : 'text-comic-red'
                         }`}>{scan.originality_score}%</span>
                       )}
-                      <span className={`text-xs px-2 py-0.5 rounded ${
-                        scan.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-                        scan.status === 'failed' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'
+                      <span className={`text-xs px-2 py-0.5 border-2 border-ink font-bold uppercase ${
+                        scan.status === 'completed' ? 'bg-comic-green text-white' :
+                        scan.status === 'failed' ? 'bg-comic-red text-white' : 'bg-comic-yellow text-ink'
                       }`}>{scan.status}</span>
                     </div>
                   </div>
@@ -231,46 +230,48 @@ export default function KavachDashboard() {
 
           {/* Entity Blocklist Stats */}
           <div className="kavach-card">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold">IP Blocklist</h2>
-              <Link href="/kavach/blocklist" className="text-xs text-blue-400 hover:text-blue-300">View All →</Link>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-black uppercase tracking-tight" style={{ color: '#1a1a2e' }}>IP Blocklist</h2>
+              <Link href="/kavach/blocklist" className="text-xs text-comic-blue font-black uppercase hover:text-comic-red transition-colors">
+                View All →
+              </Link>
             </div>
             <div className="space-y-2">
               {ENTITY_CATEGORIES.map(cat => (
-                <div key={cat.key} className="flex items-center justify-between p-2 rounded bg-zinc-800/30">
+                <div key={cat.key} className="flex items-center justify-between p-2 border-2 border-ink/10 hover:border-ink/30 transition-colors">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
-                    <span className="text-sm">{cat.label}</span>
+                    <div className="w-3 h-3 border-2 border-ink" style={{ backgroundColor: cat.color }} />
+                    <span className="text-sm font-bold">{cat.label}</span>
                   </div>
-                  <span className="text-sm font-mono text-zinc-400">
+                  <span className="text-sm font-black font-mono text-ink/60">
                     {(blocklistStats[cat.key] || 0).toLocaleString()}
                   </span>
                 </div>
               ))}
-              <div className="pt-2 border-t border-zinc-800 flex justify-between text-sm font-semibold">
+              <div className="pt-2 border-t-4 border-ink flex justify-between text-sm font-black uppercase">
                 <span>Total</span>
-                <span className="text-amber-400">{totalEntities.toLocaleString()}</span>
+                <span className="text-comic-red">{totalEntities.toLocaleString()}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link href="/kavach/submit" className="kavach-action-card group">
-            <span className="text-2xl">📝</span>
-            <span className="font-semibold">Submit Story</span>
-            <span className="text-xs text-zinc-400 group-hover:text-zinc-300">Scan & verify originality</span>
+            <span className="text-3xl">📝</span>
+            <span className="font-black text-lg tracking-tight">Submit Story</span>
+            <span className="text-xs text-ink/50 font-bold group-hover:text-white/80">Scan & verify originality</span>
           </Link>
           <Link href="/kavach/dmca" className="kavach-action-card group">
-            <span className="text-2xl">⚖️</span>
-            <span className="font-semibold">File DMCA</span>
-            <span className="text-xs text-zinc-400 group-hover:text-zinc-300">Submit takedown notice</span>
+            <span className="text-3xl">⚖️</span>
+            <span className="font-black text-lg tracking-tight">File DMCA</span>
+            <span className="text-xs text-ink/50 font-bold group-hover:text-white/80">Submit takedown notice</span>
           </Link>
           <Link href="/kavach/blocklist" className="kavach-action-card group">
-            <span className="text-2xl">🔍</span>
-            <span className="font-semibold">Explore Blocklist</span>
-            <span className="text-xs text-zinc-400 group-hover:text-zinc-300">Search 10,000+ IP entities</span>
+            <span className="text-3xl">🔍</span>
+            <span className="font-black text-lg tracking-tight">Explore Blocklist</span>
+            <span className="text-xs text-ink/50 font-bold group-hover:text-white/80">Search 10,000+ IP entities</span>
           </Link>
         </div>
       </div>

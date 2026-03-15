@@ -1,5 +1,5 @@
 'use client';
-// KAVACH Entity Blocklist Explorer — Searchable, filterable table of 10K+ IP entities
+// KAVACH Entity Blocklist Explorer — Vintage Comic Theme
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { ENTITY_CATEGORIES, ENTITY_TYPES, RISK_LEVELS } from '@/lib/kavach/constants';
@@ -39,24 +39,39 @@ export default function BlocklistPage() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center gap-2 text-sm text-zinc-400 mb-4">
-          <Link href="/kavach" className="hover:text-white">KAVACH</Link><span>/</span><span>Blocklist</span>
+    <div className="min-h-screen bg-background-light text-ink font-display pt-[100px]">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm font-bold text-ink/40 mb-6">
+          <Link href="/kavach" className="hover:text-comic-red transition-colors uppercase">KAVACH</Link>
+          <span>/</span>
+          <span className="text-ink font-black uppercase">Blocklist</span>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-black">IP Entity Blocklist</h1>
-            <p className="text-sm text-zinc-400">{total.toLocaleString()} protected entities across {Object.keys(categoryStats).length} categories</p>
+            <h1 className="text-3xl font-black uppercase tracking-tighter italic" style={{ color: '#1a1a2e' }}>
+              IP Entity Blocklist
+            </h1>
+            <p className="text-sm font-bold text-ink/50 border-l-4 border-comic-red pl-3 mt-2">
+              {total.toLocaleString()} protected entities across {Object.keys(categoryStats).length} categories
+            </p>
           </div>
           {/* Category pills */}
-          <div className="flex flex-wrap gap-1.5">
-            <button onClick={() => setCategory('')} className={`text-xs px-3 py-1 rounded-full transition ${!category ? 'bg-white text-black' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}>All</button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setCategory('')}
+              className={`text-xs px-4 py-1.5 font-black uppercase border-2 border-ink transition-all ${
+                !category ? 'bg-ink text-background-light shadow-[2px_2px_0px_#1a1a2e]' : 'bg-card text-ink/60 hover:text-ink hover:bg-muted'
+              }`}
+            >All</button>
             {ENTITY_CATEGORIES.map(cat => (
               <button key={cat.key} onClick={() => setCategory(cat.key)}
-                className={`text-xs px-3 py-1 rounded-full transition ${category === cat.key ? 'text-white' : 'text-zinc-400 hover:text-white'}`}
-                style={{ backgroundColor: category === cat.key ? cat.color : 'rgb(39 39 42)' }}>
+                className={`text-xs px-4 py-1.5 font-black uppercase border-2 border-ink transition-all ${
+                  category === cat.key ? 'text-white shadow-[2px_2px_0px_#1a1a2e]' : 'text-ink/60 hover:text-ink'
+                }`}
+                style={{ backgroundColor: category === cat.key ? cat.color : 'var(--card)' }}>
                 {cat.label} ({categoryStats[cat.key] || 0})
               </button>
             ))}
@@ -64,16 +79,16 @@ export default function BlocklistPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-4">
+        <div className="flex flex-wrap gap-3 mb-6">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search entities..."
-            className="flex-1 min-w-[200px] bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:border-amber-500 outline-none" />
+            className="flex-1 min-w-[200px] bg-card border-4 border-ink px-4 py-2.5 text-sm font-bold focus:shadow-[4px_4px_0px_#1a1a2e] outline-none transition-shadow placeholder:text-ink/30" />
           <select value={entityType} onChange={e => setEntityType(e.target.value)}
-            className="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
+            className="bg-card border-4 border-ink px-4 py-2.5 text-sm font-bold cursor-pointer">
             <option value="">All Types</option>
             {ENTITY_TYPES.map(t => <option key={t.key} value={t.key}>{t.label}</option>)}
           </select>
           <select value={riskLevel} onChange={e => setRiskLevel(e.target.value)}
-            className="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
+            className="bg-card border-4 border-ink px-4 py-2.5 text-sm font-bold cursor-pointer">
             <option value="">All Risk Levels</option>
             <option value="critical">Critical</option>
             <option value="high">High</option>
@@ -82,39 +97,39 @@ export default function BlocklistPage() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto rounded-lg border border-zinc-800">
+        <div className="overflow-x-auto border-4 border-ink shadow-[6px_6px_0px_#1a1a2e]">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900">
+            <thead className="bg-ink text-background-light">
               <tr>
-                <th className="text-left px-4 py-2 font-semibold text-zinc-400">Entity</th>
-                <th className="text-left px-4 py-2 font-semibold text-zinc-400">Type</th>
-                <th className="text-left px-4 py-2 font-semibold text-zinc-400">IP Owner</th>
-                <th className="text-left px-4 py-2 font-semibold text-zinc-400">Risk</th>
-                <th className="text-left px-4 py-2 font-semibold text-zinc-400">Aliases</th>
+                <th className="text-left px-4 py-3 font-black uppercase tracking-wider text-xs">Entity</th>
+                <th className="text-left px-4 py-3 font-black uppercase tracking-wider text-xs">Type</th>
+                <th className="text-left px-4 py-3 font-black uppercase tracking-wider text-xs">IP Owner</th>
+                <th className="text-left px-4 py-3 font-black uppercase tracking-wider text-xs">Risk</th>
+                <th className="text-left px-4 py-3 font-black uppercase tracking-wider text-xs">Aliases</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={5} className="text-center py-8 text-zinc-500">Loading...</td></tr>
+                <tr><td colSpan={5} className="text-center py-8 text-ink/40 font-black">Loading...</td></tr>
               ) : entities.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-8 text-zinc-500">No entities found. Try adjusting filters.</td></tr>
+                <tr><td colSpan={5} className="text-center py-8 text-ink/40 font-bold">No entities found. Try adjusting filters.</td></tr>
               ) : entities.map(entity => (
-                <tr key={entity.id} className="border-t border-zinc-800/50 hover:bg-zinc-800/30 transition">
-                  <td className="px-4 py-2">
-                    <div className="font-semibold">{entity.name}</div>
-                    {entity.ip_universe && <div className="text-xs text-zinc-500">{entity.ip_universe}</div>}
+                <tr key={entity.id} className="border-t-2 border-ink/10 hover:bg-muted transition-colors">
+                  <td className="px-4 py-3">
+                    <div className="font-black">{entity.name}</div>
+                    {entity.ip_universe && <div className="text-xs text-ink/40 font-bold">{entity.ip_universe}</div>}
                   </td>
-                  <td className="px-4 py-2">
-                    <span className="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">{entity.entity_type}</span>
+                  <td className="px-4 py-3">
+                    <span className="text-xs px-2 py-0.5 border-2 border-ink/30 font-bold uppercase bg-muted">{entity.entity_type}</span>
                   </td>
-                  <td className="px-4 py-2 text-zinc-400">{entity.ip_owner}</td>
-                  <td className="px-4 py-2">
-                    <span className="text-xs px-2 py-0.5 rounded font-medium" style={{
+                  <td className="px-4 py-3 text-ink/60 font-bold">{entity.ip_owner}</td>
+                  <td className="px-4 py-3">
+                    <span className="text-xs px-2 py-0.5 border-2 border-ink font-black uppercase" style={{
                       backgroundColor: RISK_LEVELS[entity.risk_level as keyof typeof RISK_LEVELS]?.color + '22',
                       color: RISK_LEVELS[entity.risk_level as keyof typeof RISK_LEVELS]?.color,
                     }}>{entity.risk_level}</span>
                   </td>
-                  <td className="px-4 py-2 text-xs text-zinc-500 max-w-[200px] truncate">
+                  <td className="px-4 py-3 text-xs text-ink/40 font-bold max-w-[200px] truncate">
                     {(entity.aliases || []).slice(0, 3).join(', ')}
                   </td>
                 </tr>
@@ -125,13 +140,13 @@ export default function BlocklistPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4">
-            <span className="text-xs text-zinc-500">Page {page} of {totalPages}</span>
+          <div className="flex items-center justify-between mt-6">
+            <span className="text-xs font-black text-ink/40 uppercase">Page {page} of {totalPages}</span>
             <div className="flex gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                className="px-3 py-1 rounded bg-zinc-800 text-sm disabled:opacity-30 hover:bg-zinc-700">← Prev</button>
+                className="px-4 py-2 border-4 border-ink bg-card text-sm font-black uppercase disabled:opacity-30 hover:bg-ink hover:text-background-light transition-all shadow-[3px_3px_0px_#1a1a2e] hover:shadow-[1px_1px_0px_#1a1a2e]">← Prev</button>
               <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                className="px-3 py-1 rounded bg-zinc-800 text-sm disabled:opacity-30 hover:bg-zinc-700">Next →</button>
+                className="px-4 py-2 border-4 border-ink bg-card text-sm font-black uppercase disabled:opacity-30 hover:bg-ink hover:text-background-light transition-all shadow-[3px_3px_0px_#1a1a2e] hover:shadow-[1px_1px_0px_#1a1a2e]">Next →</button>
             </div>
           </div>
         )}

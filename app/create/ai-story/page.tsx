@@ -176,7 +176,7 @@ function AIStoryContent() {
     }
   }, [searchParams]);
 
-  // ── Load import from Shakti Spark and Saved Drafts ──────────────
+  // ── Load import from KavyaScript and Saved Drafts ──────────────
   useEffect(() => {
     try {
       // First check for imports

@@ -24,7 +24,7 @@ const moods = [
   { id: 'mysterious', label: '🔮 Mysterious', color: 'border-indigo-500/40 bg-indigo-500/10 text-indigo-300' },
 ];
 
-export default function ShaktiSparkPage() {
+export default function KavyaScriptPage() {
   const { toast } = useToast();
   const router = useRouter();
 
@@ -37,7 +37,7 @@ export default function ShaktiSparkPage() {
 
   const handleSpark = useCallback(async () => {
     if (!prompt.trim()) {
-      toast({ title: 'Enter a prompt', description: 'Give Shakti Spark an idea to work with.', variant: 'destructive' });
+      toast({ title: 'Enter a prompt', description: 'Give KavyaScript an idea to work with.', variant: 'destructive' });
       return;
     }
 
@@ -93,7 +93,7 @@ export default function ShaktiSparkPage() {
         genre: selectedGenre,
         mood: selectedMood,
         prompt,
-        source: 'shakti-spark',
+        source: 'kavyascript',
         savedAt: new Date().toISOString(),
       };
       const existing = JSON.parse(localStorage.getItem('sparkDrafts') || '[]');
@@ -138,7 +138,7 @@ export default function ShaktiSparkPage() {
                   <Sparkles className="w-5 h-5 text-amber-400" />
                 </div>
                 <h1 className="text-3xl font-black text-white uppercase tracking-tight">
-                  Shakti Spark
+                  KavyaScript
                 </h1>
               </div>
               <p className="text-white/50">Instant ideas and short story sparks.</p>

@@ -1,43 +1,78 @@
 /* ============================================================================
-   KAVACH Phase 1 — IP Compliance Engine Styles
+   KAVACH Phase 1 — IP Compliance Engine Styles (Vintage Comic Theme)
    ============================================================================ */
 
-/* Hero gradient */
+/* Hero gradient — comic book style */
 .kavach-hero {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+  background: var(--background, #fef9ef);
+  border-bottom: 4px solid var(--foreground, #1a1a2e);
+  position: relative;
+  padding-top: 100px; /* Navbar clearance */
 }
 
-/* Card styling */
+.kavach-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--foreground, #1a1a2e) 1px, transparent 1px);
+  background-size: 16px 16px;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+/* Card styling — bold comic cards */
 .kavach-card {
-  background: rgba(24, 24, 27, 0.8);
-  border: 1px solid rgba(63, 63, 70, 0.5);
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  backdrop-filter: blur(8px);
+  background: var(--card, #ffffff);
+  border: 4px solid var(--foreground, #1a1a2e);
+  padding: 1.5rem;
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* Stat cards */
+.kavach-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 10px 0px 0px var(--foreground, #1a1a2e);
+}
+
+/* Stat cards — punchy with thick borders */
 .kavach-stat-card {
-  background: linear-gradient(135deg, rgba(24, 24, 27, 0.9), rgba(39, 39, 42, 0.5));
-  border: 1px solid rgba(63, 63, 70, 0.4);
-  border-radius: 0.75rem;
+  background: var(--card, #ffffff);
+  border: 4px solid var(--foreground, #1a1a2e);
   padding: 1rem;
   text-align: center;
-  transition: transform 0.2s, border-color 0.2s;
-}
-.kavach-stat-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 4px 4px 0px 0px var(--foreground, #1a1a2e);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
 }
 
-/* Pipeline card */
+.kavach-stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%231a1a2e' fill-opacity='0.06'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.kavach-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 7px 0px 0px var(--foreground, #1a1a2e);
+}
+
+/* Pipeline card — featured scan display */
 .kavach-pipeline-card {
-  background: linear-gradient(135deg, rgba(15, 15, 20, 0.95), rgba(24, 24, 27, 0.9));
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  border-radius: 0.75rem;
+  background: var(--card, #ffffff);
+  border: 4px solid var(--foreground, #1a1a2e);
   padding: 1.5rem;
-  box-shadow: 0 0 30px rgba(245, 158, 11, 0.05);
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e);
+  position: relative;
+}
+
+.kavach-pipeline-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%231a1a2e' fill-opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
 }
 
 /* Pipeline steps */
@@ -46,62 +81,94 @@
   gap: 0.75rem;
   position: relative;
 }
+
 .step-indicator {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 1.5rem;
+  width: 1.75rem;
   flex-shrink: 0;
 }
+
 .step-dot {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 0.7rem;
+  font-weight: 900;
   color: white;
   z-index: 1;
+  border: 3px solid var(--foreground, #1a1a2e);
 }
+
 .step-line {
-  width: 2px;
+  width: 3px;
   flex: 1;
   min-height: 1rem;
-  background: rgba(63, 63, 70, 0.5);
+  background: var(--foreground, #1a1a2e);
+  opacity: 0.2;
   margin-top: 0.25rem;
 }
-.pipeline-step:last-child .step-line { display: none; }
+
+.pipeline-step:last-child .step-line {
+  display: none;
+}
+
 .step-content {
   flex: 1;
   padding-bottom: 0.75rem;
 }
-.pipeline-step.complete .step-line { background: rgba(34, 197, 94, 0.4); }
-.pipeline-step.active .step-line { background: linear-gradient(to bottom, rgba(234, 179, 8, 0.4), rgba(63, 63, 70, 0.5)); }
 
-/* Action cards */
+.pipeline-step.complete .step-line {
+  background: #2d9c68;
+  opacity: 0.6;
+}
+
+.pipeline-step.active .step-line {
+  background: linear-gradient(to bottom, #e63946, var(--foreground, #1a1a2e));
+  opacity: 0.4;
+}
+
+/* Action cards — comic buttons */
 .kavach-action-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  padding: 1.25rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(63, 63, 70, 0.4);
-  background: rgba(24, 24, 27, 0.6);
+  padding: 1.5rem;
+  border: 4px solid var(--foreground, #1a1a2e);
+  background: var(--card, #ffffff);
+  box-shadow: 4px 4px 0px 0px var(--foreground, #1a1a2e);
   transition: all 0.2s;
   text-decoration: none;
   color: inherit;
-}
-.kavach-action-card:hover {
-  border-color: rgba(245, 158, 11, 0.5);
-  background: rgba(24, 24, 27, 0.9);
-  transform: translateY(-2px);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
-/* Scan detail score glow */
-.score-glow-green { box-shadow: 0 0 40px rgba(34, 197, 94, 0.15); }
-.score-glow-blue { box-shadow: 0 0 40px rgba(59, 130, 246, 0.15); }
-.score-glow-amber { box-shadow: 0 0 40px rgba(245, 158, 11, 0.15); }
-.score-glow-red { box-shadow: 0 0 40px rgba(239, 68, 68, 0.15); }
+.kavach-action-card:hover {
+  background: var(--primary, #e63946);
+  color: white;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--foreground, #1a1a2e);
+}
+
+/* Scan detail score glow — adapted to comic theme */
+.score-glow-green {
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e), 0 0 20px rgba(45, 156, 104, 0.2);
+}
+
+.score-glow-blue {
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e), 0 0 20px rgba(69, 123, 157, 0.2);
+}
+
+.score-glow-amber {
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e), 0 0 20px rgba(251, 191, 36, 0.2);
+}
+
+.score-glow-red {
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e), 0 0 20px rgba(230, 57, 70, 0.2);
+}
