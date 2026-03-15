@@ -101,7 +101,7 @@ export default function TextStoryForm() {
       toast({
         title: '✓ Draft Saved',
         description: 'Your story and canvas structure have been saved.',
-        className: 'bg-black/80 border border-white/10 text-white backdrop-blur-md',
+        className: 'bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] border border-white/10 text-white backdrop-blur-md',
       });
     } catch (error) {
       console.error('Error saving draft:', error);
@@ -130,7 +130,7 @@ export default function TextStoryForm() {
     toast({
       title: 'Reset',
       description: 'Form and canvas cleared.',
-      className: 'bg-black/80 border border-white/10 text-white backdrop-blur-md',
+      className: 'bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] border border-white/10 text-white backdrop-blur-md',
     });
   };
 

@@ -125,7 +125,7 @@ function moderationBadge(status?: string) {
     if (!status) return null;
     const map: Record<string, { label: string; className: string }> = {
         pending: { label: 'Pending Review', className: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
-        approved: { label: 'Approved', className: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
+        approved: { label: 'Approved', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
         rejected: { label: 'Rejected', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
     };
     const s = map[status];
@@ -361,13 +361,14 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
     /* ── Loading Skeleton ── */
     if (loading) {
         return (
-            <main className="min-h-screen bg-gradient-to-b from-background to-background/80">
-                <div className="container mx-auto px-4 py-20">
+            <main className="min-h-screen bg-[#EEDFCA] relative">
+                <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+                <div className="container mx-auto px-4 py-20 relative z-10">
                     <div className="max-w-5xl mx-auto space-y-8">
                         <div className="relative">
-                            <Skeleton className="h-48 w-full rounded-2xl" />
+                            <Skeleton className="h-48 w-full" />
                             <div className="flex items-end gap-6 -mt-16 ml-8">
-                                <Skeleton className="w-32 h-32 rounded-full border-4 border-background" />
+                                <Skeleton className="w-32 h-32 rounded-none border-[4px] border-black" />
                                 <div className="space-y-2 pb-4">
                                     <Skeleton className="h-8 w-48" />
                                     <Skeleton className="h-4 w-32" />
@@ -376,12 +377,12 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {[1, 2, 3, 4].map((i) => (
-                                <Skeleton key={i} className="h-24 rounded-xl" />
+                                <Skeleton key={i} className="h-24" />
                             ))}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {[1, 2, 3].map((i) => (
-                                <Skeleton key={i} className="h-64 rounded-xl" />
+                                <Skeleton key={i} className="h-64" />
                             ))}
                         </div>
                     </div>
@@ -393,22 +394,23 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
     /* ── Error ── */
     if (error) {
         return (
-            <main className="min-h-screen bg-gradient-to-b from-background to-background/80 flex items-center justify-center">
-                <div className="text-center space-y-6 max-w-md px-4">
-                    <div className="w-20 h-20 mx-auto rounded-full bg-red-500/10 flex items-center justify-center">
-                        <Activity className="w-10 h-10 text-red-400" />
+            <main className="min-h-screen bg-[#EEDFCA] relative flex items-center justify-center">
+                <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+                <div className="text-center space-y-6 max-w-md px-4 relative z-10">
+                    <div className="w-20 h-20 mx-auto bg-white border-[4px] border-black shadow-[6px_6px_0_0_#000] flex items-center justify-center">
+                        <Activity className="w-10 h-10 text-[#cc3333]" />
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-100">
+                    <h2 className="text-3xl font-black uppercase italic tracking-tighter text-black">
                         {slug === 'me' ? 'Please Log In' : 'Failed to Load Profile'}
                     </h2>
-                    <p className="text-slate-400">
+                    <p className="font-bold text-black/60 text-sm uppercase tracking-wide">
                         {slug === 'me'
                             ? 'You need to be logged in to view your profile.'
-                            : "We couldn\u2019t retrieve this profile. The user may not exist or there\u2019s a connectivity issue."}
+                            : "We couldn't retrieve this profile. The user may not exist or there's a connectivity issue."}
                     </p>
-                    <div className="flex gap-3 justify-center">
+                    <div className="flex gap-4 justify-center">
                         {slug === 'me' ? (
-                            <Button asChild>
+                            <Button asChild className="bg-[#cc3333] text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] transition-all">
                                 <Link href="/sign-in">Sign In</Link>
                             </Button>
                         ) : (
@@ -430,17 +432,17 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
     /* ── Not Found ── */
     if (!user) {
         return (
-            <main className="min-h-screen bg-gradient-to-b from-background to-background/80 flex items-center justify-center">
-                <div className="text-center space-y-6 max-w-md px-4">
-                    <div className="w-20 h-20 mx-auto rounded-full bg-violet-500/10 flex items-center justify-center">
-                        <Users className="w-10 h-10 text-violet-400" />
+            <main className="min-h-screen bg-[#EEDFCA] relative flex items-center justify-center">
+                <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+                <div className="text-center space-y-6 max-w-md px-4 relative z-10">
+                    <div className="w-20 h-20 mx-auto bg-white border-[4px] border-black shadow-[6px_6px_0_0_#000] flex items-center justify-center">
+                        <Users className="w-10 h-10 text-black" />
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-100">User Not Found</h2>
-                    <p className="text-slate-400">
-                        This profile doesn&apos;t exist. The link may be outdated or the
-                        account has been removed.
+                    <h2 className="text-3xl font-black uppercase italic tracking-tighter text-black">User Not Found</h2>
+                    <p className="font-bold text-black/60 text-sm uppercase tracking-wide">
+                        This profile doesn&apos;t exist. The link may be outdated or the account has been removed.
                     </p>
-                    <Button asChild>
+                    <Button asChild className="bg-[#cc3333] text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] transition-all">
                         <Link href="/">Back to Home</Link>
                     </Button>
                 </div>
@@ -486,21 +488,21 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
 
     /* ── Render ── */
     return (
-        <main className="min-h-screen bg-gradient-to-b from-background to-background/80 pb-20">
+        <main className="min-h-screen bg-[#EEDFCA] relative pb-20">
+            <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
             {/* ─── Hero / Header ─── */}
-            <div className="relative w-full">
+            <div className="relative w-full z-10">
                 {/* Banner */}
-                <div className="h-36 md:h-52 w-full bg-gradient-to-r from-violet-900/50 via-slate-900 to-indigo-900/50 rounded-b-3xl" />
+                <div className="h-36 md:h-52 w-full bg-[#cc3333] border-b-[4px] border-black" />
 
                 {/* Profile info overlay */}
                 <div className="container max-w-5xl mx-auto px-4 relative -mt-20 md:-mt-24">
                     <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
                         {/* Avatar */}
                         <div className="relative group">
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-500 to-violet-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000" />
-                            <Avatar className="w-28 h-28 md:w-36 md:h-36 border-4 border-background relative">
-                                <AvatarImage src={user.avatar_url || user.avatar} alt={displayName} />
-                                <AvatarFallback className="text-2xl font-bold bg-slate-800 text-slate-200">
+                            <Avatar className="w-28 h-28 md:w-36 md:h-36 border-[5px] border-black shadow-[6px_6px_0_0_#000] relative rounded-none">
+                                <AvatarImage src={user.avatar_url || user.avatar} alt={displayName} className="rounded-none" />
+                                <AvatarFallback className="text-2xl font-black bg-white text-black rounded-none">
                                     {initials}
                                 </AvatarFallback>
                             </Avatar>
@@ -509,38 +511,35 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                         {/* Name / Username */}
                         <div className="flex-1 text-center md:text-left space-y-1 pb-2">
                             <div className="flex items-center justify-center md:justify-start gap-2">
-                                <h1 className="text-3xl font-bold text-white tracking-tight">
+                                <h1 className="text-3xl font-black uppercase italic tracking-tighter text-black">
                                     {displayName}
                                 </h1>
                                 {user.badges?.includes('verified') && (
-                                    <CheckCircle2 className="w-5 h-5 text-blue-400" />
+                                    <CheckCircle2 className="w-6 h-6 text-[#cc3333]" />
                                 )}
                             </div>
                             {user.username && (
-                                <p className="text-slate-400 font-medium">@{user.username}</p>
+                                <p className="font-bold text-black/50 uppercase text-xs tracking-widest">@{user.username}</p>
                             )}
                             {walletAddr && (
-                                <Badge
-                                    variant="outline"
-                                    className="inline-flex items-center gap-1 bg-slate-900/50 border-slate-700 text-xs font-mono text-slate-400 mt-1"
-                                >
+                                <div className="inline-flex items-center gap-1 px-3 py-1 border-[2px] border-black bg-white shadow-[2px_2px_0_0_#000] text-xs font-mono text-black/60 mt-1">
                                     <Wallet className="w-3 h-3" />
                                     {walletAddr.slice(0, 6)}…{walletAddr.slice(-4)}
                                     <button
                                         onClick={() => navigator.clipboard?.writeText(walletAddr)}
-                                        className="ml-1 text-slate-400 hover:text-white transition-colors"
+                                        className="ml-1 text-black/40 hover:text-[#cc3333] transition-colors"
                                         aria-label="Copy wallet address"
                                     >
                                         <Copy className="w-3 h-3" />
                                     </button>
-                                </Badge>
+                                </div>
                             )}
                             {user.bio && (
-                                <p className="max-w-lg text-sm text-slate-300 mt-2">
+                                <p className="max-w-lg text-sm font-bold text-black/60 mt-2">
                                     {user.bio}
                                 </p>
                             )}
-                            <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-slate-500">
+                            <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-black/40 font-black uppercase tracking-wider">
                                 {joinDate && (
                                     <span className="flex items-center gap-1">
                                         <Calendar className="w-3 h-3" /> Joined {joinDate}
@@ -556,7 +555,7 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                                     <Button
                                         asChild
                                         variant="outline"
-                                        className="gap-2 border-slate-700 hover:bg-slate-800"
+                                        className="gap-2 border-[3px] border-black shadow-[3px_3px_0_0_#000] hover:shadow-[5px_5px_0_0_#000] hover:-translate-y-0.5 bg-white text-black font-black uppercase"
                                     >
                                         <Link href="/profile/settings">
                                             <Edit className="w-4 h-4" /> Edit Profile
@@ -564,9 +563,8 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                                     </Button>
                                     <Button
                                         asChild
-                                        variant="outline"
                                         size="icon"
-                                        className="border-slate-700 hover:bg-slate-800"
+                                        className="border-[3px] border-black shadow-[3px_3px_0_0_#000] hover:shadow-[5px_5px_0_0_#000] bg-white text-black hover:-translate-y-0.5 transition-all"
                                     >
                                         <Link href="/dashboard">
                                             <BarChart3 className="w-4 h-4" />
@@ -574,14 +572,14 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                                     </Button>
                                 </>
                             ) : (
-                                <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-violet-500/20">
+                                <Button className="bg-[#cc3333] text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] font-black uppercase transition-all">
                                     Follow
                                 </Button>
                             )}
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-slate-400 hover:text-white"
+                                className="border-[2px] border-black bg-white text-black hover:bg-[#cc3333] hover:text-white shadow-[2px_2px_0_0_#000] transition-all"
                                 onClick={() => navigator.clipboard?.writeText(window.location.href)}
                             >
                                 <Share2 className="w-5 h-5" />
@@ -606,8 +604,8 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                             label: 'Total Views',
                             value: stats.totalViews,
                             icon: Eye,
-                            color: 'text-emerald-400',
-                            bg: 'bg-emerald-500/10',
+                            color: 'text-red-400',
+                            bg: 'bg-red-500/10',
                         },
                         {
                             label: 'Total Likes',

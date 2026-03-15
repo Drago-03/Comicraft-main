@@ -293,8 +293,8 @@ export function StoryGenerator() {
             
             {/* Show mint status message */}
             {isMinted && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-                <p className="text-green-700 font-medium">✓ This story has been minted as NFT</p>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+                <p className="text-red-700 font-medium">✓ This story has been minted as NFT</p>
               </div>
             )}
             

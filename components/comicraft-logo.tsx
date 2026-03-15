@@ -82,17 +82,15 @@ export function ComiCraftLogo({
   const logoText = (variant === 'full' || variant === 'mark') && (
     <span
       className={cn(
-        'ml-2 font-bold tracking-tight select-none',
-        variant === 'full' ? 'text-xl' : 'text-lg',
-        'font-comic' // Using the variable defined in layout.tsx
+        'ml-2 font-black tracking-wider select-none uppercase italic',
+        variant === 'full' ? 'text-2xl' : 'text-xl'
       )}
       style={{
-        fontFamily: 'var(--font-comic), system-ui, sans-serif',
-        background: colorScheme === 'color'
-          ? 'linear-gradient(135deg, #fff 0%, #a5b4fc 100%)'
-          : 'currentColor',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: colorScheme === 'color' ? 'transparent' : 'currentColor',
+        fontFamily: 'var(--font-display), "Bangers", system-ui, sans-serif',
+        color: colorScheme === 'color' ? '#fff' : 'currentColor',
+        textShadow: colorScheme === 'color' ? '3px 3px 0px #000' : 'none',
+        WebkitTextStroke: colorScheme === 'color' ? '1.5px #000' : 'none',
+        lineHeight: 1
       }}
     >
       COMICRAFT

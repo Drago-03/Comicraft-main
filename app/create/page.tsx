@@ -23,13 +23,13 @@ const engines = [
     icon: PenSquare,
     cta: 'Write with VedaScript Engine',
     href: '/create/ai-story',
-    color: 'emerald',
-    gradient: 'from-emerald-500/20 to-emerald-600/5',
-    borderGlow: 'hover:border-emerald-500/40',
-    iconBg: 'bg-emerald-500/10',
-    iconColor: 'text-emerald-400',
-    btnGradient: 'from-emerald-600 to-emerald-700',
-    btnHover: 'hover:from-emerald-500 hover:to-emerald-600',
+    color: 'red',
+    gradient: 'from-red-500/20 to-red-600/5',
+    borderGlow: 'hover:border-red-500/40',
+    iconBg: 'bg-red-500/10',
+    iconColor: 'text-red-400',
+    btnGradient: 'from-red-600 to-red-700',
+    btnHover: 'hover:from-red-500 hover:to-red-600',
     available: true,
   },
   {
@@ -110,22 +110,13 @@ export default function ForgeCreatePage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen relative font-sans overflow-hidden">
-      {/* Background Vintage Halftone */}
-      <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8'/%3E%3C/svg%3E")` }} />
-      {/* Cinematic Background */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(16,185,129,0.08),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(59,130,246,0.08),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(168,85,247,0.04),_transparent_60%)]" />
-        <div className="absolute w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] mix-blend-overlay" />
-      </div>
-
+    <div className="min-h-screen bg-[#EEDFCA] relative font-sans overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="container mx-auto px-4 py-10 relative z-10"
+        className="container mx-auto px-4 py-10 relative z-10 pt-28"
       >
         <div className="max-w-5xl mx-auto">
           {/* Header */}
@@ -135,10 +126,13 @@ export default function ForgeCreatePage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-2">
-                Welcome to Comicraft Forge
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-white shadow-[3px_3px_0_0_#000] text-xs font-black tracking-wider text-black uppercase mb-4">
+                 COMICRAFT FORGE
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-black italic text-black uppercase tracking-tighter mb-2" style={{ WebkitTextStroke: '1.5px black' }}>
+                Forge Your Legend
               </h1>
-              <p className="text-white/50 text-lg">
+              <p className="text-black/70 font-bold uppercase tracking-[0.05em] text-sm md:text-base">
                 Choose your creative engine.
               </p>
             </motion.div>
@@ -149,9 +143,9 @@ export default function ForgeCreatePage() {
             >
               <Link
                 href="/"
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                className="group flex items-center gap-2 px-6 py-2 border-[3px] border-black bg-white shadow-[4px_4px_0_0_#000] hover:shadow-[6px_6px_0_0_#000] hover:-translate-y-1 active:translate-y-1 active:shadow-none text-black font-black uppercase text-sm tracking-wider transition-all duration-300"
               >
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+                <ArrowLeft className="w-4 h-4" />
                 Back
               </Link>
             </motion.div>
@@ -173,38 +167,35 @@ export default function ForgeCreatePage() {
                   whileHover={{ scale: engine.available ? 1.02 : 1, y: engine.available ? -4 : 0 }}
                   whileTap={{ scale: engine.available ? 0.98 : 1 }}
                   className={`
-                    relative group rounded-2xl overflow-hidden
-                    bg-gradient-to-br ${engine.gradient}
-                    border border-white/[0.08] ${engine.available ? engine.borderGlow : ''}
-                    backdrop-blur-xl
-                    transition-all duration-500
-                    ${engine.available ? 'cursor-pointer' : 'cursor-default opacity-60'}
+                    relative group break-inside-avoid
+                    bg-white border-[3px] border-black p-6
+                    ${engine.available ? 'shadow-[6px_6px_0_0_#000] hover:shadow-[10px_10px_0_0_#000]' : 'shadow-none opacity-80'}
+                    transition-all duration-300
+                    ${engine.available ? 'cursor-pointer' : 'cursor-default grayscale'}
                   `}
                   onClick={() => engine.available && router.push(engine.href)}
                 >
-                  {/* Glow effect on hover */}
-                  {engine.available && (
-                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${engine.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                  )}
-
-                  <div className="relative p-7">
+                  {/* Subtle noise overlay per block to maintain aesthetic */}
+                  <div className="absolute inset-0 pointer-events-none opacity-[0.2] mix-blend-multiply" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '5px 5px' }}></div>
+                  
+                  <div className="relative z-10 flex flex-col h-full">
                     {/* Icon + Title */}
                     <div className="flex items-start gap-4 mb-4">
-                      <div className={`w-12 h-12 rounded-xl ${engine.iconBg} flex items-center justify-center flex-shrink-0 border border-white/5`}>
-                        <Icon className={`w-6 h-6 ${engine.iconColor}`} />
+                      <div className={`w-14 h-14 border-[3px] border-black shadow-[3px_3px_0_0_#000] bg-white flex items-center justify-center flex-shrink-0`}>
+                        <Icon strokeWidth={3} className={`w-7 h-7 text-black`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h2 className="text-xl font-bold text-white mb-1 tracking-tight">
+                        <h2 className="text-xl md:text-2xl font-black italic uppercase leading-tight tracking-tighter text-black group-hover:text-[#cc3333] transition-colors mb-1">
                           {engine.title}
                         </h2>
-                        <p className={`text-sm ${engine.iconColor}/80 font-medium`}>
+                        <p className={`text-[10px] text-gray-500 font-bold uppercase tracking-widest`}>
                           {engine.subtitle}
                         </p>
                       </div>
                     </div>
 
                     {/* Description */}
-                    <p className="text-sm text-white/45 leading-relaxed mb-6 line-clamp-2">
+                    <p className="text-sm font-semibold text-black/70 leading-snug mb-6 flex-grow">
                       {engine.description}
                     </p>
 
@@ -212,22 +203,20 @@ export default function ForgeCreatePage() {
                     {engine.available ? (
                       <button
                         className={`
-                          w-full py-3 px-5 rounded-xl font-semibold text-sm
-                          bg-gradient-to-r ${engine.btnGradient} ${engine.btnHover}
-                          text-white shadow-lg shadow-black/20
-                          border border-white/10
+                          w-full py-3 px-5 border-[3px] border-black font-black uppercase text-sm tracking-widest
+                          bg-[#cc3333] text-white shadow-[4px_4px_0_0_#000]
                           flex items-center justify-center gap-2
                           transition-all duration-300
-                          active:scale-[0.97] active:shadow-inner
-                          group-hover:shadow-xl
+                          group-hover:bg-black group-hover:text-white group-hover:shadow-[6px_6px_0_0_#000] group-hover:-translate-y-1
+                          active:translate-y-1 active:shadow-none
                         `}
                       >
                         {engine.cta}
-                        <ChevronRight className="w-4 h-4 opacity-60 group-hover:translate-x-0.5 transition-transform" />
+                        <ChevronRight className="w-4 h-4" />
                       </button>
                     ) : (
-                      <div className="w-full py-3 px-5 rounded-xl font-medium text-sm bg-white/5 border border-white/10 text-white/30 text-center">
-                        Coming Soon — Core routing via Nexus Core
+                      <div className="w-full py-3 px-5 border-2 border-dashed border-gray-400 font-bold uppercase text-[10px] tracking-widest text-gray-500 text-center bg-gray-100">
+                        Coming Soon
                       </div>
                     )}
                   </div>

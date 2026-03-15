@@ -321,13 +321,9 @@ export default function PanelraEnginePage() {
   // ── Render ───────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen relative bg-black text-white font-sans overflow-hidden">
+    <div className="min-h-screen bg-[#EEDFCA] relative text-black font-sans overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(59,130,246,0.1),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(168,85,247,0.08),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(249,115,22,0.04),_transparent_60%)]" />
-      </div>
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -336,11 +332,11 @@ export default function PanelraEnginePage() {
         className="relative z-10"
       >
         {/* ─── Sticky Top Bar ──────────────────────────────────── */}
-        <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/[0.06] px-4 py-3">
+        <div className="sticky top-0 z-50 bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] backdrop-blur-xl border-b border-black px-4 py-3">
           <div className="max-w-[1600px] mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link href="/create">
-                <button className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all text-sm">
+                <button className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-black opacity-20 text-black/70 font-bold hover:text-black hover:bg-white/10 transition-all text-sm">
                   <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
                   Forge
                 </button>
@@ -351,15 +347,15 @@ export default function PanelraEnginePage() {
                   <BookOpen className="w-4 h-4 text-blue-400" />
                 </div>
                 <div>
-                  <h1 className="text-sm font-bold text-white">Panelra Engine</h1>
-                  <p className="text-xs text-white/40">AI Comic Generation</p>
+                  <h1 className="text-sm font-bold text-black">Panelra Engine</h1>
+                  <p className="text-xs text-black/60 font-bold">AI Comic Generation</p>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
               {title && (
-                <span className="text-xs text-white/30 mr-2 hidden sm:block">
+                <span className="text-xs text-black/30 mr-2 hidden sm:block">
                   {title || 'Untitled Comic'}
                 </span>
               )}
@@ -367,7 +363,7 @@ export default function PanelraEnginePage() {
                 variant="outline"
                 size="sm"
                 onClick={handleReset}
-                className="text-xs border-white/10 text-white/60 hover:text-white bg-white/5"
+                className="text-xs border-black opacity-20 text-black/70 font-bold hover:text-black bg-white/5"
               >
                 <RotateCcw className="w-3 h-3 mr-1.5" />
                 Reset
@@ -391,21 +387,21 @@ export default function PanelraEnginePage() {
             >
               {/* Header */}
               <div className="flex items-center gap-2 px-1 mb-2">
-                <Settings2 className="w-4 h-4 text-emerald-400" />
-                <h2 className="text-sm font-semibold tracking-wider uppercase text-emerald-400/80">Configuration</h2>
+                <Settings2 className="w-4 h-4 text-red-400" />
+                <h2 className="text-sm font-semibold tracking-wider uppercase text-red-400/80">Configuration</h2>
               </div>
 
               {/* Accordion 1: Story Details */}
-              <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl overflow-hidden shadow-lg">
+              <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden shadow-lg">
                 <button
                   onClick={() => toggleSection('story')}
                   className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
                 >
-                  <div className="flex items-center gap-2 text-white/90">
+                  <div className="flex items-center gap-2 text-black font-bold uppercase text-base">
                     <Type className="w-4 h-4 text-amber-400" />
                     <span className="text-sm font-medium">Story Basics</span>
                   </div>
-                  {expandedSections.story ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
+                  {expandedSections.story ? <ChevronDown className="w-4 h-4 text-black/60 font-bold" /> : <ChevronRight className="w-4 h-4 text-black/60 font-bold" />}
                 </button>
                 <AnimatePresence>
                   {expandedSections.story && (
@@ -413,31 +409,31 @@ export default function PanelraEnginePage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-white/[0.06]"
+                      className="border-t border-black"
                     >
                       <CardContent className="p-4 space-y-4">
                         <div className="space-y-1.5">
-                          <Label className="text-xs text-white/50">Comic Title</Label>
+                          <Label className="text-xs text-black/70 font-bold">Comic Title</Label>
                           <Input
                             placeholder="My Epic Comic"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="text-sm bg-white/5 border-white/10 placeholder:text-white/20"
+                            className="text-sm bg-white/5 border-black opacity-20 placeholder:text-black/20"
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="text-xs text-white/50">Logline / Premise</Label>
+                          <Label className="text-xs text-black/70 font-bold">Logline / Premise</Label>
                           <Textarea
                             placeholder="A brief description of your comic's story…"
                             value={logline}
                             onChange={(e) => setLogline(e.target.value)}
-                            className="text-sm bg-white/5 border-white/10 placeholder:text-white/20 resize-none h-20"
+                            className="text-sm bg-white/5 border-black opacity-20 placeholder:text-black/20 resize-none h-20"
                           />
                         </div>
 
                         {/* Genre Pills */}
                         <div className="space-y-1.5">
-                          <Label className="text-xs text-white/50">Genres (up to 2)</Label>
+                          <Label className="text-xs text-black/70 font-bold">Genres (up to 2)</Label>
                           <div className="flex flex-wrap gap-1.5">
                             {GENRES.map((g) => (
                               <button
@@ -445,7 +441,7 @@ export default function PanelraEnginePage() {
                                 onClick={() => toggleGenre(g)}
                                 className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-all ${selectedGenres.includes(g)
                                   ? 'bg-blue-500/20 border-blue-500/40 text-blue-300'
-                                  : 'bg-white/[0.03] border-white/10 text-white/40 hover:border-white/20 hover:text-white/60'
+                                  : 'bg-white/[0.03] border-black opacity-20 text-black/60 font-bold hover:border-black opacity-20 hover:text-black/70 font-bold'
                                   }`}
                               >
                                 {g}
@@ -456,7 +452,7 @@ export default function PanelraEnginePage() {
 
                         {/* Art Style */}
                         <div className="space-y-1.5">
-                          <Label className="text-xs text-white/50">Art Style</Label>
+                          <Label className="text-xs text-black/70 font-bold">Art Style</Label>
                           <div className="grid grid-cols-2 gap-2">
                             {ART_STYLES.map((s) => (
                               <button
@@ -464,7 +460,7 @@ export default function PanelraEnginePage() {
                                 onClick={() => setStylePreset(s.value)}
                                 className={`flex flex-col items-center gap-1 p-2 rounded-lg border text-[11px] transition-all ${stylePreset === s.value
                                   ? 'bg-blue-500/15 border-blue-500/40 text-blue-300'
-                                  : 'bg-white/[0.02] border-white/[0.06] text-white/40 hover:border-white/15'
+                                  : 'bg-white/[0.02] border-black text-black/60 font-bold hover:border-black opacity-20'
                                   }`}
                               >
                                 <span className="text-base">{s.icon}</span>
@@ -480,16 +476,16 @@ export default function PanelraEnginePage() {
               </Card>
 
               {/* Accordion 2: Layout Options */}
-              <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl overflow-hidden shadow-lg">
+              <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden shadow-lg">
                 <button
                   onClick={() => toggleSection('layout')}
                   className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
                 >
-                  <div className="flex items-center gap-2 text-white/90">
-                    <LayoutDashboard className="w-4 h-4 text-emerald-400" />
+                  <div className="flex items-center gap-2 text-black font-bold uppercase text-base">
+                    <LayoutDashboard className="w-4 h-4 text-red-400" />
                     <span className="text-sm font-medium">Layout Config</span>
                   </div>
-                  {expandedSections.layout ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
+                  {expandedSections.layout ? <ChevronDown className="w-4 h-4 text-black/60 font-bold" /> : <ChevronRight className="w-4 h-4 text-black/60 font-bold" />}
                 </button>
                 <AnimatePresence>
                   {expandedSections.layout && (
@@ -497,15 +493,15 @@ export default function PanelraEnginePage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-white/[0.06]"
+                      className="border-t border-black"
                     >
                       <CardContent className="p-4 space-y-4">
                         {/* Pages / Panels */}
                         <div className="grid grid-cols-2 gap-3">
                           <div className="space-y-1.5">
-                            <Label className="text-xs text-white/50">Pages</Label>
+                            <Label className="text-xs text-black/70 font-bold">Pages</Label>
                             <Select value={String(totalPages)} onValueChange={(v) => setTotalPages(Number(v))}>
-                              <SelectTrigger className="text-sm bg-white/5 border-white/10">
+                              <SelectTrigger className="text-sm bg-white/5 border-black opacity-20">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -516,9 +512,9 @@ export default function PanelraEnginePage() {
                             </Select>
                           </div>
                           <div className="space-y-1.5">
-                            <Label className="text-xs text-white/50">Panels/Page</Label>
+                            <Label className="text-xs text-black/70 font-bold">Panels/Page</Label>
                             <Select value={String(panelsPerPage)} onValueChange={(v) => setPanelsPerPage(Number(v))}>
-                              <SelectTrigger className="text-sm bg-white/5 border-white/10">
+                              <SelectTrigger className="text-sm bg-white/5 border-black opacity-20">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -531,16 +527,16 @@ export default function PanelraEnginePage() {
                         </div>
 
                         {/* Total estimate */}
-                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
-                          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                          <span className="text-xs text-emerald-300/80">
+                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/5 border border-red-500/10">
+                          <Sparkles className="w-3.5 h-3.5 text-red-400" />
+                          <span className="text-xs text-red-300/80">
                             {totalPages * panelsPerPage} total panels across {totalPages} pages
                           </span>
                         </div>
 
                         {/* Layout Style */}
                         <div className="space-y-2">
-                          <Label className="text-xs text-white/50">Layout Style</Label>
+                          <Label className="text-xs text-black/70 font-bold">Layout Style</Label>
                           <div className="space-y-1.5">
                             {LAYOUT_STYLES.map((l) => {
                               const Icon = l.icon;
@@ -549,8 +545,8 @@ export default function PanelraEnginePage() {
                                   key={l.value}
                                   onClick={() => setLayoutStyle(l.value)}
                                   className={`w-full flex items-center gap-3 p-2.5 rounded-lg border transition-all text-left ${layoutStyle === l.value
-                                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200'
-                                    : 'bg-white/[0.02] border-white/[0.06] text-white/40 hover:border-white/15'
+                                    ? 'bg-red-500/10 border-red-500/30 text-red-200'
+                                    : 'bg-white/[0.02] border-black text-black/60 font-bold hover:border-black opacity-20'
                                     }`}
                                 >
                                   <Icon className="w-4 h-4 flex-shrink-0" />
@@ -570,17 +566,17 @@ export default function PanelraEnginePage() {
               </Card>
 
               {/* Accordion 3: Beat Outline */}
-              <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl overflow-hidden shadow-lg">
+              <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden shadow-lg">
                 <button
                   onClick={() => toggleSection('beats')}
                   className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
                 >
-                  <div className="flex items-center gap-2 text-white/90">
+                  <div className="flex items-center gap-2 text-black font-bold uppercase text-base">
                     <Palette className="w-4 h-4 text-pink-400" />
                     <span className="text-sm font-medium">Beat Outline</span>
-                    <span className="text-[10px] text-white/30 font-normal lowercase">(optional)</span>
+                    <span className="text-[10px] text-black/30 font-normal lowercase">(optional)</span>
                   </div>
-                  {expandedSections.beats ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
+                  {expandedSections.beats ? <ChevronDown className="w-4 h-4 text-black/60 font-bold" /> : <ChevronRight className="w-4 h-4 text-black/60 font-bold" />}
                 </button>
                 <AnimatePresence>
                   {expandedSections.beats && (
@@ -588,7 +584,7 @@ export default function PanelraEnginePage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-white/[0.06]"
+                      className="border-t border-black"
                     >
                       <CardContent className="p-4 space-y-3">
                         {BEAT_SLOTS.map((label, i) => (
@@ -604,7 +600,7 @@ export default function PanelraEnginePage() {
                               placeholder={`Enter beat details…`}
                               value={beats[i]}
                               onChange={(e) => updateBeat(i, e.target.value)}
-                              className="text-xs h-8 bg-white/5 border-white/[0.06] placeholder:text-white/15"
+                              className="text-xs h-8 bg-white/5 border-black placeholder:text-black/15"
                             />
                           </div>
                         ))}
@@ -615,17 +611,17 @@ export default function PanelraEnginePage() {
               </Card>
 
               {/* Accordion 4: Character Sketches (Optional) */}
-              <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl overflow-hidden shadow-lg">
+              <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden shadow-lg">
                 <button
                   onClick={() => toggleSection('characters')}
                   className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
                 >
-                  <div className="flex items-center gap-2 text-white/90">
+                  <div className="flex items-center gap-2 text-black font-bold uppercase text-base">
                     <User className="w-4 h-4 text-purple-400" />
                     <span className="text-sm font-medium">Hero & Co-Stars</span>
-                    <span className="text-[10px] text-white/30 font-normal lowercase">(optional)</span>
+                    <span className="text-[10px] text-black/30 font-normal lowercase">(optional)</span>
                   </div>
-                  {expandedSections.characters ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
+                  {expandedSections.characters ? <ChevronDown className="w-4 h-4 text-black/60 font-bold" /> : <ChevronRight className="w-4 h-4 text-black/60 font-bold" />}
                 </button>
                 <AnimatePresence>
                   {expandedSections.characters && (
@@ -633,7 +629,7 @@ export default function PanelraEnginePage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-white/[0.06]"
+                      className="border-t border-black"
                     >
                       <CardContent className="p-4 space-y-5">
                         {/* Hero Section */}
@@ -650,36 +646,36 @@ export default function PanelraEnginePage() {
                               placeholder="Hero name"
                               value={hero.name}
                               onChange={(e) => setHero(prev => ({ ...prev, name: e.target.value }))}
-                              className="text-sm bg-white/5 border-white/10 placeholder:text-white/20"
+                              className="text-sm bg-white/5 border-black opacity-20 placeholder:text-black/20"
                             />
                             <Textarea
                               placeholder="Brief description of the hero..."
                               value={hero.description}
                               onChange={(e) => setHero(prev => ({ ...prev, description: e.target.value }))}
-                              className="text-sm bg-white/5 border-white/10 placeholder:text-white/20 resize-none h-16"
+                              className="text-sm bg-white/5 border-black opacity-20 placeholder:text-black/20 resize-none h-16"
                             />
                           </div>
 
                           {/* Hero Sketch Upload */}
                           <div className="space-y-1.5">
-                            <Label className="text-[11px] text-white/40">Character Sketch</Label>
+                            <Label className="text-[11px] text-black/60 font-bold">Character Sketch</Label>
                             {hero.previewUrl ? (
                               <div className="relative rounded-lg overflow-hidden border border-purple-500/20 bg-purple-500/5">
                                 <img src={hero.previewUrl} alt="Hero sketch" className="w-full h-32 object-contain" />
                                 <button
                                   onClick={() => setHero(prev => ({ ...prev, file: null, previewUrl: null }))}
-                                  className="absolute top-2 right-2 p-1 rounded-md bg-black/60 hover:bg-black/80 transition-colors"
+                                  className="absolute top-2 right-2 p-1 rounded-md bg-black/60 hover:bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] transition-colors"
                                 >
-                                  <X className="w-3 h-3 text-white" />
+                                  <X className="w-3 h-3 text-black" />
                                 </button>
                               </div>
                             ) : (
                               <button
                                 onClick={() => heroInputRef.current?.click()}
-                                className="w-full flex flex-col items-center gap-2 py-6 rounded-lg border-2 border-dashed border-white/10 hover:border-purple-500/30 bg-white/[0.02] hover:bg-purple-500/5 transition-all"
+                                className="w-full flex flex-col items-center gap-2 py-6 rounded-lg border-2 border-dashed border-black opacity-20 hover:border-purple-500/30 bg-white/[0.02] hover:bg-purple-500/5 transition-all"
                               >
-                                <Upload className="w-5 h-5 text-white/20" />
-                                <span className="text-[11px] text-white/30">Upload hero sketch (optional)</span>
+                                <Upload className="w-5 h-5 text-black/20" />
+                                <span className="text-[11px] text-black/30">Upload hero sketch (optional)</span>
                               </button>
                             )}
                             <input
@@ -693,7 +689,7 @@ export default function PanelraEnginePage() {
                         </div>
 
                         {/* Separator */}
-                        <div className="border-t border-white/[0.06]" />
+                        <div className="border-t border-black" />
 
                         {/* Co-Stars Section */}
                         <div className="space-y-3">
@@ -704,7 +700,7 @@ export default function PanelraEnginePage() {
                               </div>
                               <Label className="text-xs font-semibold text-blue-300">Co-Stars</Label>
                               {coStars.length > 0 && (
-                                <span className="text-[10px] text-white/30">({coStars.length})</span>
+                                <span className="text-[10px] text-black/30">({coStars.length})</span>
                               )}
                             </div>
                             <Button
@@ -719,19 +715,19 @@ export default function PanelraEnginePage() {
                           </div>
 
                           {coStars.length === 0 && (
-                            <p className="text-[11px] text-white/25 text-center py-3">
+                            <p className="text-[11px] text-black/25 text-center py-3">
                               No co-stars added. Click &quot;Add&quot; to include supporting characters.
                             </p>
                           )}
 
                           {coStars.map((cs) => (
-                            <div key={cs.id} className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2">
+                            <div key={cs.id} className="p-3 rounded-lg bg-white/[0.02] border border-black space-y-2">
                               <div className="flex items-center justify-between">
                                 <Input
                                   placeholder="Character name"
                                   value={cs.name}
                                   onChange={(e) => updateCoStar(cs.id, 'name', e.target.value)}
-                                  className="text-xs h-7 bg-transparent border-0 p-0 text-white/80 placeholder:text-white/20 font-medium focus-visible:ring-0"
+                                  className="text-xs h-7 bg-transparent border-0 p-0 text-black/90 font-bold placeholder:text-black/20 font-medium focus-visible:ring-0"
                                 />
                                 <button
                                   onClick={() => removeCoStar(cs.id)}
@@ -744,7 +740,7 @@ export default function PanelraEnginePage() {
                                 placeholder="Brief description..."
                                 value={cs.description}
                                 onChange={(e) => updateCoStar(cs.id, 'description', e.target.value)}
-                                className="text-[11px] bg-white/[0.03] border-white/[0.06] placeholder:text-white/15 resize-none h-12"
+                                className="text-[11px] bg-white/[0.03] border-black placeholder:text-black/15 resize-none h-12"
                               />
                               {/* Co-star sketch upload */}
                               {cs.previewUrl ? (
@@ -752,15 +748,15 @@ export default function PanelraEnginePage() {
                                   <img src={cs.previewUrl} alt={cs.name} className="w-full h-20 object-contain" />
                                   <button
                                     onClick={() => updateCoStar(cs.id, 'previewUrl', null)}
-                                    className="absolute top-1 right-1 p-0.5 rounded bg-black/60 hover:bg-black/80"
+                                    className="absolute top-1 right-1 p-0.5 rounded bg-black/60 hover:bg-white border-b-4 border-black shadow-[0_4px_0_0_#000]"
                                   >
-                                    <X className="w-2.5 h-2.5 text-white" />
+                                    <X className="w-2.5 h-2.5 text-black" />
                                   </button>
                                 </div>
                               ) : (
-                                <label className="flex items-center gap-2 py-2 px-3 rounded-md border border-dashed border-white/[0.08] hover:border-blue-500/20 bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all">
-                                  <ImageIcon className="w-3 h-3 text-white/20" />
-                                  <span className="text-[10px] text-white/25">Add sketch</span>
+                                <label className="flex items-center gap-2 py-2 px-3 rounded-md border border-dashed border-black hover:border-blue-500/20 bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all">
+                                  <ImageIcon className="w-3 h-3 text-black/20" />
+                                  <span className="text-[10px] text-black/25">Add sketch</span>
                                   <input
                                     type="file"
                                     accept="image/*"
@@ -800,12 +796,12 @@ export default function PanelraEnginePage() {
               className="lg:col-span-8 space-y-6 pb-20"
             >
               {/* Generate Button */}
-              <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl">
+              <Card className="bg-white/[0.03] border-black backdrop-blur-xl">
                 <CardContent className="py-4">
                   <Button
                     onClick={handleGenerate}
                     disabled={isGenerating || !title.trim() || !logline.trim()}
-                    className="w-full py-6 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-500/20 disabled:opacity-40 disabled:shadow-none transition-all"
+                    className="w-full py-6 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-black border-0 shadow-lg shadow-blue-500/20 disabled:opacity-40 disabled:shadow-none transition-all"
                   >
                     {isGenerating ? (
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
@@ -836,7 +832,7 @@ export default function PanelraEnginePage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                   >
-                    <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl overflow-hidden">
+                    <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden">
                       <CardContent className="py-6">
                         <div className="space-y-4">
                           {/* Progress bar */}
@@ -868,13 +864,13 @@ export default function PanelraEnginePage() {
                                   isDone ? 'opacity-50' : 'opacity-20'
                                   }`}>
                                   {isDone ? (
-                                    <Check className="w-4 h-4 text-emerald-400" />
+                                    <Check className="w-4 h-4 text-red-400" />
                                   ) : isCurrent ? (
                                     <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />
                                   ) : (
-                                    <div className="w-4 h-4 rounded-full border border-white/20" />
+                                    <div className="w-4 h-4 rounded-full border border-black opacity-20" />
                                   )}
-                                  <span className="text-xs text-white/70">
+                                  <span className="text-xs text-black/80 font-bold">
                                     {PHASE_MESSAGES[p]}
                                   </span>
                                 </div>
@@ -897,9 +893,9 @@ export default function PanelraEnginePage() {
                   className="space-y-4"
                 >
                   {/* Summary */}
-                  <Card className="bg-emerald-500/5 border-emerald-500/20 backdrop-blur-xl">
+                  <Card className="bg-red-500/5 border-red-500/20 backdrop-blur-xl">
                     <CardContent className="py-3">
-                      <div className="flex items-center gap-2 text-emerald-300">
+                      <div className="flex items-center gap-2 text-red-300">
                         <Check className="w-4 h-4" />
                         <span className="text-sm font-medium">{result.summary}</span>
                       </div>
@@ -910,9 +906,9 @@ export default function PanelraEnginePage() {
                   {Array.from({ length: result.totalPages }, (_, pageIdx) => {
                     const pagePanels = result.panels.filter((p) => p.pageNumber === pageIdx + 1);
                     return (
-                      <Card key={pageIdx} className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl">
+                      <Card key={pageIdx} className="bg-white/[0.03] border-black backdrop-blur-xl">
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-xs flex items-center gap-2 text-white/60">
+                          <CardTitle className="text-xs flex items-center gap-2 text-black/70 font-bold">
                             <BookOpen className="w-3.5 h-3.5" />
                             Page {pageIdx + 1}
                           </CardTitle>
@@ -924,23 +920,23 @@ export default function PanelraEnginePage() {
                             {pagePanels.map((panel) => (
                               <div
                                 key={panel.panelIndex}
-                                className="group relative rounded-lg border border-white/[0.06] bg-white/[0.02] overflow-hidden hover:border-blue-500/30 transition-all"
+                                className="group relative rounded-lg border border-black bg-white/[0.02] overflow-hidden hover:border-blue-500/30 transition-all"
                               >
                                 {/* Panel image placeholder */}
                                 <div className="aspect-[3/4] bg-gradient-to-br from-white/[0.04] to-white/[0.01] flex flex-col items-center justify-center p-2">
-                                  <ImageIcon className="w-8 h-8 text-white/10 mb-1" />
-                                  <span className="text-[9px] text-white/20 text-center">
+                                  <ImageIcon className="w-8 h-8 text-black/10 mb-1" />
+                                  <span className="text-[9px] text-black/20 text-center">
                                     {panel.cameraDirection}
                                   </span>
                                 </div>
 
                                 {/* Caption */}
                                 <div className="p-2 border-t border-white/[0.04]">
-                                  <p className="text-[10px] text-white/50 line-clamp-2">{panel.caption}</p>
+                                  <p className="text-[10px] text-black/70 font-bold line-clamp-2">{panel.caption}</p>
                                   {panel.characters.length > 0 && (
                                     <div className="flex flex-wrap gap-1 mt-1">
                                       {panel.characters.map((c, ci) => (
-                                        <Badge key={ci} variant="outline" className="text-[8px] px-1 py-0 h-4 border-white/10 text-white/30">
+                                        <Badge key={ci} variant="outline" className="text-[8px] px-1 py-0 h-4 border-black opacity-20 text-black/30">
                                           {c}
                                         </Badge>
                                       ))}
@@ -970,12 +966,12 @@ export default function PanelraEnginePage() {
                     <Button
                       variant="outline"
                       onClick={() => setPhase('idle')}
-                      className="flex-1 border-white/10 text-white/60 bg-white/5 hover:text-white"
+                      className="flex-1 border-black opacity-20 text-black/70 font-bold bg-white/5 hover:text-black"
                     >
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Regenerate
                     </Button>
-                    <Button className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white border-0">
+                    <Button className="flex-1 bg-red-500 border-4 border-black text-white hover:bg-red-600 active:translate-y-1 shadow-[4px_4px_0_0_#000] hover:from-red-500 hover:to-red-600 text-black border-0">
                       <Save className="w-4 h-4 mr-2" />
                       Save Comic
                     </Button>
@@ -985,14 +981,14 @@ export default function PanelraEnginePage() {
 
               {/* Empty State */}
               {phase === 'idle' && !result && (
-                <Card className="bg-white/[0.02] border-white/[0.06] backdrop-blur-xl">
+                <Card className="bg-white/[0.02] border-black backdrop-blur-xl">
                   <CardContent className="py-12">
                     <div className="text-center">
                       <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
                         <BookOpen className="w-8 h-8 text-blue-400/50" />
                       </div>
-                      <p className="text-sm font-medium text-white/40 mb-1">Your comic will appear here</p>
-                      <p className="text-xs text-white/20">
+                      <p className="text-sm font-medium text-black/60 font-bold mb-1">Your comic will appear here</p>
+                      <p className="text-xs text-black/20">
                         Fill in the setup, then hit Generate to create your AI comic
                       </p>
                     </div>

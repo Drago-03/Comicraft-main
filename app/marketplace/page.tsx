@@ -1,16 +1,15 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
-  ArrowRight, BookOpen, FileText, Upload, Loader2, Heart, Headphones, Play, Pause, Eye,
+  ArrowRight, BookOpen, FileText, Upload, Loader2, Heart, Headphones, Eye,
+  Pause, ShoppingBag,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
 
@@ -31,21 +30,17 @@ interface StoryWithAudio {
   audioUrl?: string | null;
 }
 
-// ── Mini audio preview player embedded in marketplace cards ──────────────────
+// ── Mini audio preview player ──────────────────────────────────────────────────
 function MiniAudioPreview({ story }: { story: StoryWithAudio }) {
-  const [audioUrl, setAudioUrl] = useState<string | null>(story.audioUrl || null);
+  const [audioUrl] = useState<string | null>(story.audioUrl || null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleToggle = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-
-    if (!audioUrl) {
-      // Don't auto-generate — just navigate to story
-      return;
-    }
+    if (!audioUrl) return;
 
     const audio = audioRef.current || new Audio(audioUrl);
     audioRef.current = audio;
@@ -64,10 +59,10 @@ function MiniAudioPreview({ story }: { story: StoryWithAudio }) {
     <button
       onClick={handleToggle}
       title={audioUrl ? (isPlaying ? 'Pause audio' : 'Play audio excerpt') : 'Open story to generate audio'}
-      className={`w-8 h-8 flex items-center justify-center rounded-full transition-all ${
+      className={`w-8 h-8 flex items-center justify-center border-[2px] border-black shadow-[2px_2px_0_0_#000] transition-all ${
         audioUrl
-          ? 'bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-400'
-          : 'bg-white/5 border border-white/10 text-white/30 cursor-default'
+          ? 'bg-[#cc3333] text-white hover:bg-black active:translate-y-0.5 active:shadow-none'
+          : 'bg-black/10 text-black/30 cursor-default border-black/20'
       }`}
     >
       {isLoading ? (
@@ -88,15 +83,13 @@ export default function MarketplacePage() {
 
   useEffect(() => {
     async function fetchMarketplaceItems() {
-      // Fetch stories
       const { data, error } = await supabase
         .from('stories')
         .select('id, title, content, genre, author_name, views, likes, is_minted, file_url, format_type, cover_image, created_at')
         .order('created_at', { ascending: false });
 
       if (!error && data) {
-        // Fetch audio availability for all stories in one query
-        const storyIds = data.map(s => s.id);
+        const storyIds = data.map((s: any) => s.id);
         let audioMap: Record<string, string> = {};
 
         if (storyIds.length > 0) {
@@ -112,7 +105,7 @@ export default function MarketplacePage() {
         }
 
         setStories(
-          data.map(s => ({
+          data.map((s: any) => ({
             ...s,
             hasAudio: !!audioMap[s.id],
             audioUrl: audioMap[s.id] || null,
@@ -125,60 +118,75 @@ export default function MarketplacePage() {
   }, [supabase]);
 
   return (
-    <div className="container mx-auto px-4 pt-0 pb-8">
-      <div className="flex justify-between items-center mb-8">
-        <PageHeader
-          title="Marketplace"
-          description="Discover, Read, and Trade Digital Stories"
-          icon="shopping-cart"
-        />
+    <div className="min-h-screen bg-[#EEDFCA] relative font-sans overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+      <div className="container mx-auto px-4 pt-0 pb-8 relative z-10 pt-28">
+
+      {/* ── Page Header ── */}
+      <div className="flex justify-between items-center mb-10 pt-4">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 border-[2px] border-black bg-[#cc3333] shadow-[3px_3px_0_0_#000] text-[10px] font-black text-white uppercase tracking-widest mb-3">
+            <ShoppingBag className="w-3.5 h-3.5" /> Bazaar
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-black" style={{ WebkitTextStroke: '1px black' }}>
+            Marketplace
+          </h1>
+          <p className="text-sm font-bold text-black/60 mt-1 uppercase tracking-wide">Discover, Read &amp; Trade Digital Stories</p>
+        </div>
         <Link href="/upload">
-          <Button className="bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-2">
+          <Button className="bg-[#cc3333] hover:bg-black text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:shadow-[6px_6px_0_0_#000] hover:-translate-y-1 active:translate-y-0.5 active:shadow-none font-black uppercase tracking-wide rounded-none transition-all flex items-center gap-2 px-5 py-5">
             <Upload className="h-4 w-4" />
             Upload Story
           </Button>
         </Link>
       </div>
 
-      {/* Category cards */}
+      {/* ── Category cards ── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 mb-12"
+        transition={{ duration: 0.4 }}
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
       >
-        <div className="bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-950/40 dark:to-indigo-950/40 rounded-xl p-8 border border-purple-200 dark:border-purple-800 shadow-sm transition-all h-full flex flex-col">
-          <div className="h-12 w-12 bg-purple-500/20 dark:bg-purple-500/10 rounded-full flex items-center justify-center mb-4">
-            <BookOpen className="h-6 w-6 text-purple-700 dark:text-purple-400" />
+        {/* Comic Stories */}
+        <div className="bg-[#6c3fc5] border-[3px] border-black shadow-[6px_6px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] hover:-translate-y-1 transition-all p-8 flex flex-col relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.08]" style={{ backgroundImage: 'radial-gradient(circle, #fff 1.5px, transparent 1.5px)', backgroundSize: '6px 6px' }}></div>
+          <div className="w-12 h-12 bg-white border-[3px] border-black shadow-[3px_3px_0_0_#000] flex items-center justify-center mb-4 relative z-10">
+            <BookOpen className="h-6 w-6 text-[#6c3fc5]" />
           </div>
-          <h2 className="text-2xl font-bold mb-2">Comic Stories</h2>
-          <p className="text-muted-foreground mb-6 flex-grow">
+          <h2 className="text-2xl font-black uppercase italic text-white mb-2 relative z-10" style={{ WebkitTextStroke: '0.5px black' }}>Comic Stories</h2>
+          <p className="text-white/80 font-bold text-sm flex-grow relative z-10">
             Explore visual storytelling through comic NFTs with stunning artwork and engaging narratives.
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-950/40 dark:to-yellow-950/40 rounded-xl p-8 border border-amber-200 dark:border-amber-800 shadow-sm transition-all h-full flex flex-col">
-          <div className="h-12 w-12 bg-amber-500/20 dark:bg-amber-500/10 rounded-full flex items-center justify-center mb-4">
-            <FileText className="h-6 w-6 text-amber-700 dark:text-amber-400" />
+        {/* Text Stories */}
+        <div className="bg-[#d97706] border-[3px] border-black shadow-[6px_6px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] hover:-translate-y-1 transition-all p-8 flex flex-col relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.08]" style={{ backgroundImage: 'radial-gradient(circle, #fff 1.5px, transparent 1.5px)', backgroundSize: '6px 6px' }}></div>
+          <div className="w-12 h-12 bg-white border-[3px] border-black shadow-[3px_3px_0_0_#000] flex items-center justify-center mb-4 relative z-10">
+            <FileText className="h-6 w-6 text-[#d97706]" />
           </div>
-          <h2 className="text-2xl font-bold mb-2">Text Stories</h2>
-          <p className="text-muted-foreground mb-6 flex-grow">
+          <h2 className="text-2xl font-black uppercase italic text-white mb-2 relative z-10" style={{ WebkitTextStroke: '0.5px black' }}>Text Stories</h2>
+          <p className="text-white/80 font-bold text-sm flex-grow relative z-10">
             Discover written treasures from talented authors across genres in our text-based collection.
           </p>
         </div>
       </motion.div>
 
-      {/* Story cards */}
+      {/* ── Story Cards ── */}
       <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-8">Latest Community Additions</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-2 h-8 bg-[#cc3333]"></div>
+          <h2 className="text-2xl font-black uppercase text-black tracking-tight">Latest Community Additions</h2>
+        </div>
 
         {loading ? (
           <div className="flex justify-center p-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <div className="w-12 h-12 border-[4px] border-black border-t-[#cc3333] rounded-full animate-spin" />
           </div>
         ) : stories.length === 0 ? (
-          <div className="text-center p-12 border border-dashed border-white/20 rounded-xl">
-            <p className="text-muted-foreground">No stories found in the marketplace yet.</p>
+          <div className="text-center p-12 border-[3px] border-dashed border-black bg-white shadow-[4px_4px_0_0_#000]">
+            <p className="font-black uppercase text-black/50">No stories found in the marketplace yet.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -189,36 +197,36 @@ export default function MarketplacePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: idx * 0.04 }}
               >
-                <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-white/5 bg-white/[0.03] hover:bg-white/[0.06] hover:-translate-y-1">
-                  {/* Cover image area */}
-                  <div className="relative h-48 bg-[#0f172a] flex flex-col items-center justify-center overflow-hidden">
-                    {/* Minted badge */}
-                    <div className="absolute top-2 left-2 z-10">
-                      {story.is_minted && (
-                        <span className="bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-full border border-white/10">
+                <div className="group overflow-hidden border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] hover:-translate-y-1 bg-white transition-all duration-300 flex flex-col">
+                  {/* Cover image */}
+                  <div className="relative h-48 bg-[#EEDFCA] flex flex-col items-center justify-center overflow-hidden border-b-[3px] border-black">
+                    {/* NFT badge */}
+                    {story.is_minted && (
+                      <div className="absolute top-2 left-2 z-10">
+                        <span className="bg-black text-white text-[10px] px-2 py-0.5 font-black uppercase border-[2px] border-black">
                           NFT
                         </span>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {/* Audio badge */}
-                    <div className="absolute top-2 right-2 z-10">
-                      {story.hasAudio && (
-                        <span className="flex items-center gap-1 bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    {story.hasAudio && (
+                      <div className="absolute top-2 right-2 z-10">
+                        <span className="flex items-center gap-1 bg-[#cc3333] text-white text-[10px] px-2 py-0.5 font-black uppercase border-[2px] border-black">
                           <Headphones className="w-2.5 h-2.5" /> Audio
                         </span>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {story.cover_image || story.file_url ? (
                       <Image
                         src={story.cover_image || story.file_url || ''}
                         alt={story.title}
                         fill
-                        className="object-cover opacity-70 group-hover:opacity-90 transition-opacity"
+                        className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                       />
                     ) : (
-                      <div className="text-primary/20 group-hover:text-primary/30 transition-colors">
+                      <div className="text-black/20 group-hover:text-[#cc3333]/50 transition-colors">
                         {story.format_type === 'Storybook' ? (
                           <BookOpen className="w-12 h-12" />
                         ) : (
@@ -228,51 +236,53 @@ export default function MarketplacePage() {
                     )}
 
                     {/* Title overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent text-white">
-                      <h3 className="font-bold text-base line-clamp-1">{story.title}</h3>
-                      <p className="text-xs text-white/60">by {story.author_name || 'Anonymous'}</p>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+                      <h3 className="font-black text-sm text-white uppercase line-clamp-1">{story.title}</h3>
+                      <p className="text-xs text-white/60 font-bold">by {story.author_name || 'Anonymous'}</p>
                     </div>
                   </div>
 
-                  <CardContent className="p-4">
-                    <div className="flex items-center text-xs text-muted-foreground gap-3 mb-3">
+                  {/* Card body */}
+                  <div className="p-4 flex-1 flex flex-col">
+                    <div className="flex items-center text-xs text-black/60 gap-3 mb-3 font-bold">
                       <span className="flex items-center gap-1">
-                        <Heart className="w-3 h-3" /> {story.likes ?? 0}
+                        <Heart className="w-3 h-3 text-[#cc3333]" /> {story.likes ?? 0}
                       </span>
                       <span className="flex items-center gap-1">
                         <Eye className="w-3 h-3" /> {story.views ?? 0}
                       </span>
                       {story.genre && (
-                        <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-sm text-[10px] font-medium ml-auto">
+                        <span className="bg-[#EEDFCA] text-black px-2 py-0.5 border-[2px] border-black text-[10px] font-black uppercase ml-auto shadow-[1px_1px_0_0_#000]">
                           {story.genre}
                         </span>
                       )}
                     </div>
 
-                    {/* Inline mini audio player (lazy — only when card is hovered or has audio) */}
+                    {/* Audio player */}
                     {story.hasAudio && (
-                      <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center gap-2 mt-1 mb-3">
                         <MiniAudioPreview story={story} />
-                        <span className="text-[11px] text-white/40">Audio narration available</span>
+                        <span className="text-[11px] font-bold text-black/50 uppercase tracking-wide">Audio available</span>
                       </div>
                     )}
-                  </CardContent>
 
-                  <CardFooter className="p-4 pt-0">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground group-hover:bg-emerald-600 transition-colors"
-                      onClick={() => { window.location.href = `/stories/${story.id}`; }}
-                    >
-                      Read & Listen <ArrowRight className="w-3 h-3 ml-1" />
-                    </Button>
-                  </CardFooter>
-                </Card>
+                    <div className="mt-auto">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="w-full bg-[#cc3333] hover:bg-black text-white border-[3px] border-black shadow-[3px_3px_0_0_#000] active:translate-y-0.5 active:shadow-none font-black uppercase tracking-wide rounded-none transition-all"
+                        onClick={() => { window.location.href = `/stories/${story.id}`; }}
+                      >
+                        Read &amp; Listen <ArrowRight className="w-3 h-3 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

@@ -26,11 +26,11 @@ export function UploadStoryTrigger({
     const supabase = React.useMemo(() => createClient(), []);
 
     React.useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        supabase.auth.getSession().then(({ data: { session } }: any) => {
             setSession(session);
         });
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
             setSession(session);
         });
 
@@ -51,16 +51,16 @@ export function UploadStoryTrigger({
     const getButtonPreset = () => {
         switch (variant) {
             case 'primary':
-                return `comic-button ${className}`;
+                return `comic-button rounded-none ${className}`;
             case 'secondary':
-                return `comic-button-secondary bg-[var(--comic-purple)] text-white ${className}`;
+                return `comic-button-secondary bg-[#cc3333] text-white rounded-none ${className}`;
             case 'outline':
-                return `border-4 border-foreground bg-transparent font-bold uppercase hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--shadow-color)] transition-all ${className}`;
+                return `border-[2px] border-black bg-white rounded-none font-black uppercase text-[11px] tracking-widest hover:-translate-y-0.5 shadow-[3px_3px_0px_0px_#000] hover:shadow-[5px_5px_0_0_#000] active:translate-y-0.5 active:shadow-none transition-all text-black ${className}`;
             case 'ghost':
             case 'link':
-                return `hover:underline font-bold text-foreground cursor-pointer ${className}`;
+                return `hover:underline font-bold text-foreground cursor-pointer rounded-none ${className}`;
             default:
-                return `comic-button ${className}`;
+                return `comic-button rounded-none ${className}`;
         }
     };
 
@@ -70,7 +70,7 @@ export function UploadStoryTrigger({
             className={getButtonPreset()}
             onClick={handleUploadClick}
         >
-            {icon && <Upload className="w-5 h-5 mr-2" />}
+            {icon && <Upload className="w-3.5 h-3.5 mr-1.5" />}
             {buttonText}
         </Button>
     );

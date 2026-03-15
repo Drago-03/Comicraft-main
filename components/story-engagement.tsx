@@ -277,15 +277,15 @@ export default function StoryEngagement({ storyId }: StoryEngagementProps) {
             disabled={voteLoading || !userId}
             className={`p-2 rounded-full transition-all ${
               userVote === 1
-                ? 'text-emerald-400 bg-emerald-400/10'
-                : 'text-white/50 hover:bg-white/10 hover:text-emerald-400'
+                ? 'text-red-400 bg-red-400/10'
+                : 'text-white/50 hover:bg-white/10 hover:text-red-400'
             } disabled:opacity-40 disabled:cursor-not-allowed`}
             title={userId ? 'Upvote' : 'Sign in to vote'}
           >
             <ChevronUp className="w-5 h-5" />
           </button>
           <span className={`text-sm font-bold min-w-[3ch] text-center tabular-nums ${
-            userVote === 1 ? 'text-emerald-400' : userVote === -1 ? 'text-rose-400' : 'text-white/70'
+            userVote === 1 ? 'text-red-400' : userVote === -1 ? 'text-rose-400' : 'text-white/70'
           }`}>
             {voteScore}
           </span>
@@ -357,7 +357,7 @@ export default function StoryEngagement({ storyId }: StoryEngagementProps) {
               <button
                 onClick={handleComment}
                 disabled={commentLoading || !commentText.trim()}
-                className="p-2 rounded-full bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-full bg-red-500 hover:bg-red-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 {commentLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin text-black" />

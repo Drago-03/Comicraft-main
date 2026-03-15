@@ -165,10 +165,11 @@ function QuickLink({
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#EEDFCA] relative font-sans text-black">
+      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px', opacity: 0.05 }} />
       <FloatingGithub />
 
-      <div className="container mx-auto px-4 py-16 max-w-5xl">
+      <div className="container mx-auto px-4 py-16 max-w-5xl relative z-10">
         {/* ═══════════ HERO SECTION ═══════════ */}
         <div className="text-center mb-16">
           <div
@@ -189,9 +190,9 @@ export default function DocsPage() {
         {/* ═══════════ QUICK LINKS GRID ═══════════ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
           <QuickLink icon={PenSquare} title="Create Stories" desc="AI-powered story creation" href="/create/ai-story" color="var(--comic-red)" />
-          <QuickLink icon={Wallet} title="Wallet Setup" desc="Connect your Ethereum wallet" href="#wallet-setup" color="var(--comic-cyan)" />
+          <QuickLink icon={Wallet} title="Wallet Setup" desc="Connect your Ethereum wallet" href="#wallet-setup" color="var(--comic-blue)" />
           <QuickLink icon={Layers} title="Mint NFTs" desc="Turn stories into NFTs" href="#minting" color="var(--comic-purple)" />
-          <QuickLink icon={Users} title="Community" desc="Join fellow creators" href="/community/creators" color="var(--comic-green)" />
+          <QuickLink icon={Users} title="Community" desc="Join fellow creators" href="/community/creators" color="var(--comic-red)" />
         </div>
 
         {/* ═══════════ GETTING STARTED ═══════════ */}
@@ -291,7 +292,7 @@ export default function DocsPage() {
             {/* Connecting */}
             <div className="p-6">
               <h3 className="font-black text-base uppercase text-foreground mb-4 flex items-center gap-2">
-                <Globe className="w-5 h-5 text-[var(--comic-green)]" />
+                <Globe className="w-5 h-5 text-[var(--comic-red)]" />
                 Connecting to Comicraft
               </h3>
               <div className="space-y-3">
@@ -302,7 +303,7 @@ export default function DocsPage() {
                   'Your wallet address will appear in the top right corner',
                 ].map((text, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-[var(--comic-green)] mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-[var(--comic-red)] mt-0.5" />
                     <p className="text-sm text-muted-foreground font-bold">{text}</p>
                   </div>
                 ))}
@@ -423,25 +424,25 @@ export default function DocsPage() {
         {/* ═══════════ COMMUNITY & RESOURCES ═══════════ */}
         <section className="mb-16">
           <div
-            className="border-4 border-foreground bg-gradient-to-r from-[var(--comic-purple)] to-[var(--comic-cyan)] p-8 text-white relative overflow-hidden"
+            className="border-4 border-foreground bg-white p-8 relative overflow-hidden"
             style={{ boxShadow: '6px 6px 0px 0px var(--shadow-color)' }}
           >
-            {/* Decorative elements */}
-            <div className="absolute top-4 right-8 w-20 h-20 border-4 border-white/10 rounded-full" />
-            <div className="absolute bottom-4 right-32 w-12 h-12 border-3 border-white/10 rounded-full" />
+            {/* Comic halftone accent */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '6px 6px' }}></div>
+            <div className="absolute top-0 left-0 w-full h-2 bg-[var(--comic-red)]"></div>
 
             <div className="relative z-10 text-center">
-              <h2 className="comic-display text-3xl md:text-4xl mb-3" style={{ textShadow: '3px 3px 0px rgba(0,0,0,0.3)' }}>
+              <h2 className="comic-display text-3xl md:text-4xl mb-3 text-foreground" style={{ textShadow: '3px 3px 0px rgba(0,0,0,0.1)' }}>
                 Join the Community
               </h2>
-              <p className="text-white/80 font-bold max-w-lg mx-auto mb-6 text-sm">
+              <p className="text-black/60 font-bold max-w-lg mx-auto mb-6 text-sm">
                 Have more questions? Connect with fellow creators and the Comicraft team
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button
                   asChild
-                  className="bg-white text-foreground border-2 border-foreground font-black uppercase rounded-none text-xs"
-                  style={{ boxShadow: '3px 3px 0px 0px rgba(0,0,0,0.3)' }}
+                  className="bg-foreground text-white border-2 border-foreground font-black uppercase rounded-none text-xs hover:bg-[var(--comic-red)] transition-all"
+                  style={{ boxShadow: '3px 3px 0px 0px var(--shadow-color)' }}
                 >
                   <Link href="https://github.com/IndieHub25/Comicraft" target="_blank" rel="noopener noreferrer">
                     <Github className="mr-2 w-4 h-4" /> GitHub
@@ -449,8 +450,8 @@ export default function DocsPage() {
                 </Button>
                 <Button
                   asChild
-                  className="bg-white/20 backdrop-blur-sm text-white border-2 border-white/40 font-black uppercase rounded-none text-xs"
-                  style={{ boxShadow: '3px 3px 0px 0px rgba(0,0,0,0.2)' }}
+                  className="bg-[var(--comic-red)] text-white border-2 border-foreground font-black uppercase rounded-none text-xs hover:bg-black transition-all"
+                  style={{ boxShadow: '3px 3px 0px 0px var(--shadow-color)' }}
                 >
                   <Link href="/contact">
                     <MessageCircle className="mr-2 w-4 h-4" /> Contact Us

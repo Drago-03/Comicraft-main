@@ -89,7 +89,7 @@ export function ComicNFTDetailDialog({
       case 'common':
         return 'bg-gray-500 text-white';
       case 'uncommon':
-        return 'bg-green-500 text-white';
+        return 'bg-red-500 text-white';
       case 'rare':
         return 'bg-blue-500 text-white';
       case 'legendary':
@@ -347,9 +347,9 @@ export function ComicNFTDetailDialog({
                     </p>
                     <ul className="space-y-2">
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <div className="mr-2 mt-0.5 h-5 w-5 rounded-full bg-red-500/20 flex items-center justify-center">
                           <svg
-                            className="h-3 w-3 text-green-600"
+                            className="h-3 w-3 text-red-600"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -367,9 +367,9 @@ export function ComicNFTDetailDialog({
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <div className="mr-2 mt-0.5 h-5 w-5 rounded-full bg-red-500/20 flex items-center justify-center">
                           <svg
-                            className="h-3 w-3 text-green-600"
+                            className="h-3 w-3 text-red-600"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -387,9 +387,9 @@ export function ComicNFTDetailDialog({
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <div className="mr-2 mt-0.5 h-5 w-5 rounded-full bg-red-500/20 flex items-center justify-center">
                           <svg
-                            className="h-3 w-3 text-green-600"
+                            className="h-3 w-3 text-red-600"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -408,9 +408,9 @@ export function ComicNFTDetailDialog({
                       </li>
                       {comic.isAnimated && (
                         <li className="flex items-start">
-                          <div className="mr-2 mt-0.5 h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                          <div className="mr-2 mt-0.5 h-5 w-5 rounded-full bg-red-500/20 flex items-center justify-center">
                             <svg
-                              className="h-3 w-3 text-green-600"
+                              className="h-3 w-3 text-red-600"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"

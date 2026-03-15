@@ -28,7 +28,7 @@ interface HealthData {
 
 const StatusIndicator = ({ status }: { status: 'ok' | 'degraded' | 'error' }) => {
   const colors = {
-    ok: 'bg-green-500',
+    ok: 'bg-red-500',
     degraded: 'bg-yellow-500',
     error: 'bg-red-500',
   };
@@ -37,7 +37,7 @@ const StatusIndicator = ({ status }: { status: 'ok' | 'degraded' | 'error' }) =>
 
 const StatusBadge = ({ status }: { status: 'operational' | 'degraded' | 'offline' }) => {
   const styles = {
-    operational: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200',
+    operational: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200',
     degraded: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200',
     offline: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200',
   };
@@ -98,7 +98,8 @@ export default function StatusPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 py-12 px-4">
+    <div className="min-h-screen bg-[#EEDFCA] relative py-12 px-4 font-sans">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-3">

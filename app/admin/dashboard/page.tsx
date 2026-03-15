@@ -478,7 +478,7 @@ function DashboardContent() {
                           className="flex items-start gap-3 p-3 border rounded-lg"
                         >
                           {action.type === 'like' && (
-                            <ThumbsUp className="w-5 h-5 text-green-500" />
+                            <ThumbsUp className="w-5 h-5 text-red-500" />
                           )}
                           {action.type === 'dislike' && (
                             <ThumbsDown className="w-5 h-5 text-red-500" />

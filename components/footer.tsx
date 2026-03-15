@@ -31,41 +31,21 @@ export function Footer({ version }: { version?: string }) {
 
   useEffect(() => {
     const checkHealth = async () => {
-      // Try the Next.js proxy first; if unavailable, try backend directly
-      const endpoints = [
-        '/api/health',
-        `${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com'}/api/health`,
-      ];
-
-      for (const url of endpoints) {
-        try {
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 6000);
-          const res = await fetch(url, { cache: 'no-store', signal: controller.signal });
-          clearTimeout(timeout);
-
-          if (res.ok) {
-            const data = await res.json();
-            if (data && typeof data.status === 'string') {
-              const status = data.status.toLowerCase();
-              if (['ok', 'healthy', 'operational', 'up', 'online'].includes(status)) {
-                setHealthStatus('ok');
-              } else if (['degraded', 'partial'].includes(status)) {
-                setHealthStatus('degraded');
-              } else {
-                setHealthStatus('down');
-              }
-            } else {
-              setHealthStatus('down');
-            }
-            return; // Success — stop trying
-          }
-        } catch {
-          // This endpoint failed, try the next one
+      try {
+        const res = await fetch('/api/health', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setHealthStatus(
+            (data.status === 'ok' || data.status === 'healthy' || data.status === 'operational') ? 'ok'
+            : (data.status === 'degraded' || data.status === 'partial') ? 'degraded'
+            : 'down'
+          );
+        } else {
+          setHealthStatus('down');
         }
+      } catch {
+        setHealthStatus('down');
       }
-      // All endpoints failed
-      setHealthStatus('down');
     };
     checkHealth();
   }, []);
@@ -93,9 +73,9 @@ export function Footer({ version }: { version?: string }) {
   ];
 
   return (
-    <footer role="contentinfo" className="relative mt-20 border-t-8 border-ink bg-ink text-background-light selection:bg-comic-primary/20 overflow-hidden">
-      {/* Premium Halftone Glow overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8'/%3E%3C/svg%3E")` }} />
+    <footer role="contentinfo" className="relative mt-20 border-t-[3px] border-background-light/20 bg-ink text-background-light overflow-hidden font-sans">
+      {/* Comic Halftone overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #F5E6C8 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
 
       <div className="relative z-10">
         <div className="container mx-auto px-6 py-16">
@@ -107,22 +87,22 @@ export function Footer({ version }: { version?: string }) {
                 <ComiCraftLogo variant="full" colorScheme="color" size={32} animate={false} />
               </Link>
               <div className="text-left font-sans">
-                <p className="text-sm font-medium text-background-light/70 leading-relaxed max-w-sm">
+                <p className="text-sm font-bold text-background-light/70 leading-relaxed max-w-sm">
                   Comicraft: Creativity Tokenization Platform (CTP) - Empowering creators with AI-driven storytelling and Web3 ownership.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-6 pt-2">
-                <div className="flex gap-3" role="group" aria-label="Social media links">
+                <div className="flex gap-4" role="group" aria-label="Social media links">
                   {socialLinks.map((link) => (
                     <Link
                       key={link.url}
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group text-white/70 hover:text-white"
+                      className="p-3 bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-black hover:text-white text-black transition-all group"
                       aria-label={link.label}
                     >
-                      <span className="block group-hover:scale-110 transition-transform duration-300">
+                      <span className="block group-hover:scale-110 active:scale-95 transition-transform">
                         {link.icon}
                       </span>
                     </Link>
@@ -131,7 +111,7 @@ export function Footer({ version }: { version?: string }) {
 
                 {/* Indie Hub Comic Batch Approval Stamp */}
                 <div className="relative group ml-auto lg:ml-0">
-                  <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute -inset-4 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Image
                     src="/indie-hub-comic-batch.png"
                     alt="Indie Hub Approved"
@@ -146,7 +126,7 @@ export function Footer({ version }: { version?: string }) {
 
             {/* Explore Section */}
             <nav aria-label="Explore links" className="text-left">
-              <h3 className="font-semibold text-sm tracking-wider uppercase mb-5 text-white/30">
+              <h3 className="font-black text-sm tracking-widest uppercase mb-5 text-background-light">
                 Explore
               </h3>
               <ul className="space-y-4 pl-0 list-none">
@@ -165,15 +145,15 @@ export function Footer({ version }: { version?: string }) {
                   <li key={link.label}>
                     {link.isUpload ? (
                       <span className="relative group inline-block">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3 top-[50%] -translate-y-[50%] pointer-events-none" />
-                        <UploadStoryTrigger variant="ghost" className="p-0 h-auto font-medium text-white/60 group-hover:text-white transition-colors duration-300" buttonText="Upload Story" icon={false} />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#cc3333] opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3 top-[50%] -translate-y-[50%] pointer-events-none" />
+                        <UploadStoryTrigger variant="ghost" className="p-0 h-auto font-bold text-background-light/60 group-hover:text-background-light transition-colors" buttonText="Upload Story" icon={false} />
                       </span>
                     ) : (
                       <Link
                         href={link.href}
-                        className="group relative inline-flex items-center text-sm font-medium text-white/60 hover:text-white transition-colors duration-300"
+                        className="group relative inline-flex items-center text-sm font-bold text-background-light/60 hover:text-white transition-colors"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#cc3333] opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3" />
                         {link.label}
                       </Link>
                     )}
@@ -184,7 +164,7 @@ export function Footer({ version }: { version?: string }) {
 
             {/* Legal Section */}
             <nav aria-label="Legal links" className="text-left">
-              <h3 className="font-semibold text-sm tracking-wider uppercase mb-5 text-white/30">
+              <h3 className="font-black text-sm tracking-widest uppercase mb-5 text-background-light">
                 Legal
               </h3>
               <ul className="space-y-4 pl-0 list-none">
@@ -197,9 +177,9 @@ export function Footer({ version }: { version?: string }) {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="group relative inline-flex items-center text-sm font-medium text-white/60 hover:text-white transition-colors duration-300"
+                      className="group relative inline-flex items-center text-sm font-bold text-background-light/60 hover:text-white transition-colors"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3" />
                       {link.label}
                     </Link>
                   </li>
@@ -209,7 +189,7 @@ export function Footer({ version }: { version?: string }) {
 
             {/* Resources Section */}
             <nav aria-label="Resources links" className="text-left">
-              <h3 className="font-semibold text-sm tracking-wider uppercase mb-5 text-white/30">
+              <h3 className="font-black text-sm tracking-widest uppercase mb-5 text-background-light">
                 Resources
               </h3>
               <ul className="space-y-4 pl-0 list-none">
@@ -226,9 +206,9 @@ export function Footer({ version }: { version?: string }) {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="group relative inline-flex items-center text-sm font-medium text-white/60 hover:text-white transition-colors duration-300"
+                      className="group relative inline-flex items-center text-sm font-bold text-background-light/60 hover:text-white transition-colors"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-purple-600 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3" />
                       {link.label}
                     </Link>
                   </li>
@@ -237,18 +217,18 @@ export function Footer({ version }: { version?: string }) {
             </nav>
           </div>
 
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-10" />
+          <div className="h-[3px] w-full bg-background-light/10 my-10" />
 
           {/* Glitch & Copyright Section */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm font-medium">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm font-bold">
             <div className="flex items-center gap-3">
-              <p className="text-white/40">
+              <p className="text-background-light/60">
                 &copy; {currentYear} Comicraft. All rights reserved.
               </p>
               {version && (
                 <>
-                  <span className="w-1 h-1 rounded-full bg-white/20" />
-                  <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-xs font-mono text-white/50 tracking-wider">
+                  <span className="w-1 h-1 rounded-full bg-background-light/20" />
+                  <span className="px-2 py-0.5 border-[2px] border-black bg-white text-xs font-black text-black tracking-widest uppercase">
                     v{version}
                   </span>
                 </>
@@ -256,24 +236,30 @@ export function Footer({ version }: { version?: string }) {
             </div>
 
             {/* Data-streaming/glitch effect for "Powered by" */}
-            <div className="group relative flex items-center justify-center p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all cursor-default">
-              <span className="text-white/40 mr-2">Powered by</span>
+            <div className="group relative flex items-center justify-center p-2 border-[3px] border-black shadow-[4px_4px_0_0_#000] bg-white transition-all cursor-default">
+              <span className="text-black/60 mr-2 font-black uppercase tracking-widest text-[10px]">Powered by</span>
               <div className="relative inline-block overflow-hidden">
-                <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-600 relative z-10 group-hover:animate-glitch-1">Ethereum</span>
-                <span className="font-bold text-blue-500 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Ethereum</span>
-                <span className="font-bold text-indigo-500 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Ethereum</span>
+                <span className="font-black uppercase tracking-wide text-indigo-600 relative z-10 group-hover:animate-glitch-1">Ethereum</span>
+                <span className="font-black uppercase tracking-wide text-blue-500 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Ethereum</span>
+                <span className="font-black uppercase tracking-wide text-indigo-800 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Ethereum</span>
               </div>
-              <span className="text-white/30 mx-2">×</span>
+              <span className="text-black/30 mx-2 font-black">&</span>
               <div className="relative inline-block overflow-hidden">
-                <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600 relative z-10 group-hover:animate-glitch-1">Google AI</span>
-                <span className="font-bold text-cyan-400 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Google AI</span>
-                <span className="font-bold text-red-500 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Google AI</span>
+                <span className="font-black uppercase tracking-wide text-orange-500 relative z-10 group-hover:animate-glitch-1">Alchemy</span>
+                <span className="font-black uppercase tracking-wide text-amber-500 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Alchemy</span>
+                <span className="font-black uppercase tracking-wide text-orange-600 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Alchemy</span>
               </div>
-              <span className="text-white/30 mx-2">&</span>
+              <span className="text-black/30 mx-2 font-black">×</span>
               <div className="relative inline-block overflow-hidden">
-                <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 relative z-10 group-hover:animate-glitch-1">IQ AI</span>
-                <span className="font-bold text-purple-400 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">IQ AI</span>
-                <span className="font-bold text-pink-500 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">IQ AI</span>
+                <span className="font-black uppercase tracking-wide text-blue-600 relative z-10 group-hover:animate-glitch-1">Google AI</span>
+                <span className="font-black uppercase tracking-wide text-cyan-500 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">Google AI</span>
+                <span className="font-black uppercase tracking-wide text-[#cc3333] absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">Google AI</span>
+              </div>
+              <span className="text-black/30 mx-2 font-black">&</span>
+              <div className="relative inline-block overflow-hidden">
+                <span className="font-black uppercase tracking-wide text-pink-600 relative z-10 group-hover:animate-glitch-1">IQ AI</span>
+                <span className="font-black uppercase tracking-wide text-purple-600 absolute top-0 left-0 -translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2">IQ AI</span>
+                <span className="font-black uppercase tracking-wide text-pink-700 absolute top-0 left-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-3">IQ AI</span>
               </div>
             </div>
 
@@ -281,22 +267,22 @@ export function Footer({ version }: { version?: string }) {
               href="https://stats.uptimerobot.com/PUi1I3YaBH"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-white/5 px-3 py-1.5 border border-white/10 rounded-full hover:bg-white/10 hover:border-white/20 transition-colors cursor-pointer group"
+              className="flex items-center gap-2 bg-white px-3 py-1.5 border-[3px] border-black shadow-[3px_3px_0_0_#000] hover:bg-black hover:text-white transition-all cursor-pointer group rounded-sm"
             >
               <span
-                className={`w-1.5 h-1.5 rounded-full ${healthStatus === 'ok'
-                  ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse'
+                className={`w-2 h-2 rounded-full border border-black ${healthStatus === 'ok'
+                  ? 'bg-emerald-500'
                   : healthStatus === 'degraded'
-                    ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse'
+                    ? 'bg-amber-500'
                     : healthStatus === 'down'
-                      ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]'
-                      : 'bg-white/30'
+                      ? 'bg-[#cc3333]'
+                      : 'bg-black/30'
                   }`}
               />
-              <span className="text-xs font-medium text-white/50 tracking-wider uppercase group-hover:text-white/70 transition-colors">
+              <span className="text-[10px] font-black tracking-widest uppercase text-black group-hover:text-background-light transition-colors">
                 {healthStatus === 'ok' ? 'System Operational' : healthStatus === 'degraded' ? 'Degraded Performance' : healthStatus === 'down' ? 'System Offline' : 'Checking Status...'}
               </span>
-              <ExternalLink className="w-3 h-3 text-white/30 group-hover:text-white/60 transition-opacity" />
+              <ExternalLink className="w-3 h-3 text-black group-hover:text-background-light transition-colors" />
             </a>
 
             <div className="text-right">
@@ -304,10 +290,10 @@ export function Footer({ version }: { version?: string }) {
                 href="https://www.indiehub.co.in"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-1.5 text-white/40 hover:text-white transition-colors"
+                className="group inline-flex items-center gap-1.5 text-background-light/60 hover:text-white transition-colors"
               >
-                <span className="text-xs uppercase tracking-widest">Built by</span>
-                <span className="font-bold">INDIE HUB</span>
+                <span className="text-[10px] uppercase tracking-widest font-black">Built by</span>
+                <span className="font-black italic">INDIE HUB</span>
                 <ExternalLink className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
             </div>

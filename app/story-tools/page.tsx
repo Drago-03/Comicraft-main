@@ -183,10 +183,10 @@ export default function StoryToolsPage() {
                             description:
                               'Your previous work has been recovered.',
                             className:
-                              'font-bangers bg-green-400 text-black border-4 border-black',
+                              'font-bangers bg-red-400 text-black border-4 border-black',
                           });
                         }}
-                        className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bangers px-6 py-3"
+                        className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bangers px-6 py-3"
                       >
                         RESTORE DRAFT
                       </Button>

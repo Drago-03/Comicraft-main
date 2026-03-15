@@ -63,7 +63,7 @@ function WaveformBars({ isPlaying }: { isPlaying: boolean }) {
       {[3, 5, 4, 6, 3].map((h, i) => (
         <span
           key={i}
-          className={`w-[3px] rounded-full bg-emerald-400 transition-all ${isPlaying ? 'animate-bounce' : ''}`}
+          className={`w-[3px] rounded-full bg-red-400 transition-all ${isPlaying ? 'animate-bounce' : ''}`}
           style={{ height: `${h}px`, animationDelay: `${i * 80}ms`, animationDuration: '600ms' }}
         />
       ))}
@@ -110,7 +110,7 @@ function TTSAudioBar({
       <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-lg p-2 border border-white/10">
         {audioUrl ? (
           <button onClick={handlePlayPause}
-            className="w-7 h-7 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-400 transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-400 transition-colors"
             title={isPlaying ? 'Pause' : 'Play'} aria-label={isPlaying ? 'Pause' : 'Play'}>
             {isPlaying ? <Pause className="w-3 h-3 text-black" /> : <Play className="w-3 h-3 text-black" />}
           </button>
@@ -130,7 +130,7 @@ function TTSAudioBar({
   return (
     <div className="relative w-full rounded-2xl border border-white/10 bg-black/30 backdrop-blur-xl">
       <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/30 via-transparent to-purple-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-red-950/30 via-transparent to-purple-950/20" />
       </div>
 
       <div className="relative p-4 space-y-3">
@@ -151,7 +151,7 @@ function TTSAudioBar({
               <div className="absolute right-0 bottom-full mb-1 z-50 bg-[#0f172a] border border-white/10 rounded-xl shadow-2xl w-44 max-h-60 overflow-y-auto p-1">
                 {BULBUL_SPEAKERS.map(s => (
                   <button key={s} onClick={() => { setSpeaker(s); setShowSpeaker(false); }}
-                    className={`w-full text-left text-xs px-3 py-1.5 rounded-lg hover:bg-white/10 ${s === speaker ? 'text-emerald-400 font-semibold' : 'text-white/70'}`}>{s}</button>
+                    className={`w-full text-left text-xs px-3 py-1.5 rounded-lg hover:bg-white/10 ${s === speaker ? 'text-red-400 font-semibold' : 'text-white/70'}`}>{s}</button>
                 ))}
               </div>
             )}
@@ -167,7 +167,7 @@ function TTSAudioBar({
               <div className="absolute right-0 bottom-full mb-1 z-50 bg-[#0f172a] border border-white/10 rounded-xl shadow-2xl w-44 overflow-y-auto p-1">
                 {BULBUL_LANGUAGES.map(l => (
                   <button key={l.code} onClick={() => { setLanguage(l.code); setShowLang(false); }}
-                    className={`w-full text-left text-xs px-3 py-1.5 rounded-lg hover:bg-white/10 ${l.code === languageCode ? 'text-emerald-400 font-semibold' : 'text-white/70'}`}>
+                    className={`w-full text-left text-xs px-3 py-1.5 rounded-lg hover:bg-white/10 ${l.code === languageCode ? 'text-red-400 font-semibold' : 'text-white/70'}`}>
                     {l.label} <span className="text-white/30">({l.code})</span>
                   </button>
                 ))}
@@ -185,7 +185,7 @@ function TTSAudioBar({
               <div className="absolute right-0 bottom-full mb-1 z-50 bg-[#0f172a] border border-white/10 rounded-xl shadow-2xl w-28 p-1">
                 {SPEEDS.map(sp => (
                   <button key={sp} onClick={() => { setSpeed(sp); setShowSpeed(false); }}
-                    className={`w-full text-left text-xs px-3 py-1.5 rounded-lg hover:bg-white/10 ${sp === pace ? 'text-emerald-400 font-semibold' : 'text-white/70'}`}>{sp}x</button>
+                    className={`w-full text-left text-xs px-3 py-1.5 rounded-lg hover:bg-white/10 ${sp === pace ? 'text-red-400 font-semibold' : 'text-white/70'}`}>{sp}x</button>
                 ))}
               </div>
             )}
@@ -197,7 +197,7 @@ function TTSAudioBar({
           <div className="flex items-center gap-2">
             <button onClick={() => seek(0)} className="text-white/40 hover:text-white transition-colors"><SkipBack className="w-3 h-3" /></button>
             <input type="range" min={0} max={duration || 100} value={currentTime} onChange={e => seek(Number(e.target.value))}
-              className="flex-1 h-1 rounded-full appearance-none cursor-pointer accent-emerald-400" aria-label="Seek" />
+              className="flex-1 h-1 rounded-full appearance-none cursor-pointer accent-red-400" aria-label="Seek" />
             <span className="text-xs text-white/40 tabular-nums w-20 text-right">{formatTime(currentTime)} / {formatTime(duration)}</span>
           </div>
         )}
@@ -206,14 +206,14 @@ function TTSAudioBar({
         <div className="flex items-center gap-3">
           {audioUrl ? (
             <button onClick={handlePlayPause} disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500 hover:bg-emerald-400 disabled:bg-emerald-900 text-black font-semibold text-sm transition-all">
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 hover:bg-red-400 disabled:bg-red-900 text-black font-semibold text-sm transition-all">
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               {isPlaying ? 'Pause' : 'Play'}
             </button>
           ) : (
             <button onClick={handleGenerate} disabled={isGenerating || isLoading}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 disabled:opacity-50 text-white font-semibold text-sm transition-all border border-white/20">
-              {isGenerating ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating…</> : <><Volume2 className="w-4 h-4 text-emerald-400" /> Generate Audio</>}
+              {isGenerating ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating…</> : <><Volume2 className="w-4 h-4 text-red-400" /> Generate Audio</>}
             </button>
           )}
           {audioUrl && (

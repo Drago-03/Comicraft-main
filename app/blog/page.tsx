@@ -20,14 +20,18 @@ const blogs = [
 
 export default function BlogListingPage() {
   return (
-    <div className="min-h-screen bg-background dark:dark-premium-bg selection:bg-primary/30 pb-24">
-      <div className="container max-w-6xl mx-auto px-4 py-16 md:py-24">
+    <div className="min-h-screen bg-[#EEDFCA] relative font-sans pb-24">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+      <div className="container max-w-6xl mx-auto px-4 py-16 md:py-24 relative z-10">
         
         <header className="mb-16 text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/60 font-display" style={{ fontFamily: 'var(--font-comic)' }}>
-            The Developer Blog
+          <div className="inline-block px-4 py-1.5 mb-6 text-xs font-black uppercase tracking-[0.3em] text-[#cc3333] border-2 border-[#cc3333] bg-white" style={{ boxShadow: '3px 3px 0px 0px #000' }}>
+            Developer Blog
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-black mb-4" style={{ WebkitTextStroke: '1.5px black', textShadow: '5px 5px 0 #cc3333' }}>
+            The Dev Blog
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base font-bold text-black/60 max-w-2xl mx-auto uppercase tracking-wide">
             Deep dives into the engineering, vision, and ecosystem behind Comicraft.
           </p>
         </header>
@@ -41,28 +45,28 @@ export default function BlogListingPage() {
               transition={{ duration: 0.4, delay: index * 0.1 }}
             >
               <Link href={`/blog/${blog.slug}`} className="block h-full group">
-                <div className="flex flex-col h-full bg-[#0a0e1a]/80 border border-white/10 rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 shadow-lg hover:shadow-[0_8px_30px_rgba(255,77,109,0.15)] transform-gpu hover:-translate-y-1">
+                <div className="flex flex-col h-full bg-white border-[3px] border-black overflow-hidden shadow-[6px_6px_0_0_#000] group-hover:shadow-[10px_10px_0_0_#000] group-hover:-translate-y-1 transition-all duration-300">
                   
                   {/* Card Image Area */}
-                  <div className="relative h-48 w-full bg-[#0f172a] overflow-hidden flex items-center justify-center">
+                  <div className="relative h-48 w-full bg-black overflow-hidden flex items-center justify-center border-b-[3px] border-black">
                     {blog.coverImage ? (
                       <Image 
                         src={blog.coverImage} 
                         alt={blog.title} 
                         fill 
-                        className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" 
+                        className="object-cover group-hover:scale-105 transition-transform duration-500" 
                       />
                     ) : (
                       <>
-                        <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0e1a] to-transparent opacity-80 z-10"></div>
-                        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '20px 20px' }}></div>
-                        <BookOpen className="w-16 h-16 text-primary/30 z-0 group-hover:scale-110 transition-transform duration-500" />
+                        <div className="absolute inset-0 bg-black" />
+                        <BookOpen className="w-16 h-16 text-white/30 z-10 group-hover:scale-110 transition-transform duration-500" />
                       </>
                     )}
                     
-                    <div className="absolute bottom-4 left-4 z-20 flex gap-2">
+                    {/* Tags overlay */}
+                    <div className="absolute bottom-3 left-3 z-20 flex gap-2">
                       {blog.tags.map(tag => (
-                        <span key={tag} className="px-2.5 py-1 rounded bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white/90 uppercase tracking-widest">
+                        <span key={tag} className="px-2.5 py-1 bg-[#cc3333] border-2 border-black text-[10px] font-black text-white uppercase tracking-widest shadow-[2px_2px_0_0_#000]">
                           {tag}
                         </span>
                       ))}
@@ -70,26 +74,26 @@ export default function BlogListingPage() {
                   </div>
 
                   {/* Card Content Area */}
-                  <div className="p-6 flex flex-col flex-grow">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium mb-3">
+                  <div className="p-6 flex flex-col flex-grow bg-white">
+                    <div className="flex items-center gap-2 text-[10px] text-black/50 font-black mb-3 uppercase tracking-widest">
                       <span>{blog.date}</span>
-                      <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                      <span className="w-1 h-1 bg-black/30 rounded-full" />
                       <span>{blog.readTime} read</span>
                     </div>
                     
-                    <h2 className="text-xl md:text-2xl font-bold text-white group-hover:text-primary transition-colors mb-3 line-clamp-2 leading-tight font-display" style={{ fontFamily: 'var(--font-comic)' }}>
+                    <h2 className="text-xl font-black uppercase italic text-black group-hover:text-[#cc3333] transition-colors mb-3 line-clamp-2 leading-tight tracking-tight">
                       {blog.title}
                     </h2>
                     
-                    <p className="text-foreground/70 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
+                    <p className="text-black/60 font-bold text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
                       {blog.excerpt}
                     </p>
                     
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-                      <div className="text-sm font-semibold text-white/90">
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t-[3px] border-black">
+                      <div className="text-xs font-black text-black uppercase tracking-wider">
                         {blog.author}
                       </div>
-                      <div className="flex items-center gap-1 text-primary text-sm font-bold group-hover:translate-x-1 transition-transform">
+                      <div className="flex items-center gap-1 text-[#cc3333] text-xs font-black group-hover:translate-x-1 transition-transform uppercase tracking-widest">
                         Read <ArrowRight className="w-4 h-4 ml-1" />
                       </div>
                     </div>

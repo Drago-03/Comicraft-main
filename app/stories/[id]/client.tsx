@@ -87,7 +87,7 @@ export default function StoryClient({ id }: { id: string }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#080b11] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-red-400 animate-spin" />
       </div>
     );
   }
@@ -129,7 +129,7 @@ export default function StoryClient({ id }: { id: string }) {
 
             <div className="flex items-center gap-3 min-w-0 flex-1">
               {story.genre && (
-                <span className="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border border-emerald-500/30 text-emerald-400 bg-emerald-500/10 shrink-0"
+                <span className="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border border-red-500/30 text-red-400 bg-red-500/10 shrink-0"
                   style={{ fontWeight: 700 }}>
                   {story.genre}
                 </span>

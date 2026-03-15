@@ -37,16 +37,22 @@ export default function FeedbackPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4 py-28">
-      <div className="w-full max-w-xl bg-card border border-border p-8 rounded-2xl shadow-xl">
-        <h1 className="text-3xl font-bold mb-6 text-center uppercase">
-          Share Your Feedback
+    <div className="min-h-screen bg-[#EEDFCA] flex items-center justify-center px-4 py-28 relative">
+      {/* Background Decor */}
+      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px', opacity: 0.05 }} />
+      
+      <div className="w-full max-w-xl bg-white border-[3px] border-black p-8 rounded-none shadow-[8px_8px_0_0_#000] relative z-10">
+        <h1
+          className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-black text-center mb-8"
+          style={{ WebkitTextStroke: '1px black' }}
+        >
+          Share Your <span className="text-[#cc3333]">Feedback</span>
         </h1>
         {submitted && (
           <div
-            className="mb-6 p-4 rounded-xl border-4 border-green-500 
-          bg-green-500/10 text-green-600 dark:text-green-400 
-          font-bold text-center uppercase animate-fade-in"
+            className="mb-6 p-4 rounded-none border-[3px] border-black 
+          bg-[#cc3333] text-white
+          font-black tracking-widest text-center uppercase animate-fade-in shadow-[4px_4px_0_0_#000]"
           >
             Thank You! Your Feedback Has Been Submitted.
           </div>
@@ -59,7 +65,7 @@ export default function FeedbackPage() {
             placeholder="Your Name (Optional)"
             value={formData.name}
             onChange={handleChange}
-            className="w-full p-4 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full p-4 rounded-none bg-white border-[3px] border-black focus:outline-none focus:border-[#cc3333] shadow-[4px_4px_0_0_#000] text-black font-bold placeholder:text-black/40 transition-colors"
           />
 
           <input
@@ -68,7 +74,7 @@ export default function FeedbackPage() {
             placeholder="Your Email (Optional)"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-4 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full p-4 rounded-none bg-white border-[3px] border-black focus:outline-none focus:border-[#cc3333] shadow-[4px_4px_0_0_#000] text-black font-bold placeholder:text-black/40 transition-colors"
           />
 
           <textarea
@@ -78,17 +84,17 @@ export default function FeedbackPage() {
             rows={4}
             value={formData.message}
             onChange={handleChange}
-            className="w-full p-4 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full p-4 rounded-none bg-white border-[3px] border-black focus:outline-none focus:border-[#cc3333] shadow-[4px_4px_0_0_#000] text-black font-bold placeholder:text-black/40 transition-colors resize-none"
           />
 
           <button
             type="submit"
-            className="w-full py-5 text-xl font-black uppercase tracking-wide
-            rounded-2xl border-4 border-primary 
-            bg-primary text-primary-foreground
-            hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--shadow-color)]
-            active:translate-y-0 active:shadow-none
-            transition-all duration-300"
+            className="w-full py-5 text-xl font-black uppercase tracking-widest
+            rounded-none border-[3px] border-black 
+            bg-[#EEDFCA] text-black hover:bg-[#cc3333] hover:text-white
+            shadow-[6px_6px_0_0_#000]
+            active:translate-y-1 active:shadow-none
+            transition-all duration-300 mt-4"
           >
             Submit Feedback
           </button>

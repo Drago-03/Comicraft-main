@@ -137,10 +137,10 @@ export const StoryButton = React.forwardRef<
     <AnimatedButton
       ref={ref}
       className={cn(
-        'bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500',
+        'bg-gradient-to-r from-cyan-500 via-red-500 to-red-500',
         className
       )}
-      gradientColors="from-cyan-500 via-teal-500 to-emerald-500"
+      gradientColors="from-cyan-500 via-red-500 to-red-500"
       glowColor="rgba(20, 184, 166, 0.4)"
       icon={<BookOpen className="h-4 w-4" />}
       animationType={animationType}
