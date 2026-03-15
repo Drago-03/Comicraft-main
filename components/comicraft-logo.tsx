@@ -72,30 +72,11 @@ export function ComiCraftLogo({
         priority
         unoptimized
       />
-      {/* Decorative glow behind the icon for colored schemes */}
-      {colorScheme === 'color' && (
-        <div className="absolute inset-0 bg-primary/20 blur-lg -z-10 rounded-full" />
-      )}
     </div>
   );
 
-  const logoText = (variant === 'full' || variant === 'mark') && (
-    <span
-      className={cn(
-        'ml-2 font-black tracking-wider select-none uppercase italic',
-        variant === 'full' ? 'text-2xl' : 'text-xl'
-      )}
-      style={{
-        fontFamily: 'var(--font-display), "Bangers", system-ui, sans-serif',
-        color: colorScheme === 'color' ? '#fff' : 'currentColor',
-        textShadow: colorScheme === 'color' ? '3px 3px 0px #000' : 'none',
-        WebkitTextStroke: colorScheme === 'color' ? '1.5px #000' : 'none',
-        lineHeight: 1
-      }}
-    >
-      COMICRAFT
-    </span>
-  );
+  // Text label removed — icon only
+  const logoText = null;
 
   const inner = (
     <span
