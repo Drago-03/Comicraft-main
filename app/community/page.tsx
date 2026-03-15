@@ -5,7 +5,9 @@ import { Search, MessageSquare } from 'lucide-react';
 
 export default function CommunityPage() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full max-w-[1400px] mx-auto min-h-screen">
+    <div className="min-h-screen bg-[#EEDFCA] relative pt-24 pb-12 px-4 font-sans">
+      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px', opacity: 0.05 }} />
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full max-w-[1400px] mx-auto">
 
       {/* ── Left Sidebar ── */}
       <aside className="col-span-1 lg:col-span-3 xl:col-span-2 flex flex-col space-y-8 pb-10">
@@ -271,6 +273,7 @@ export default function CommunityPage() {
         </div>
 
       </aside>
+      </div>
     </div>
   );
 }

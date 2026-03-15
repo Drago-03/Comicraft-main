@@ -136,7 +136,7 @@ function Skeleton({ className = '' }: { className?: string }) {
 
 function CardSkeleton() {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 space-y-3">
+    <div className="rounded-xl border border-black bg-white/[0.02] p-4 space-y-3">
       <Skeleton className="h-4 w-3/4" />
       <Skeleton className="h-3 w-1/2" />
       <Skeleton className="h-20" />
@@ -162,13 +162,13 @@ function EmptyState({
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
       <div className="w-16 h-16 rounded-2xl bg-white/[0.04] flex items-center justify-center mb-4">
-        <Icon className="w-8 h-8 text-white/20" />
+        <Icon className="w-8 h-8 text-black/20" />
       </div>
-      <p className="text-sm font-medium text-white/40 mb-1">{title}</p>
-      <p className="text-xs text-white/20 mb-4 max-w-[280px]">{subtitle}</p>
+      <p className="text-sm font-medium text-black/40 mb-1">{title}</p>
+      <p className="text-xs text-black/20 mb-4 max-w-[280px]">{subtitle}</p>
       {action && (
         <Link href={action.href}>
-          <Button size="sm" className="text-xs bg-blue-600 hover:bg-blue-500 text-white border-0">
+          <Button size="sm" className="text-xs bg-blue-600 hover:bg-blue-500 text-black border-0">
             <Plus className="w-3 h-3 mr-1.5" />
             {action.label}
           </Button>
@@ -392,12 +392,9 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen relative font-sans overflow-hidden">
-      {/* Background Halftone - Vintage style */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8'/%3E%3C/svg%3E")` }} />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(59,130,246,0.08),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(168,85,247,0.06),_transparent_50%)]" />
-      </div>
+      {/* Background Halftone - Comic style */}
+      <div className="absolute inset-0 bg-[#EEDFCA] pointer-events-none z-[-1]" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] z-[-1]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -410,39 +407,39 @@ export default function DashboardPage() {
            ════════════════════════════════════════════════════════ */}
         {profileError && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
-              <AlertCircle className="w-8 h-8 text-red-400" />
+            <div className="w-20 h-20 rounded-none bg-white border-[4px] border-black shadow-[6px_6px_0_0_#000] flex items-center justify-center mb-6">
+              <AlertCircle className="w-10 h-10 text-[#cc3333]" />
             </div>
-            <h2 className="text-lg font-bold text-white mb-2">
+            <h2 className="text-3xl font-black text-black mb-2 uppercase italic tracking-wider">
               {profileError === 'session_expired'
                 ? 'Session Expired'
                 : profileError === 'not_authenticated'
                   ? 'Not Logged In'
                   : 'Failed to Load Dashboard'}
             </h2>
-            <p className="text-sm text-white/40 mb-6 max-w-sm">
+            <p className="text-sm font-bold text-black/60 mb-8 max-w-sm uppercase">
               {profileError === 'session_expired'
                 ? 'Your session has expired. Please sign in again to access your dashboard.'
                 : profileError === 'not_authenticated'
                   ? 'You need to be logged in to access your dashboard.'
                   : 'Something went wrong loading your profile. Please try again.'}
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {(profileError === 'session_expired' || profileError === 'not_authenticated') ? (
                 <Link href="/sign-in">
-                  <Button className="bg-blue-600 hover:bg-blue-500 text-white">
+                  <Button className="border-[3px] border-black bg-[#cc3333] text-white rounded-none shadow-[4px_4px_0_0_#000] hover:bg-black hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_#000] active:translate-y-[2px] active:shadow-[2px_2px_0_0_#000] font-black uppercase tracking-widest transition-all">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign In
                   </Button>
                 </Link>
               ) : (
-                <Button onClick={() => window.location.reload()} variant="outline" className="border-white/10 text-white/70 hover:text-white">
+                <Button onClick={() => window.location.reload()} variant="outline" className="border-[3px] border-black bg-white text-black rounded-none shadow-[4px_4px_0_0_#000] hover:bg-[#EEDFCA] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_#000] active:translate-y-[2px] active:shadow-[2px_2px_0_0_#000] font-black uppercase tracking-widest transition-all">
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Retry
                 </Button>
               )}
               <Link href="/">
-                <Button variant="ghost" className="text-white/40 hover:text-white">
+                <Button variant="ghost" className="border-[3px] border-transparent text-black rounded-none hover:bg-transparent hover:border-black font-black uppercase tracking-widest transition-all">
                   Back to Home
                 </Button>
               </Link>
@@ -458,11 +455,11 @@ export default function DashboardPage() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
             {/* Avatar */}
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-black flex items-center justify-center flex-shrink-0 overflow-hidden">
               {profile?.avatar ? (
                 <img src={profile.avatar} alt="" className="w-full h-full object-cover" />
               ) : (
-                <User className="w-7 h-7 text-white/30" />
+                <User className="w-7 h-7 text-black/30" />
               )}
             </div>
             <div className="flex-1">
@@ -473,17 +470,17 @@ export default function DashboardPage() {
                 </>
               ) : (
                 <>
-                  <h1 className="text-xl font-bold text-white">
+                  <h1 className="text-xl font-bold text-black">
                     Welcome back, {profile?.displayName || 'Creator'}
                   </h1>
-                  <p className="text-sm text-white/40">
+                  <p className="text-sm text-black/40">
                     Your creative command center
                   </p>
                 </>
               )}
             </div>
             <Link href="/create">
-              <Button className="text-xs bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-500/10">
+              <Button className="text-xs bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-black border-0 shadow-lg shadow-blue-500/10">
                 <Plus className="w-3.5 h-3.5 mr-1.5" />
                 Create New
               </Button>
@@ -532,16 +529,16 @@ export default function DashboardPage() {
                   key={stat.label}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`rounded-xl border ${stat.border} bg-gradient-to-br ${stat.gradient} backdrop-blur-xl p-4`}
+                  className={`rounded-none border-[3px] border-black bg-white shadow-[4px_4px_0_0_#000] p-4`}
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <Icon className="w-4 h-4 text-white/40" />
-                    <span className="text-[11px] text-white/40 uppercase tracking-wide">{stat.label}</span>
+                    <Icon className="w-4 h-4 text-black" />
+                    <span className="text-[11px] text-black/60 font-black uppercase tracking-widest">{stat.label}</span>
                   </div>
                   {profileLoading ? (
                     <Skeleton className="h-7 w-12" />
                   ) : (
-                    <span className="text-2xl font-bold text-white">{stat.value}</span>
+                    <span className="text-2xl font-bold text-black">{stat.value}</span>
                   )}
                 </motion.div>
               );
@@ -552,7 +549,7 @@ export default function DashboardPage() {
         {/* ════════════════════════════════════════════════════════
            TAB NAVIGATION
            ════════════════════════════════════════════════════════ */}
-        <div className="border-b border-white/[0.06] mb-6">
+        <div className="border-b border-black mb-6">
           <div className="flex gap-1 -mb-px overflow-x-auto scrollbar-hide">
             {TABS.map((tab) => {
               const Icon = tab.icon;
@@ -563,8 +560,8 @@ export default function DashboardPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
                     isActive
-                      ? 'border-blue-500 text-blue-400'
-                      : 'border-transparent text-white/40 hover:text-white/60 hover:border-white/10'
+                      ? 'border-black text-black shadow-[inset_0_-4px_0_0_#cc3333] font-black uppercase'
+                      : 'border-transparent text-black/40 hover:text-black/60 hover:border-black'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -624,21 +621,21 @@ export default function DashboardPage() {
                         {/* Published / All Stories */}
                         {stories.length > 0 && (
                           <div>
-                            <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">
+                            <h3 className="text-xs font-semibold text-black/50 uppercase tracking-wider mb-3">
                               Published Stories ({stories.length})
                             </h3>
                             <div className="space-y-2">
                               {stories.map((story) => (
                                 <div
                                   key={story._id}
-                                  className="flex items-center gap-4 px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors group"
+                                  className="flex items-center gap-4 px-4 py-3 rounded-xl border border-black bg-white/[0.02] hover:bg-white/[0.04] transition-colors group"
                                 >
                                   <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
                                     <FileText className="w-4 h-4 text-blue-400/60" />
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-white/80 truncate">{story.title}</p>
-                                    <div className="flex items-center gap-3 text-[11px] text-white/30">
+                                    <p className="text-sm font-medium text-black/80 truncate">{story.title}</p>
+                                    <div className="flex items-center gap-3 text-[11px] text-black/30">
                                       <span>{story.type || 'Story'}</span>
                                       <span>·</span>
                                       <span>{timeAgo(story.updatedAt)}</span>
@@ -657,12 +654,12 @@ export default function DashboardPage() {
                                     className={`text-[10px] ${
                                       story.status === 'published'
                                         ? 'border-red-500/30 text-red-400'
-                                        : 'border-white/10 text-white/30'
+                                        : 'border-black text-black/30'
                                     }`}
                                   >
                                     {story.status}
                                   </Badge>
-                                  <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-white/30 transition-colors" />
+                                  <ChevronRight className="w-4 h-4 text-black/10 group-hover:text-black/30 transition-colors" />
                                 </div>
                               ))}
                             </div>
@@ -672,26 +669,26 @@ export default function DashboardPage() {
                         {/* Drafts */}
                         {drafts.length > 0 && (
                           <div>
-                            <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">
+                            <h3 className="text-xs font-semibold text-black/50 uppercase tracking-wider mb-3">
                               Drafts ({drafts.length})
                             </h3>
                             <div className="space-y-2">
                               {drafts.map((draft) => (
                                 <div
                                   key={draft._id}
-                                  className="flex items-center gap-4 px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors group"
+                                  className="flex items-center gap-4 px-4 py-3 rounded-xl border border-black bg-white/[0.02] hover:bg-white/[0.04] transition-colors group"
                                 >
                                   <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
                                     <PenLine className="w-4 h-4 text-amber-400/60" />
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-white/80 truncate">{draft.title}</p>
-                                    <span className="text-[11px] text-white/30">{timeAgo(draft.updatedAt)}</span>
+                                    <p className="text-sm font-medium text-black/80 truncate">{draft.title}</p>
+                                    <span className="text-[11px] text-black/30">{timeAgo(draft.updatedAt)}</span>
                                   </div>
                                   <Badge variant="outline" className="text-[10px] border-amber-500/20 text-amber-400/60">
                                     Draft
                                   </Badge>
-                                  <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-white/30 transition-colors" />
+                                  <ChevronRight className="w-4 h-4 text-black/10 group-hover:text-black/30 transition-colors" />
                                 </div>
                               ))}
                             </div>
@@ -728,12 +725,12 @@ export default function DashboardPage() {
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                               ) : (
-                                <ImageIcon className="w-10 h-10 text-white/10" />
+                                <ImageIcon className="w-10 h-10 text-black/10" />
                               )}
                             </div>
                             <CardContent className="p-3">
-                              <p className="text-sm font-medium text-white/80 mb-1 truncate">{comic.title}</p>
-                              <div className="flex items-center gap-2 text-[11px] text-white/30 mb-2">
+                              <p className="text-sm font-medium text-black/80 mb-1 truncate">{comic.title}</p>
+                              <div className="flex items-center gap-2 text-[11px] text-black/30 mb-2">
                                 {comic.metadata?.heroName && (
                                   <span className="flex items-center gap-1">
                                     <User className="w-3 h-3" /> {comic.metadata.heroName}
@@ -746,7 +743,7 @@ export default function DashboardPage() {
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-1">
                                   {comic.genres?.slice(0, 2).map((g) => (
-                                    <Badge key={g} variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-white/10 text-white/30">
+                                    <Badge key={g} variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-black text-black/30">
                                       {g}
                                     </Badge>
                                   ))}
@@ -801,8 +798,8 @@ export default function DashboardPage() {
                               )}
                             </div>
                             <CardContent className="p-3">
-                              <p className="text-sm font-medium text-white/80 mb-1 truncate">{name}</p>
-                              <div className="flex items-center justify-between text-[11px] text-white/30">
+                              <p className="text-sm font-medium text-black/80 mb-1 truncate">{name}</p>
+                              <div className="flex items-center justify-between text-[11px] text-black/30">
                                 <span>
                                   {nft.linkedContent?.type || nft.tokenType || 'NFT'}: {nft.linkedContent?.title || '–'}
                                 </span>
@@ -811,14 +808,14 @@ export default function DashboardPage() {
                                   className={`text-[9px] ${
                                     (nft.status === 'minted' || nft.tokenId)
                                       ? 'border-red-500/30 text-red-400'
-                                      : 'border-white/10 text-white/30'
+                                      : 'border-black text-black/30'
                                   }`}
                                 >
                                   {nft.status || 'Owned'}
                                 </Badge>
                               </div>
                               {nft.tokenId && (
-                                <p className="text-[10px] text-white/15 mt-1 font-mono truncate">
+                                <p className="text-[10px] text-black/15 mt-1 font-mono truncate">
                                   Token: {nft.tokenId}
                                 </p>
                               )}
@@ -844,7 +841,7 @@ export default function DashboardPage() {
                         {feed.map((item) => (
                           <div
                             key={item._id}
-                            className="flex items-start gap-4 px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
+                            className="flex items-start gap-4 px-4 py-3 rounded-xl border border-black bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
                           >
                             <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
                               {item.creator?.avatar ? (
@@ -854,17 +851,17 @@ export default function DashboardPage() {
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm text-white/80">
+                              <p className="text-sm text-black/80">
                                 <span className="font-medium">{item.creator?.displayName || 'Creator'}</span>
                                 {' '}
-                                <span className="text-white/40">
+                                <span className="text-black/40">
                                   {item.type === 'story' ? 'published a story' :
                                    item.type === 'comic' ? 'created a comic' :
                                    item.type === 'nft' ? 'minted an NFT' : 'shared something'}
                                 </span>
                               </p>
                               <p className="text-sm font-medium text-blue-300/80 mt-0.5 truncate">{item.title}</p>
-                              <span className="text-[11px] text-white/20 mt-1 block">{timeAgo(item.createdAt)}</span>
+                              <span className="text-[11px] text-black/20 mt-1 block">{timeAgo(item.createdAt)}</span>
                             </div>
                           </div>
                         ))}
@@ -893,7 +890,7 @@ export default function DashboardPage() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl">
                             <CardHeader className="pb-3">
-                              <CardTitle className="text-sm flex items-center gap-2 text-white/90">
+                              <CardTitle className="text-sm flex items-center gap-2 text-black/90">
                                 <Wallet className="w-4 h-4 text-red-400" />
                                 Ethereum Balance
                               </CardTitle>
@@ -905,7 +902,7 @@ export default function DashboardPage() {
                           
                           <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl">
                             <CardHeader className="pb-3">
-                              <CardTitle className="text-sm flex items-center gap-2 text-white/90">
+                              <CardTitle className="text-sm flex items-center gap-2 text-black/90">
                                 <Gem className="w-4 h-4 text-amber-400" />
                                 Total NFTs
                               </CardTitle>
@@ -917,7 +914,7 @@ export default function DashboardPage() {
 
                           <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl">
                             <CardHeader className="pb-3">
-                              <CardTitle className="text-sm flex items-center gap-2 text-white/90">
+                              <CardTitle className="text-sm flex items-center gap-2 text-black/90">
                                 <Activity className="w-4 h-4 text-purple-400" />
                                 Recent Transactions
                               </CardTitle>
@@ -929,19 +926,19 @@ export default function DashboardPage() {
                         </div>
                         
                         <div>
-                          <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">
+                          <h3 className="text-xs font-semibold text-black/50 uppercase tracking-wider mb-3">
                             ERC-20 Tokens
                           </h3>
                           <div className="space-y-2">
                             {walletData?.assets?.tokens?.length > 0 ? (
                                walletData.assets.tokens.map((tb: any, i: number) => (
-                                 <div key={i} className="flex items-center justify-between px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
-                                    <p className="text-sm text-white/80">{tb.contractAddress || tb.address || 'Unknown Token'}</p>
-                                    <p className="text-sm text-white font-mono">{tb.balanceRaw || tb.tokenBalance || 0}</p>
+                                 <div key={i} className="flex items-center justify-between px-4 py-3 rounded-xl border border-black bg-white/[0.02]">
+                                    <p className="text-sm text-black/80">{tb.contractAddress || tb.address || 'Unknown Token'}</p>
+                                    <p className="text-sm text-black font-mono">{tb.balanceRaw || tb.tokenBalance || 0}</p>
                                  </div>
                                ))
                             ) : (
-                              <p className="text-sm text-white/30 text-center py-4">No tokens found.</p>
+                              <p className="text-sm text-black/30 text-center py-4">No tokens found.</p>
                             )}
                           </div>
                         </div>
@@ -956,30 +953,30 @@ export default function DashboardPage() {
                     {/* Profile Info */}
                     <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl">
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-sm flex items-center gap-2 text-white/90">
+                        <CardTitle className="text-sm flex items-center gap-2 text-black/90">
                           <User className="w-4 h-4 text-blue-400" />
                           Profile
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="space-y-1.5">
-                          <Label className="text-xs text-white/50">Display Name</Label>
+                          <Label className="text-xs text-black/50">Display Name</Label>
                           <Input
                             value={settingsForm.displayName}
                             onChange={(e) => setSettingsForm((prev) => ({ ...prev, displayName: e.target.value }))}
-                            className="text-sm bg-white/5 border-white/10"
+                            className="text-sm bg-white/5 border-black"
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="text-xs text-white/50">Bio</Label>
+                          <Label className="text-xs text-black/50">Bio</Label>
                           <Textarea
                             value={settingsForm.bio}
                             onChange={(e) => setSettingsForm((prev) => ({ ...prev, bio: e.target.value }))}
-                            className="text-sm bg-white/5 border-white/10 resize-none h-20"
+                            className="text-sm bg-white/5 border-black resize-none h-20"
                             placeholder="Tell the world about yourself…"
                           />
                         </div>
-                        <div className="text-xs text-white/20">
+                        <div className="text-xs text-black/20">
                           Email: {profile?.email || '–'}
                         </div>
                       </CardContent>
@@ -988,7 +985,7 @@ export default function DashboardPage() {
                     {/* Preferences */}
                     <Card className="bg-white/[0.03] border-white/[0.08] backdrop-blur-xl">
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-sm flex items-center gap-2 text-white/90">
+                        <CardTitle className="text-sm flex items-center gap-2 text-black/90">
                           <Bell className="w-4 h-4 text-purple-400" />
                           Preferences
                         </CardTitle>
@@ -996,8 +993,8 @@ export default function DashboardPage() {
                       <CardContent className="space-y-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm text-white/80">Email Notifications</p>
-                            <p className="text-[11px] text-white/30">Receive updates about your content</p>
+                            <p className="text-sm text-black/80">Email Notifications</p>
+                            <p className="text-[11px] text-black/30">Receive updates about your content</p>
                           </div>
                           <Switch
                             checked={settingsForm.notifications}
@@ -1009,8 +1006,8 @@ export default function DashboardPage() {
                         <div className="h-px bg-white/[0.06]" />
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm text-white/80">Public Profile</p>
-                            <p className="text-[11px] text-white/30">Allow others to see your profile</p>
+                            <p className="text-sm text-black/80">Public Profile</p>
+                            <p className="text-[11px] text-black/30">Allow others to see your profile</p>
                           </div>
                           <Switch
                             checked={settingsForm.publicProfile}
@@ -1027,7 +1024,7 @@ export default function DashboardPage() {
                       <Button
                         onClick={handleSaveSettings}
                         disabled={settingsSaving}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-blue-500/10"
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-black border-0 shadow-lg shadow-blue-500/10"
                       >
                         {settingsSaving ? (
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />

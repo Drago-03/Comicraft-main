@@ -119,7 +119,8 @@ export default function BuyCRAFTSPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 md:px-6 lg:px-8">
+    <div className="min-h-screen pt-24 pb-12 px-4 md:px-6 lg:px-8 bg-[#EEDFCA] relative font-sans text-black">
+      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px', opacity: 0.05 }} />
       <div className="max-w-6xl mx-auto relative z-10">
         
         {/* ── Header ── */}

@@ -266,7 +266,7 @@ function AIStoryContent() {
 
     setChapters(newChapters);
     if (activeChapterId === chapterId) {
-      setActiveChapterId(newChapters[0].id);
+      setActiveChapterId(newChapters[0]?.id || '');
     }
     toast({ title: 'Chapter removed' });
   };
@@ -604,8 +604,9 @@ function AIStoryContent() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen text-black font-sans"
+      className="min-h-screen bg-[#EEDFCA] relative text-black font-sans"
     >
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
       <GuidedTour steps={AI_STORY_TOUR_STEPS} tourId="ai-story-creation" enabled={true} autoStart={true} />
 
       {/* Background */}

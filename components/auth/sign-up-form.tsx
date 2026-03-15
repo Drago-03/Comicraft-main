@@ -115,27 +115,27 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
 
   // Role config
   const roles = [
-    { id: 'creator', label: 'Creator', desc: 'Publish stories and mint NFTs', icon: PenTool, activeColor: 'border-[#cc3333] bg-[#cc3333]/5', iconActive: 'bg-[#cc3333]/20 text-[#cc3333]' },
-    { id: 'collector', label: 'Collector', desc: 'Discover, read, and collect stories', icon: Library, activeColor: 'border-[#457b9d] bg-[#457b9d]/5', iconActive: 'bg-[#457b9d]/20 text-[#457b9d]' },
-    { id: 'both', label: 'Both', desc: 'The full platform experience', icon: Sparkles, activeColor: 'border-[#6c3fc5] bg-[#6c3fc5]/5', iconActive: 'bg-[#6c3fc5]/20 text-[#6c3fc5]' },
+    { id: 'creator', label: 'Creator', desc: 'Publish stories and mint NFTs', icon: PenTool, activeColor: 'border-[#cc3333] bg-[#cc3333]/10', iconActive: 'bg-[#cc3333] text-white' },
+    { id: 'collector', label: 'Collector', desc: 'Discover, read, and collect stories', icon: Library, activeColor: 'border-blue-600 bg-blue-600/10', iconActive: 'bg-blue-600 text-white' },
+    { id: 'both', label: 'Both', desc: 'The full platform experience', icon: Sparkles, activeColor: 'border-teal-600 bg-teal-600/10', iconActive: 'bg-teal-600 text-white' },
   ] as const;
 
   return (
-    <div className="w-full max-w-lg px-6 relative z-10 flex flex-col pt-6 pb-10">
+    <div className="w-full max-w-lg px-6 relative z-10 flex flex-col pt-6 pb-10 mx-auto">
       {/* Header */}
-      <div className="flex flex-col items-center mb-7 text-center">
+      <div className="flex flex-col items-center mb-7">
         <Link href="/" className="mb-5 block">
           <div className="relative w-14 h-14 border-[3px] border-black shadow-[3px_3px_0_0_#000] bg-white flex items-center justify-center">
             <Image src="/logo.png" alt="Comicraft Logo" fill className="object-contain p-1" priority />
           </div>
         </Link>
-        <div className="inline-flex items-center gap-2 px-3 py-1 border-[2px] border-black bg-black shadow-[3px_3px_0_0_#cc3333] text-[10px] font-black text-white uppercase tracking-widest mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 border-[2px] border-black bg-[#cc3333] shadow-[3px_3px_0_0_#000] text-[10px] font-black text-white uppercase tracking-widest mb-3">
           Create Account
         </div>
         <h1 className="text-3xl font-black italic uppercase text-black tracking-tighter" style={{ WebkitTextStroke: '0.5px black' }}>
           Join Comicraft
         </h1>
-        <p className="text-black/60 text-sm font-bold mt-1">
+        <p className="text-black/60 text-sm font-bold mt-1 text-center">
           {step === 'role' ? 'Select how you plan to use Comicraft.' : 'Enter your details to get started.'}
         </p>
       </div>
@@ -149,34 +149,32 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
                 <button
                   key={r.id}
                   onClick={() => setSelectedRole(r.id as Role)}
-                  className={`p-4 border-[3px] text-left transition-all shadow-[2px_2px_0_0_#000] hover:shadow-[4px_4px_0_0_#000] hover:-translate-y-0.5 ${
-                    selectedRole === r.id ? r.activeColor : 'border-black bg-[#EEDFCA] hover:border-black'
+                  className={`p-4 border-[3px] transition-transform active:scale-95 text-left flex items-center gap-4 ${
+                    selectedRole === r.id ? r.activeColor + ' border-black outline outline-2 outline-offset-2 outline-black shadow-[4px_4px_0_0_#000]' : 'border-black bg-white hover:bg-black/5 hover:shadow-[4px_4px_0_0_#000]'
                   }`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`p-2.5 border-[2px] border-black ${selectedRole === r.id ? r.iconActive : 'bg-white text-black'}`}>
-                      <r.icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-black text-black text-sm uppercase tracking-wide">{r.label}</h3>
-                      <p className="text-xs text-black/60 font-bold mt-0.5">{r.desc}</p>
-                    </div>
-                    {selectedRole === r.id && (
-                      <CheckCircle2 className="w-5 h-5 text-[#cc3333] ml-auto flex-shrink-0" />
-                    )}
+                  <div className={`p-2.5 border-[2px] border-black ${selectedRole === r.id ? r.iconActive : 'bg-black/10 text-black/60'}`}>
+                    <r.icon className="w-5 h-5" />
                   </div>
+                  <div className="flex-1">
+                    <h3 className="font-black text-black text-sm uppercase tracking-wide">{r.label}</h3>
+                    <p className="text-xs text-black/60 font-bold mt-0.5">{r.desc}</p>
+                  </div>
+                  {selectedRole === r.id && (
+                    <CheckCircle2 className={`w-5 h-5 ml-auto flex-shrink-0 text-black`} />
+                  )}
                 </button>
               ))}
             </div>
 
             <Button
               onClick={() => setStep('details')} disabled={!selectedRole}
-              className="w-full h-12 bg-[#cc3333] hover:bg-black text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1 active:shadow-none font-black uppercase tracking-wide rounded-none transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full h-12 bg-[#cc3333] hover:bg-black text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1 active:shadow-none font-black uppercase tracking-wide rounded-none transition-all mt-4 mb-2 flex items-center justify-center gap-2"
             >
               Continue <ArrowRight className="w-4 h-4" />
             </Button>
 
-            <div className="my-5 flex items-center">
+            <div className="my-6 flex items-center">
               <div className="flex-1 h-[2px] bg-black/10" />
               <span className="px-4 text-[10px] font-black uppercase tracking-widest text-black/40">Or continue with</span>
               <div className="flex-1 h-[2px] bg-black/10" />

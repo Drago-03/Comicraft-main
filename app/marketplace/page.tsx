@@ -89,7 +89,7 @@ export default function MarketplacePage() {
         .order('created_at', { ascending: false });
 
       if (!error && data) {
-        const storyIds = data.map(s => s.id);
+        const storyIds = data.map((s: any) => s.id);
         let audioMap: Record<string, string> = {};
 
         if (storyIds.length > 0) {
@@ -105,7 +105,7 @@ export default function MarketplacePage() {
         }
 
         setStories(
-          data.map(s => ({
+          data.map((s: any) => ({
             ...s,
             hasAudio: !!audioMap[s.id],
             audioUrl: audioMap[s.id] || null,
@@ -118,7 +118,9 @@ export default function MarketplacePage() {
   }, [supabase]);
 
   return (
-    <div className="container mx-auto px-4 pt-0 pb-8">
+    <div className="min-h-screen bg-[#EEDFCA] relative font-sans overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+      <div className="container mx-auto px-4 pt-0 pb-8 relative z-10 pt-28">
 
       {/* ── Page Header ── */}
       <div className="flex justify-between items-center mb-10 pt-4">
@@ -280,6 +282,7 @@ export default function MarketplacePage() {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

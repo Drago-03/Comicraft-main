@@ -173,9 +173,9 @@ export default function WalletConnect() {
         <Button
           onClick={() => setShowWalletModal(true)}
           disabled={connecting}
-          className="w-full relative group overflow-hidden bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white rounded-xl h-11 transition-all flex items-center justify-center gap-2 font-medium"
+          className="w-full relative group bg-[#38bdf8] border-[3px] border-black text-black rounded-none shadow-[4px_4px_0_0_#000] hover:bg-[#0284c7] hover:text-white hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none h-12 transition-all flex items-center justify-center gap-2 font-black uppercase tracking-widest text-[12px]"
         >
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+          
           {connecting ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white" />
@@ -190,7 +190,7 @@ export default function WalletConnect() {
         </Button>
 
         <Dialog open={showWalletModal} onOpenChange={setShowWalletModal}>
-          <DialogContent className="sm:max-w-md bg-black/95 border border-white/10 backdrop-blur-2xl p-0 gap-0 overflow-hidden text-white rounded-3xl shadow-2xl">
+          <DialogContent className="sm:max-w-md bg-[#EEDFCA] border-[4px] border-black p-0 gap-0 overflow-hidden text-black rounded-none shadow-[8px_8px_0_0_#000]">
             <div className="p-6 border-b border-white/5 relative z-10">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-50 pointer-events-none" />
               <div className="flex justify-between items-center relative z-20">
@@ -201,10 +201,10 @@ export default function WalletConnect() {
               </div>
             </div>
 
-            <div className="p-6 space-y-3 relative z-10 bg-white/[0.02]">
+            <div className="p-6 space-y-4 relative z-10 bg-white">
               <button 
                 onClick={handleMetaMaskConnect}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group"
+                className="w-full flex items-center justify-between p-4 rounded-none bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-[#EEDFCA] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none transition-all group"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-[#F6851B]/20 flex items-center justify-center border border-[#F6851B]/30">
@@ -222,7 +222,7 @@ export default function WalletConnect() {
 
               <button 
                 onClick={handleWalletConnect}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group"
+                className="w-full flex items-center justify-between p-4 rounded-none bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-[#EEDFCA] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none transition-all group"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
@@ -254,7 +254,7 @@ export default function WalletConnect() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white transition-all h-10 font-medium"
+          className="flex items-center gap-2 px-3 py-2 rounded-none bg-white border-[3px] border-black hover:bg-[#EEDFCA] text-black shadow-[3px_3px_0_0_#000] hover:translate-y-[-1px] hover:shadow-[4px_4px_0_0_#000] active:translate-y-[1px] active:shadow-[1px_1px_0_0_#000] transition-all h-11 font-black uppercase tracking-widest text-xs"
         >
           <div className="h-2 w-2 rounded-full bg-red-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
           <span className="text-sm">{ensName || truncateAddress(account)}</span>
@@ -264,7 +264,7 @@ export default function WalletConnect() {
       
       <DropdownMenuContent
         align="end"
-        className="w-64 p-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl text-white"
+        className="w-64 p-0 bg-[#EEDFCA] border-[4px] border-black rounded-none shadow-[6px_6px_0_0_#000] text-black z-[100]"
         sideOffset={8}
       >
         <div className="p-3 mb-2 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">

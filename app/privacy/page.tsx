@@ -21,28 +21,24 @@ import { FloatingGithub } from '../terms/page';
 
 // Floating doodle elements
 const FloatingDoodles = () => (
-  <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-red-200 to-cyan-200 rounded-full blur-3xl opacity-20 animate-float"></div>
-    <div className="absolute bottom-40 right-20 w-40 h-40 bg-gradient-to-r from-fuchsia-200 to-pink-200 rounded-full blur-3xl opacity-20 animate-float-delayed"></div>
-    <div className="absolute top-1/2 left-1/3 w-36 h-36 bg-gradient-to-r from-sky-200 to-indigo-200 rounded-full blur-3xl opacity-20 animate-float-slow"></div>
-  </div>
+  <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px', opacity: 0.05 }}></div>
 );
 
 const PrivacySection = ({ icon: Icon, title, children }: any) => (
-  <Card className="mb-8">
-    <CardHeader className="flex flex-row items-center space-x-2">
-      <div className="p-2 bg-primary/10 rounded-full">
-        <Icon className="w-6 h-6 text-primary" />
+  <Card className="mb-8 border-[3px] border-black shadow-[6px_6px_0_0_#000] rounded-none bg-white">
+    <CardHeader className="flex flex-row items-center space-x-4 border-b-[3px] border-black bg-white text-black py-4">
+      <div className="p-2 border-[3px] border-black bg-[#EEDFCA] shadow-[3px_3px_0_0_#000]">
+        <Icon className="w-6 h-6 text-black" />
       </div>
-      <CardTitle>{title}</CardTitle>
+      <CardTitle className="font-black uppercase tracking-widest text-xl m-0">{title}</CardTitle>
     </CardHeader>
-    <CardContent className="space-y-4">{children}</CardContent>
+    <CardContent className="space-y-4 pt-6 text-black font-medium">{children}</CardContent>
   </Card>
 );
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
+    <div className="min-h-screen bg-[#EEDFCA] relative">
       <FloatingDoodles />
       <FloatingGithub />
 
@@ -50,23 +46,17 @@ export default function PrivacyPage() {
         <div className="max-w-4xl mx-auto">
           <LegalHeader />
           <h1
-            className="
-            text-4xl md:text-5xl
-            font-black
-            text-center
-            mb-6
-            text-black
-            dark:text-white
-          "
+            className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-black text-center mb-4"
+            style={{ WebkitTextStroke: '1px black' }}
           >
             Privacy Policy
           </h1>
-          <p className="text-muted-foreground text-center mb-12">
+          <p className="text-black/60 font-bold uppercase tracking-widest text-sm text-center mb-12">
             Last updated: March 15, 2024
           </p>
 
           <PrivacySection icon={Shield} title="1. Information We Collect">
-            <h3 className="text-lg font-semibold">1.1 Personal Information</h3>
+            <h3 className="text-lg font-black uppercase text-black">1.1 Personal Information</h3>
             <p>
               We collect information that you provide directly to us, including:
             </p>
@@ -77,7 +67,7 @@ export default function PrivacyPage() {
               <li>Stories and content you create or interact with</li>
             </ul>
 
-            <h3 className="text-lg font-semibold mt-4 pt-4">
+            <h3 className="text-lg font-black uppercase text-black mt-6 pt-4 border-t-[3px] border-black/10">
               1.2 Automatically Collected Information
             </h3>
             <p>
@@ -150,11 +140,11 @@ export default function PrivacyPage() {
             </p>
           </PrivacySection>
 
-          <div className="text-center text-sm text-muted-foreground">
-            <p>
+          <div className="text-center font-bold text-black border-[3px] border-black bg-white p-6 shadow-[4px_4px_0_0_#000] mt-12">
+            <p className="uppercase tracking-wide text-sm">
               For questions about our Privacy Policy or to exercise your privacy
               rights, please contact us at{' '}
-              <Link href="/contact" className="text-primary hover:underline">
+              <Link href="/contact" className="text-[#cc3333] hover:underline hover:text-black transition-colors underline-offset-4 font-black">
                 privacy@comicraft.com
               </Link>
             </p>

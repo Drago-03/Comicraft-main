@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center relative overflow-hidden bg-background">
+    <main className="flex min-h-screen flex-col items-center justify-center relative overflow-hidden bg-[#EEDFCA]">
       <div className="container mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

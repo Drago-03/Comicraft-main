@@ -110,12 +110,13 @@ export default function ForgeCreatePage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen relative font-sans overflow-hidden">
+    <div className="min-h-screen bg-[#EEDFCA] relative font-sans overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="container mx-auto px-4 py-10 relative z-10"
+        className="container mx-auto px-4 py-10 relative z-10 pt-28"
       >
         <div className="max-w-5xl mx-auto">
           {/* Header */}

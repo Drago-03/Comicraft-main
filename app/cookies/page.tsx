@@ -12,28 +12,24 @@ import { FloatingGithub } from '../terms/page';
 
 // Floating doodle elements
 const FloatingDoodles = () => (
-  <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-orange-200 to-amber-200 rounded-full blur-3xl opacity-20 animate-float"></div>
-    <div className="absolute bottom-40 right-20 w-40 h-40 bg-gradient-to-r from-lime-200 to-red-200 rounded-full blur-3xl opacity-20 animate-float-delayed"></div>
-    <div className="absolute top-1/2 left-1/3 w-36 h-36 bg-gradient-to-r from-sky-200 to-blue-200 rounded-full blur-3xl opacity-20 animate-float-slow"></div>
-  </div>
+  <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px', opacity: 0.05 }}></div>
 );
 
 const CookieSection = ({ icon: Icon, title, children }: any) => (
-  <Card className="mb-8">
-    <CardHeader className="flex flex-row items-center space-x-2">
-      <div className="p-2 bg-primary/10 rounded-full">
-        <Icon className="w-6 h-6 text-primary" />
+  <Card className="mb-8 border-[3px] border-black shadow-[6px_6px_0_0_#000] rounded-none bg-white">
+    <CardHeader className="flex flex-row items-center space-x-4 border-b-[3px] border-black bg-white text-black py-4">
+      <div className="p-2 border-[3px] border-black bg-[#EEDFCA] shadow-[3px_3px_0_0_#000]">
+        <Icon className="w-6 h-6 text-black" />
       </div>
-      <CardTitle>{title}</CardTitle>
+      <CardTitle className="font-black uppercase tracking-widest text-xl m-0">{title}</CardTitle>
     </CardHeader>
-    <CardContent className="space-y-4">{children}</CardContent>
+    <CardContent className="space-y-4 pt-6 text-black font-medium">{children}</CardContent>
   </Card>
 );
 
 export default function CookiePolicyPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
+    <div className="min-h-screen bg-[#EEDFCA] relative">
       <FloatingDoodles />
       <FloatingGithub />
 
@@ -41,18 +37,12 @@ export default function CookiePolicyPage() {
         <div className="max-w-4xl mx-auto">
           <LegalHeader />
           <h1
-            className="
-            text-4xl md:text-5xl
-            font-black
-            text-center
-            mb-6
-            text-black
-            dark:text-white
-          "
+            className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-black text-center mb-4"
+            style={{ WebkitTextStroke: '1px black' }}
           >
             Cookie Policy
           </h1>
-          <p className="text-muted-foreground text-center mb-12">
+          <p className="text-black/60 font-bold uppercase tracking-widest text-sm text-center mb-12">
             Last updated: March 15, 2024
           </p>
 
@@ -123,7 +113,7 @@ export default function CookiePolicyPage() {
             icon={Settings}
             title="Managing Your Cookie Preferences"
           >
-            <h3 className="text-lg font-semibold">Browser Settings</h3>
+            <h3 className="text-lg font-black uppercase text-black pt-4 border-t-[3px] border-black/10">Browser Settings</h3>
             <p>
               You can control and/or delete cookies as you wish. You can delete
               all cookies that are already on your computer and you can set most
@@ -131,41 +121,41 @@ export default function CookiePolicyPage() {
             </p>
 
             <div className="mt-4 space-y-4">
-              <p className="text-lg font-medium pt-2">
+              <p className="text-lg font-black uppercase text-black pt-2">
                 How to manage cookies in your browser:
               </p>
 
               <div className="space-y-2">
                 <p>
-                  <span className="font-medium">Chrome:</span> Settings {'->'}{' '}
+                  <span className="font-black uppercase text-black">Chrome:</span> Settings {'->'}{' '}
                   Privacy and security {'->'} Cookies and other site data
                 </p>
                 <p>
-                  <span className="font-medium">Firefox:</span> Options {'->'}{' '}
+                  <span className="font-black uppercase text-black">Firefox:</span> Options {'->'}{' '}
                   Privacy & Security {'->'} Cookies and Site Data
                 </p>
                 <p>
-                  <span className="font-medium">Safari:</span> Preferences{' '}
+                  <span className="font-black uppercase text-black">Safari:</span> Preferences{' '}
                   {'->'} Privacy {'->'} Cookies and website data
                 </p>
                 <p>
-                  <span className="font-medium">Edge:</span> Settings {'->'}{' '}
+                  <span className="font-black uppercase text-black">Edge:</span> Settings {'->'}{' '}
                   Cookies and site permissions {'->'} Cookies and site data
                 </p>
               </div>
             </div>
 
             <div className="mt-6 pt-2">
-              <Button variant="outline" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto bg-[#cc3333] hover:bg-black text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] active:translate-y-1 active:shadow-none font-black uppercase tracking-wide rounded-none transition-all">
                 Update Cookie Preferences
               </Button>
             </div>
           </CookieSection>
 
-          <div className="text-center text-sm text-muted-foreground">
-            <p>
+          <div className="text-center font-bold text-black border-[3px] border-black bg-white p-6 shadow-[4px_4px_0_0_#000] mt-12">
+            <p className="uppercase tracking-wide text-sm">
               For questions about our Cookie Policy, please{' '}
-              <Link href="/contact" className="text-primary hover:underline">
+              <Link href="/contact" className="text-[#cc3333] hover:underline hover:text-black transition-colors underline-offset-4 font-black">
                 contact us
               </Link>
               .

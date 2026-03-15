@@ -187,8 +187,9 @@ export default function GalleryPage() {
   const filtered = posts.filter(p => filter === 'all' || p.format_type === filter);
 
   return (
-    <div className="w-screen min-h-screen relative left-1/2 -ml-[50vw] text-black font-sans z-0 pb-16">
-      <div className="container mx-auto px-6 py-12 relative z-10 max-w-7xl">
+    <div className="w-screen min-h-screen bg-[#EEDFCA] relative left-1/2 -ml-[50vw] text-black font-sans z-0 pb-16">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+      <div className="container mx-auto px-6 pt-32 pb-12 relative z-10 max-w-7xl">
         <div className="mb-12 text-center md:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 border-[2px] border-black bg-white shadow-[3px_3px_0_0_#000] text-xs font-black tracking-wider text-black uppercase mb-4">
             <Hexagon className="w-3 h-3 text-[#cc3333]" /> NEURAL GALLERY

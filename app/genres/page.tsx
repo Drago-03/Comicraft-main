@@ -266,8 +266,9 @@ export default function GenresPage() {
   };
 
   return (
-    <div className="pt-0 pb-0 min-h-screen">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="pt-0 pb-0 min-h-screen bg-[#EEDFCA] relative font-sans text-black">
+      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px', opacity: 0.05 }} />
+      <div className="container mx-auto px-4 max-w-7xl relative z-10 pt-20 pb-12">
         {/* ═══════════ HERO SECTION ═══════════ */}
         <div className="mb-20 text-center">
           <div className="inline-block px-4 py-1.5 mb-6 text-xs font-black uppercase tracking-[0.3em] text-[var(--comic-purple)] border-2 border-[var(--comic-purple)] bg-[var(--comic-purple)]/10"

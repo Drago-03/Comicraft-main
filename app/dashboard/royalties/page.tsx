@@ -22,19 +22,19 @@ export default function RoyaltiesDashboardPage() {
 
   if (!address) {
     return (
-      <div className="min-h-screen bg-background p-8">
-        <div className="max-w-lg mx-auto text-center py-24 space-y-6">
-          <div className="mx-auto w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-            <Wallet className="h-8 w-8 text-muted-foreground" />
+      <div className="min-h-screen bg-[#EEDFCA] p-8 relative">
+        <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
+        <div className="max-w-lg mx-auto text-center py-24 space-y-6 relative z-10">
+          <div className="mx-auto w-20 h-20 rounded-none bg-white border-[4px] border-black shadow-[6px_6px_0_0_#000] flex items-center justify-center">
+            <Wallet className="h-10 w-10 text-black" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-4xl font-black uppercase italic tracking-tighter text-black">
             Connect Your Wallet
           </h1>
-          <p className="text-muted-foreground">
-            Connect your wallet to view your royalty earnings and manage revenue
-            settings.
+          <p className="font-bold text-black/60 uppercase text-sm tracking-wide">
+            Connect your wallet to view your royalty earnings and manage revenue settings.
           </p>
-          <Button onClick={connect} size="lg">
+          <Button onClick={connect} size="lg" className="bg-[#cc3333] text-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:shadow-[6px_6px_0_0_#000] hover:-translate-y-1 transition-all font-black uppercase">
             <Wallet className="mr-2 h-4 w-4" />
             Connect Wallet
           </Button>
@@ -44,7 +44,8 @@ export default function RoyaltiesDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-screen bg-[#EEDFCA] p-4 md:p-8 relative">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

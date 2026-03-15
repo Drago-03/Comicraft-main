@@ -123,11 +123,12 @@ function persistSession(session: any) {
 
 export default function AuthCallbackPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0c]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#EEDFCA] relative">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
       <Suspense fallback={
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-8 h-8 animate-spin text-white" />
-          <p className="text-neutral-400 font-medium">Loading...</p>
+        <div className="flex flex-col items-center gap-4 relative z-10">
+          <div className="w-10 h-10 border-[4px] border-black border-t-[#cc3333] rounded-full animate-spin" />
+          <p className="font-black uppercase text-sm text-black/60 tracking-wider">Loading...</p>
         </div>
       }>
         <AuthCallback />

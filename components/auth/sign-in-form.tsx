@@ -74,7 +74,7 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
     }`;
 
   return (
-    <div className="w-full max-w-md px-6 py-8 relative z-10 flex flex-col">
+    <div className="w-full max-w-md px-6 py-8 relative z-10 flex flex-col mx-auto">
       {/* Header */}
       <div className="flex flex-col items-center mb-8">
         <Link href="/" className="mb-5 block">
@@ -131,7 +131,7 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
                 type="button" onClick={() => setShowPassword(!showPassword)}
                 aria-pressed={showPassword} aria-label={showPassword ? 'Hide password' : 'Show password'}
                 className="absolute right-3 text-black/40 hover:text-[#cc3333] focus:outline-none transition-colors"
-              >
+                >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
@@ -196,13 +196,13 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
       </div>
 
       {/* Toggle */}
-      <p className="mt-6 text-center text-sm text-black/60 font-bold">
+      <p className="mt-8 text-center text-sm text-black/60 font-black">
         Need to create an account?{' '}
         <button
           onClick={onToggleMode}
-          className="text-[#cc3333] hover:text-black font-black transition-colors ml-1 focus:outline-none underline underline-offset-2"
+          className="text-[#cc3333] font-black hover:text-black hover:underline transition-colors ml-1 focus:outline-none underline-offset-2"
         >
-          Register Here →
+          START YOUR JOURNEY &rarr;
         </button>
       </p>
     </div>

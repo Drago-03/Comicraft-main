@@ -165,10 +165,11 @@ function QuickLink({
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#EEDFCA] relative font-sans text-black">
+      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px', opacity: 0.05 }} />
       <FloatingGithub />
 
-      <div className="container mx-auto px-4 py-16 max-w-5xl">
+      <div className="container mx-auto px-4 py-16 max-w-5xl relative z-10">
         {/* ═══════════ HERO SECTION ═══════════ */}
         <div className="text-center mb-16">
           <div

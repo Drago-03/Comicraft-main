@@ -115,10 +115,9 @@ export default function ShaktiSparkPage() {
   }, [generatedContent, selectedGenre, prompt, router]);
 
   return (
-    <div className="min-h-screen relative bg-black text-black font-sans overflow-hidden">
+    <div className="min-h-screen bg-[#EEDFCA] relative text-black font-sans overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '8px 8px' }} />
 
       <motion.div
         initial={{ opacity: 0 }}
