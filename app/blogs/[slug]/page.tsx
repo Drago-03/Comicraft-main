@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { notFound } from 'next/navigation';
 import BlogPostContent from './BlogPostContent';
 
 export function generateStaticParams() {
@@ -33,15 +34,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = POSTS[slug];
 
   if (!post) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background-light font-display">
-        <div className="text-center">
-          <div className="text-8xl font-black mb-4">404</div>
-          <p className="text-ink/60">Post not found.</p>
-          <Link href="/blogs" className="mt-4 inline-block text-comic-primary font-black uppercase hover:underline">← Back to Blogs</Link>
-        </div>
-      </div>
-    );
+    return notFound();
   }
 
   return (

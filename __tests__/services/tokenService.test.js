@@ -54,7 +54,7 @@ describe('tokenService', () => {
     beforeEach(() => {
         jest.resetModules();
         process.env.CRAFTS_TOKEN_ADDRESS = '0xCRAFTS0000000000000000000000000000000001';
-        process.env.MONAD_RPC_URL = 'https://rpc.test';
+        process.env.ETH_RPC_URL = 'https://eth-mainnet.g.alchemy.com/v2/test-key';
         process.env.PLATFORM_SIGNER_KEY = '0x' + 'a'.repeat(64);
         tokenService = require('../../server/services/tokenService');
     });

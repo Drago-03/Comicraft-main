@@ -166,27 +166,63 @@ async function executeGroqTask(taskName, prompt, correlationId) {
 function buildChairmanPrompt(userInput, config, groqContext = {}) {
     const sections = [];
 
-    // 1. Core Directive — PREMISE FIRST
     sections.push(`# STORY GENERATION DIRECTIVE`);
-    sections.push(`You are a world-class fiction writer. Generate a complete, compelling story based on the user's concept below.`);
-    sections.push(`Write ONLY the story prose — no commentary, no meta-text, no authors notes.`);
+    sections.push(`You are the Comicraft AI Engine. Your task is to generate a complete, compelling story based on the user's premise and their provided \`.toon\` configuration profile.`);
+    sections.push(``);
+    sections.push(`Write ONLY the story prose — no commentary, no meta-text, no author's notes.`);
     sections.push(`Start immediately with the narrative.`);
     sections.push(``);
 
-    // 2. THE USER'S STORY CONCEPT — MOST IMPORTANT PART
-    sections.push(`## ⚡ USER'S STORY CONCEPT (THIS IS YOUR PRIMARY DIRECTIVE — FOLLOW IT CLOSELY)`);
-    if (config.customPremise) {
-        sections.push(config.customPremise);
-    }
-    if (userInput && userInput.trim()) {
-        sections.push(userInput);
-    }
-    if (!config.customPremise && !userInput) {
-        sections.push(`(No specific premise provided — generate an original story in the ${config.primaryGenre || 'fantasy'} genre)`);
-    }
+    sections.push(`## ⚡ USER'S STORY CONCEPT`);
+    const storyConcept = config.customPremise || userInput || `(No specific premise provided — generate an original story in the ${config.primaryGenre || 'fantasy'} genre)`;
+    sections.push(storyConcept);
     sections.push(``);
 
-    // 3. Include Groq context if available (pre-processed insights)
+    sections.push(`## ⚙️ COMICRAFT .TOON PROFILE`);
+    sections.push(`The following is the .toon config file parameters provided by the user. Adhere strictly to these tuning directives:`);
+    sections.push(``);
+
+    sections.push(`[CORE]`);
+    sections.push(`TargetWords = ${config.targetWordCount || 800}`);
+    sections.push(`Chapters = ${config.chapterCount || 1}`);
+    sections.push(`Format = ${config.mode || 'story-only'}`);
+    sections.push(`GenerationSeed = ${config.generationSeed || 'random'}`);
+    sections.push(``);
+
+    sections.push(`[GENRE_AND_TONE]`);
+    sections.push(`Primary = ${config.primaryGenre || 'fantasy'}`);
+    sections.push(`Secondary = ${config.secondaryGenres?.length ? config.secondaryGenres.join(', ') : 'none'}`);
+    sections.push(`Tone = ${Array.isArray(config.tone) ? config.tone.join(', ') : (config.tone || 'standard')}`);
+    sections.push(`Pacing = ${config.pacing || 'moderate'}`);
+    sections.push(`HumorLevel = ${config.humorLevel || 5}`);
+    sections.push(``);
+
+    sections.push(`[PLOT_AND_STRUCTURE]`);
+    sections.push(`Structure = ${config.structureTemplate || 'three-act'}`);
+    sections.push(`EndingStyle = ${config.endingStyle || 'resolved'}`);
+    sections.push(`TwistIntensity = ${config.twistIntensity || 5}`);
+    sections.push(`Themes = ${Array.isArray(config.themes) ? config.themes.join(', ') : (config.themes || 'none')}`);
+    sections.push(``);
+
+    sections.push(`[CHARACTERS]`);
+    sections.push(`MainCount = ${config.mainCharacterCount || 1}`);
+    sections.push(`SupportingCount = ${config.supportingCharacterCount || 5}`);
+    sections.push(`ProtagonistArchetype = ${config.protagonistArchetype || 'standard'}`);
+    sections.push(`AntagonistType = ${config.antagonistType || 'standard'}`);
+    sections.push(``);
+
+    sections.push(`[STYLE]`);
+    sections.push(`POV = ${config.narrativePOV || 'third-person limited'}`);
+    sections.push(`Tense = ${config.tense || 'past'}`);
+    sections.push(`ProseDensity = ${config.proseDensity || 'balanced'}`);
+    sections.push(`DialogueRatio = ${config.dialogueToDescriptionRatio || 50}`);
+    sections.push(``);
+
+    sections.push(`[CONSTRAINTS]`);
+    sections.push(`NSFW = ${config.nsfwToggle || 'false'}`);
+    sections.push(`BlockTrademarks = ${config.blockRealPeopleTrademarks || 'false'}`);
+    sections.push(``);
+
     if (groqContext.classification) {
         sections.push(`## PRE-ANALYZED INSIGHTS`);
         sections.push(`Classification: ${groqContext.classification}`);
@@ -202,98 +238,21 @@ function buildChairmanPrompt(userInput, config, groqContext = {}) {
     }
 
     if (groqContext.vectorTwists && groqContext.vectorTwists.length > 0) {
-        sections.push(`## STORYLINE UNIQUENESS PROTOCOL (RAG VECTOR SEARCH)`);
-        sections.push(`We found highly similar stories already exist in our database. To ensure this new story stands out, you MUST subvert expectations and introduce UNIQUE twists.`);
-        sections.push(`Avoid these common tropes found in similar stories:`);
+        sections.push(`## STORYLINE UNIQUENESS PROTOCOL`);
+        sections.push(`Avoid these common similar storylines:`);
         groqContext.vectorTwists.forEach((story, i) => {
             sections.push(`- Similar Idea ${i + 1}: "${story.storyline.substring(0, 150)}..." -> DIVERGE FROM THIS`);
         });
-        sections.push(`Inject a surprising twist or use an unconventional narrative approach so this story is completely unique.`);
+        sections.push(`Inject a surprising twist. Ensure story is unique.`);
         sections.push(``);
     }
 
-    // 4. LENGTH & STRUCTURE CONSTRAINTS (critical for chapter control)
-    sections.push(`## LENGTH & STRUCTURE REQUIREMENTS`);
-    const chapterCount = config.chapterCount || 1;
-    const wordCount = config.targetWordCount || 800;
-    sections.push(`- Generate EXACTLY ${chapterCount} chapter(s)`);
-    sections.push(`- Target word count: approximately ${wordCount} words total`);
-    sections.push(`- Length category: ${config.targetLength || 'short'}`);
-    if (chapterCount === 1) {
-        sections.push(`- Write as a single continuous narrative (no chapter headers)`);
-    } else {
-        sections.push(`- Format each chapter with: ## Chapter [N]: [Title]`);
-    }
+    sections.push(`## IMPORTANT REMINDERS`);
+    sections.push(`1. Your story MUST be about the user's concept described above.`);
+    sections.push(`2. Stay closely within the boundaries of the .toon profile constraints.`);
+    sections.push(`3. Be creative and original — generate a UNIQUE story every time.`);
     sections.push(``);
-
-    // 5. Genre & Tone
-    sections.push(`## GENRE & TONE`);
-    sections.push(`- Genre: ${config.primaryGenre || 'fantasy'}${config.secondaryGenres?.length ? ` + ${config.secondaryGenres.join(', ')}` : ''}`);
-    if (config.tone) sections.push(`- Tone: ${Array.isArray(config.tone) ? config.tone.join(', ') : config.tone}`);
-    if (config.pacing) sections.push(`- Pacing: ${config.pacing}`);
-    if (config.humorLevel) sections.push(`- Humor level: ${config.humorLevel}`);
-    sections.push(``);
-
-    // 6. Characters (only if specified)
-    if (config.mainCharacterCount || config.protagonistArchetype || config.antagonistType) {
-        sections.push(`## CHARACTERS`);
-        if (config.mainCharacterCount) sections.push(`- Main characters: ${config.mainCharacterCount}`);
-        if (config.supportingCharacterCount) sections.push(`- Supporting: ${config.supportingCharacterCount}`);
-        if (config.protagonistArchetype) sections.push(`- Protagonist type: ${config.protagonistArchetype}`);
-        if (config.antagonistType) sections.push(`- Antagonist: ${config.antagonistType}`);
-        sections.push(``);
-    }
-
-    // 7. Plot structure (only if specified)
-    if (config.structureTemplate || config.endingStyle || config.twistIntensity || config.themes) {
-        sections.push(`## PLOT`);
-        if (config.structureTemplate) sections.push(`- Structure: ${config.structureTemplate}`);
-        if (config.endingStyle) sections.push(`- Ending: ${config.endingStyle}`);
-        if (config.twistIntensity) sections.push(`- Twist intensity: ${config.twistIntensity}`);
-        if (config.themes) sections.push(`- Themes: ${Array.isArray(config.themes) ? config.themes.join(', ') : config.themes}`);
-        sections.push(``);
-    }
-
-    // 8. Style (only if specified)
-    if (config.proseDensity || config.narrativePOV || config.tense) {
-        sections.push(`## STYLE`);
-        if (config.narrativePOV) sections.push(`- POV: ${config.narrativePOV}`);
-        if (config.tense) sections.push(`- Tense: ${config.tense}`);
-        if (config.proseDensity) sections.push(`- Prose density: ${config.proseDensity}`);
-        if (config.dialogueToDescriptionRatio) sections.push(`- Dialogue:Description ratio: ${config.dialogueToDescriptionRatio}:${100 - config.dialogueToDescriptionRatio}`);
-        sections.push(``);
-    }
-
-    // 9. Comic panels (if applicable)
-    if (config.mode && config.mode.includes('comic')) {
-        sections.push(`## COMIC PANEL BREAKDOWN`);
-        sections.push(`- Panel Layout: ${config.panelLayoutStyle || 'standard'}`);
-        sections.push(`- Target Panels: ${config.comicPanelCount || 24}`);
-        sections.push(`- Visual Tone: ${config.visualTone || 'dynamic'}`);
-        sections.push(``);
-    }
-
-    // 10. Safety (minimal, only if set)
-    if (config.nsfwToggle || config.blockRealPeopleTrademarks) {
-        sections.push(`## CONSTRAINTS`);
-        if (config.nsfwToggle) sections.push(`- Content level: ${config.nsfwToggle}`);
-        if (config.blockRealPeopleTrademarks) sections.push(`- No real people or trademarked characters`);
-        sections.push(``);
-    }
-
-    // 11. Final reminder — CRITICALLY IMPORTANT for plot adherence
-    sections.push(`## CRITICAL INSTRUCTIONS (DO NOT IGNORE)`);
-    sections.push(`1. **FOLLOW THE USER'S CONCEPT EXACTLY** — Your story MUST directly follow the plot, characters, setting, and themes described in "USER'S STORY CONCEPT" above. Do not invent a completely different story.`);
-    sections.push(`2. Every scene, character, and event must serve the user's stated premise. If they described specific characters, USE those characters. If they described a specific plot, FOLLOW that plot.`);
-    sections.push(`3. Stay within ${wordCount} words (±20%)`);
-    sections.push(`4. Generate exactly ${chapterCount} chapter(s)`);
-    sections.push(`5. Write ONLY the story — no meta-commentary, no author notes, no preamble`);
-    sections.push(`6. Be creative within the user's concept — add depth and detail, but do NOT deviate from their premise`);
-    if (config.generationSeed) {
-        sections.push(`[Generation Seed: ${config.generationSeed} — use this for creative variation within the user's premise]`);
-    }
-    sections.push(``);
-    sections.push(`BEGIN WRITING THE USER'S STORY:`);
+    sections.push(`BEGIN WRITING:`);
 
     return sections.join('\n');
 }
@@ -433,7 +392,7 @@ async function orchestrateGeneration({
         const chairmanPrompt = buildChairmanPrompt(userInput, config, groqContext);
 
         let generatedContent;
-        const geminiConfigured = !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
+        const geminiConfigured = !!process.env.GEMINI_API_KEY;
 
         if (geminiConfigured) {
             // Use Gemini as chairman

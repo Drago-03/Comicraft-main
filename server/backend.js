@@ -21,18 +21,7 @@ const swaggerUi = require('swagger-ui-express');
 const path = require('path');
 const os = require('os');
 const dotenv = require('dotenv');
-// Load server/.env first (contains GEMINI_API_KEY and backend-specific vars)
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-// Also load root .env.local for any shared vars (does NOT override existing)
-dotenv.config({ path: path.resolve(__dirname, '..', '.env.local') });
-
-// Startup diagnostic — confirm critical env vars loaded
-const _gk = process.env.GEMINI_API_KEY;
-const _ggk = process.env.GOOGLE_API_KEY;
-console.log(`[ENV] GEMINI_API_KEY: ${_gk ? _gk.substring(0, 12) + '...' : 'NOT SET'}`);
-console.log(`[ENV] GOOGLE_API_KEY: ${_ggk ? _ggk.substring(0, 12) + '...' : 'NOT SET'}`);
-console.log(`[ENV] GEMINI_MODEL: ${process.env.GEMINI_MODEL || 'NOT SET'}`);
-console.log(`[ENV] Loaded from: ${path.resolve(__dirname, '.env')} and ${path.resolve(__dirname, '..', '.env.local')}`);
+dotenv.config();
 
 const logger = require('./utils/logger');
 const requestIdMiddleware = require('./middleware/requestId');
@@ -547,7 +536,7 @@ app.get(['/api/health', '/api/health/db'], async (req, res) => {
       gemini: {
         status: geminiConfigured ? 'available' : 'not_configured',
         configured: geminiConfigured,
-        model: process.env.GEMINI_MODEL || 'gemini-3-flash-preview',
+        model: process.env.GEMINI_MODEL || 'gemini-3.1-pro',
         role: 'primary_llm',
       },
       iqai: {

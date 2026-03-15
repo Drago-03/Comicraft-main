@@ -76,9 +76,18 @@ export function UserNav() {
     };
     window.addEventListener('storage', handleStorageChange);
 
+    // Re-check session when user returns to this tab or navigates back
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') refreshSession();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', refreshSession);
+
     return () => {
       subscription.unsubscribe();
       window.removeEventListener('storage', handleStorageChange);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', refreshSession);
     };
   }, [supabase.auth, account]);
 

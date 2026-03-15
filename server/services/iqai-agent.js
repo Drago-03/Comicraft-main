@@ -1,12 +1,10 @@
 /**
  * IQai Agent Service — Comicraft Story Agent
  *
- * Wraps the story generation pipeline in an IQai ADK agent.
- * Uses @iqai/adk Agent class with Gemini as the LLM provider.
- *
- * The ADK Agent API:
- *   - new Agent({ name, model, instructions, tools })
- *   - agent.run({ messages: [{ role, content }] })
+ * Wraps the story generation pipeline in an IQai ADK-TS compatible agent
+ * structure. This service creates a tokenizable AI agent on IQai's ATP
+ * (Agent Tokenization Platform) that orchestrates story generation,
+ * analysis, and panel breakdown using Google Gemini as the LLM provider.
  *
  * Dependencies: @iqai/adk (Agent Development Kit for TypeScript)
  * Docs: https://docs.iqai.com / https://github.com/IQ-ai/adk-ts
@@ -28,54 +26,112 @@ try {
 // ---------------------------------------------------------------------------
 
 let Agent = null;
-let AgentBuilder = null;
 let adkAvailable = false;
 
 try {
     const adk = require('@iqai/adk');
-    Agent = adk.Agent || adk.LlmAgent;
-    AgentBuilder = adk.AgentBuilder;
-    adkAvailable = !!(Agent || AgentBuilder);
-    if (adkAvailable) {
-        logger.info('[IQai] ADK-TS loaded successfully');
-    } else {
-        logger.warn('[IQai] ADK-TS loaded but Agent/AgentBuilder classes not found');
-    }
-} catch (err) {
-    logger.warn(`[IQai] @iqai/adk not installed or failed to load: ${err.message}. Running in compatibility mode (direct Gemini calls).`);
+    Agent = adk.Agent || adk.LlmAgent || adk.AgentBuilder;
+    adkAvailable = true;
+    logger.info('[IQai] ADK-TS loaded successfully');
+} catch {
+    logger.warn('[IQai] @iqai/adk not installed. Running in compatibility mode (direct Gemini calls).');
 }
 
 // ---------------------------------------------------------------------------
-// Ensure GOOGLE_API_KEY is set (ADK reads this env var for Gemini)
-// ---------------------------------------------------------------------------
-if (!process.env.GOOGLE_API_KEY && process.env.GEMINI_API_KEY) {
-    process.env.GOOGLE_API_KEY = process.env.GEMINI_API_KEY;
-    logger.info('[IQai] Set GOOGLE_API_KEY from GEMINI_API_KEY for ADK compatibility');
-}
-
-// ---------------------------------------------------------------------------
-// Internal Gemini caller (used when ADK is not available or as fallback)
+// Internal Gemini caller (used when ADK is not available or for tools)
 // ---------------------------------------------------------------------------
 
 const geminiService = require('./geminiService');
-const groqService = require('./groqService');
+const groqService = require('./groqService'); // Now Gemini-powered
+
+// ---------------------------------------------------------------------------
+// Tool definitions for the IQai agent
+// ---------------------------------------------------------------------------
+
+const AGENT_TOOLS = {
+    generateStory: {
+        name: 'generate_story',
+        description: 'Generate a story, comic script, or novel chapter based on given parameters.',
+        parameters: {
+            type: 'object',
+            properties: {
+                prompt: { type: 'string', description: 'Direct prompt for story generation' },
+                genre: { type: 'string', description: 'Story genre (e.g., fantasy, sci-fi, horror)' },
+                theme: { type: 'string', description: 'Central theme of the story' },
+                length: { type: 'string', enum: ['short', 'medium', 'long'], description: 'Story length' },
+                tone: { type: 'string', description: 'Narrative tone (e.g., dark, humorous, serious)' },
+                characters: { type: 'string', description: 'Character descriptions' },
+                setting: { type: 'string', description: 'Story setting' },
+                formatType: { type: 'string', enum: ['story', 'comic', 'novel', 'storybook'], description: 'Output format' },
+            },
+        },
+    },
+    analyzeStory: {
+        name: 'analyze_story',
+        description: 'Analyze text content for sentiment, themes, readability, and complexity.',
+        parameters: {
+            type: 'object',
+            required: ['content'],
+            properties: {
+                content: { type: 'string', description: 'Text content to analyze' },
+                analysisType: { type: 'string', enum: ['general', 'sentiment', 'themes', 'readability'], description: 'Type of analysis' },
+            },
+        },
+    },
+    breakdownPanels: {
+        name: 'breakdown_panels',
+        description: 'Break a story into comic panels with visual descriptions and dialogue.',
+        parameters: {
+            type: 'object',
+            required: ['story'],
+            properties: {
+                story: { type: 'string', description: 'Story text to break into panels' },
+                panelCount: { type: 'number', description: 'Desired number of panels (default: 6)' },
+                artStyle: { type: 'string', description: 'Art style for visual descriptions' },
+            },
+        },
+    },
+    generateIdeas: {
+        name: 'generate_ideas',
+        description: 'Generate creative story premises/ideas.',
+        parameters: {
+            type: 'object',
+            properties: {
+                genre: { type: 'string', description: 'Genre to generate ideas for' },
+                count: { type: 'number', description: 'Number of ideas (default: 5)' },
+                theme: { type: 'string', description: 'Theme constraint' },
+            },
+        },
+    },
+    improveContent: {
+        name: 'improve_content',
+        description: 'Improve and enhance existing text content.',
+        parameters: {
+            type: 'object',
+            required: ['content'],
+            properties: {
+                content: { type: 'string', description: 'Text to improve' },
+                focusArea: { type: 'string', description: 'Area to focus improvement on (e.g., dialogue, pacing, description)' },
+            },
+        },
+    },
+};
 
 // ---------------------------------------------------------------------------
 // Agent configuration
 // ---------------------------------------------------------------------------
 
 const AGENT_CONFIG = {
-    name: 'comicraft_story_agent',
+    name: 'ComiCraft Story Agent',
     description: 'AI-powered storytelling agent for the ComiCraft platform. Generates stories, comic scripts, and novels with deep narrative understanding.',
     version: '1.0.0',
-    model: process.env.GEMINI_MODEL || 'gemini-3-flash-preview',
+    model: 'gemini-3.1-pro',
     systemInstruction: `You are the ComiCraft Story Agent — a master storyteller and creative writing assistant.
 You specialize in generating engaging stories, comic scripts, and novels across all genres.
 You understand narrative structure, character development, pacing, and visual storytelling.
 When generating comic scripts, you think in panels with vivid visual descriptions.
 When analyzing content, you provide precise, structured feedback.
-You never break character or add meta-commentary to your creative output.
-Start immediately with the narrative — no preamble, no author notes.`,
+You never break character or add meta-commentary to your creative output.`,
 };
 
 // ---------------------------------------------------------------------------
@@ -85,6 +141,7 @@ Start immediately with the narrative — no preamble, no author notes.`,
 class ComiCraftStoryAgent {
     constructor() {
         this.config = AGENT_CONFIG;
+        this.tools = AGENT_TOOLS;
         this.isInitialized = false;
         this.adkAgent = null;
     }
@@ -96,29 +153,27 @@ class ComiCraftStoryAgent {
     async initialize() {
         if (this.isInitialized) return;
 
-        if (adkAvailable) {
+        if (adkAvailable && Agent) {
             try {
-                if (AgentBuilder) {
-                    // Use AgentBuilder fluent API (preferred)
-                    const built = await AgentBuilder
-                        .create(this.config.name)
-                        .withModel(this.config.model)
-                        .withDescription(this.config.description)
-                        .withInstruction(this.config.systemInstruction)
-                        .build();
+                // Build ADK agent with Gemini as the LLM provider
+                const builder = typeof Agent === 'function' && Agent.builder
+                    ? Agent.builder()
+                    : new Agent();
 
-                    this.adkAgent = built.agent || built;
-                    logger.info('[IQai] ComiCraft Story Agent initialized via AgentBuilder');
-                } else if (Agent) {
-                    // Use Agent constructor directly
-                    this.adkAgent = new Agent({
-                        name: this.config.name,
-                        model: this.config.model,
-                        description: this.config.description,
-                        instructions: this.config.systemInstruction,
-                    });
-                    logger.info('[IQai] ComiCraft Story Agent initialized via Agent constructor');
+                if (typeof builder.setName === 'function') builder.setName(this.config.name);
+                if (typeof builder.setDescription === 'function') builder.setDescription(this.config.description);
+                if (typeof builder.setModel === 'function') builder.setModel(this.config.model);
+                if (typeof builder.setSystemInstruction === 'function') builder.setSystemInstruction(this.config.systemInstruction);
+
+                // Register tools
+                for (const toolDef of Object.values(this.tools)) {
+                    if (typeof builder.addTool === 'function') {
+                        builder.addTool(toolDef);
+                    }
                 }
+
+                this.adkAgent = typeof builder.build === 'function' ? builder.build() : builder;
+                logger.info('[IQai] ComiCraft Story Agent initialized with ADK-TS');
             } catch (err) {
                 logger.warn(`[IQai] ADK agent init failed (${err.message}), falling back to compatibility mode`);
                 this.adkAgent = null;
@@ -131,89 +186,7 @@ class ComiCraftStoryAgent {
     }
 
     /**
-     * Run a story generation task through the IQai agent or fallback.
-     * This is the primary method called by the AI routes.
-     *
-     * @param {Object} params - Generation parameters
-     * @param {string} params.prompt - The story prompt/premise
-     * @param {string} [params.genre] - Story genre
-     * @param {string} [params.theme] - Central theme
-     * @param {string} [params.length] - Story length (short/medium/long)
-     * @param {string} [params.tone] - Narrative tone
-     * @param {string} [params.characters] - Character descriptions
-     * @param {string} [params.setting] - Story setting
-     * @param {string} [params.formatType] - Output format (story/comic/novel)
-     * @param {number} [params.temperature] - Generation temperature
-     * @param {number} [params.maxTokens] - Max output tokens
-     * @returns {Promise<string>} - The generated content
-     */
-    async run(params) {
-        await this.initialize();
-
-        // Build a comprehensive prompt from all parameters
-        const promptParts = [];
-        if (params.genre) promptParts.push(`Genre: ${params.genre}`);
-        if (params.theme) promptParts.push(`Theme: ${params.theme}`);
-        if (params.tone) promptParts.push(`Tone: ${params.tone}`);
-        if (params.characters) promptParts.push(`Characters: ${params.characters}`);
-        if (params.setting) promptParts.push(`Setting: ${params.setting}`);
-        if (params.formatType) promptParts.push(`Format: ${params.formatType}`);
-        if (params.length) promptParts.push(`Length: ${params.length}`);
-
-        const userMessage = params.prompt
-            ? (promptParts.length > 0
-                ? `${promptParts.join('. ')}.\n\n${params.prompt}`
-                : params.prompt)
-            : promptParts.join('. ') + '. Write a compelling story based on these parameters.';
-
-        // Try ADK agent first
-        if (this.adkAgent) {
-            try {
-                logger.info('[IQai] Running story generation via ADK agent');
-
-                let response;
-
-                // Try the agent's run method with messages format
-                if (typeof this.adkAgent.run === 'function') {
-                    response = await this.adkAgent.run({
-                        messages: [{ role: 'user', content: userMessage }],
-                    });
-                }
-
-                // Extract content from response
-                if (response) {
-                    const content = typeof response === 'string'
-                        ? response
-                        : response.content || response.text || response.output
-                          || (response.messages && response.messages.length > 0
-                              ? response.messages[response.messages.length - 1].content
-                              : null);
-
-                    if (content && typeof content === 'string' && content.length > 10) {
-                        logger.info(`[IQai] ADK generation successful (${content.length} chars)`);
-                        return content;
-                    }
-                }
-
-                logger.warn('[IQai] ADK agent returned empty/invalid response, falling back to Gemini');
-            } catch (err) {
-                logger.warn(`[IQai] ADK run failed: ${err.message}, falling back to direct Gemini`);
-            }
-        }
-
-        // Fallback: direct Gemini call via geminiService
-        logger.info('[IQai] Using direct Gemini call (compatibility mode)');
-        return await geminiService.generateContent({
-            prompt: userMessage,
-            config: {
-                temperature: params.temperature || 0.8,
-                maxTokensPerResponse: params.maxTokens || 1200,
-            },
-        });
-    }
-
-    /**
-     * Generate a story using the agent (legacy method used by orchestrator).
+     * Generate a story using the agent.
      * @param {Object} params - Same params as groqService.generate()
      * @returns {Promise<{content: string, model: string, tokensUsed: Object, agent: string}>}
      */
@@ -222,20 +195,16 @@ class ComiCraftStoryAgent {
 
         logger.info(`[IQai] generateStory: genre=${params.genre}, format=${params.formatType}`);
 
-        // Try ADK agent
-        if (this.adkAgent && typeof this.adkAgent.run === 'function') {
+        // If ADK agent is available and supports direct invocation, use it
+        if (this.adkAgent && typeof this.adkAgent.invoke === 'function') {
             try {
-                const content = await this.run(params);
-                if (content && content.length > 10) {
-                    return {
-                        content,
-                        model: this.config.model,
-                        tokensUsed: { total: 0 },
-                        agent: 'iqai-adk',
-                    };
-                }
+                const result = await this.adkAgent.invoke({
+                    tool: 'generate_story',
+                    params,
+                });
+                return { ...result, agent: 'iqai-adk' };
             } catch (err) {
-                logger.warn(`[IQai] ADK generateStory failed (${err.message}), falling back`);
+                logger.warn(`[IQai] ADK invoke failed (${err.message}), falling back to direct Gemini`);
             }
         }
 
@@ -251,7 +220,20 @@ class ComiCraftStoryAgent {
      */
     async analyzeStory(params) {
         await this.initialize();
+
         logger.info('[IQai] analyzeStory');
+
+        if (this.adkAgent && typeof this.adkAgent.invoke === 'function') {
+            try {
+                const result = await this.adkAgent.invoke({
+                    tool: 'analyze_story',
+                    params,
+                });
+                return { ...result, agent: 'iqai-adk' };
+            } catch (err) {
+                logger.warn(`[IQai] ADK analyze failed: ${err.message}`);
+            }
+        }
 
         const result = await groqService.analyze(params);
         return { ...result, agent: 'iqai-compat' };
@@ -259,11 +241,30 @@ class ComiCraftStoryAgent {
 
     /**
      * Break a story into comic panels.
+     * @param {Object} params
+     * @param {string} params.story - Story text
+     * @param {number} [params.panelCount=6] - Number of panels
+     * @param {string} [params.artStyle] - Art style description
+     * @returns {Promise<Object>}
      */
     async breakdownPanels({ story, panelCount = 6, artStyle }) {
         await this.initialize();
+
         logger.info(`[IQai] breakdownPanels: ${panelCount} panels`);
 
+        if (this.adkAgent && typeof this.adkAgent.invoke === 'function') {
+            try {
+                const result = await this.adkAgent.invoke({
+                    tool: 'breakdown_panels',
+                    params: { story, panelCount, artStyle },
+                });
+                return { ...result, agent: 'iqai-adk' };
+            } catch (err) {
+                logger.warn(`[IQai] ADK panel breakdown failed: ${err.message}`);
+            }
+        }
+
+        // Compatibility mode: build panel breakdown prompt and call Gemini
         const prompt = [
             `Break this story into exactly ${panelCount} comic panels.`,
             `For each panel, provide:`,
@@ -289,6 +290,8 @@ class ComiCraftStoryAgent {
 
     /**
      * Generate story ideas.
+     * @param {Object} params - Same params as groqService.generateIdeas()
+     * @returns {Promise<Object>}
      */
     async generateIdeas(params) {
         await this.initialize();
@@ -300,6 +303,8 @@ class ComiCraftStoryAgent {
 
     /**
      * Improve content.
+     * @param {Object} params - Same params as groqService.improve()
+     * @returns {Promise<Object>}
      */
     async improveContent(params) {
         await this.initialize();
@@ -311,6 +316,8 @@ class ComiCraftStoryAgent {
 
     /**
      * Generate a synopsis.
+     * @param {Object} params - Same params as groqService.generateSynopsis()
+     * @returns {Promise<Object>}
      */
     async generateSynopsis(params) {
         await this.initialize();
@@ -318,6 +325,49 @@ class ComiCraftStoryAgent {
 
         const result = await groqService.generateSynopsis(params);
         return { ...result, agent: 'iqai-compat' };
+    }
+
+    /**
+     * Run a task through the agent.
+     * @param {Object} params - Input parameters for the task
+     * @returns {Promise<string>} - The result content
+     */
+    async run(params) {
+        await this.initialize();
+
+        // Use ADK agent if available
+        if (this.adkAgent && typeof this.adkAgent.invoke === 'function') {
+            try {
+                const response = await this.adkAgent.invoke({
+                    tool: 'generate_story',
+                    params: params
+                });
+                return response.content || response;
+            } catch (err) {
+                logger.warn(`[IQai] ADK run failed: ${err.message}, falling back to Gemini`);
+            }
+        }
+
+        // Fallback to direct Gemini call via geminiService
+        const prompt = `Task: Generate a story/content based on the following parameters:
+Genre: ${params.genre || 'Not specified'}
+Theme: ${params.theme || 'Not specified'}
+Tone: ${params.tone || 'Not specified'}
+Characters: ${params.characters || 'Not specified'}
+Setting: ${params.setting || 'Not specified'}
+Format: ${params.formatType || 'story'}
+Length: ${params.length || 'medium'}
+Additional Prompt: ${params.prompt || ''}
+
+Please generate the content now.`;
+
+        return await geminiService.generateContent({
+            prompt,
+            config: {
+                temperature: params.temperature || 0.8,
+                maxTokensPerResponse: params.maxTokens || 1200
+            }
+        });
     }
 
     /**
@@ -338,6 +388,7 @@ class ComiCraftStoryAgent {
             adkAvailable,
             adkActive: !!this.adkAgent,
             mode: this.adkAgent ? 'adk' : 'compatibility',
+            tools: Object.keys(this.tools),
         };
     }
 }
@@ -352,4 +403,5 @@ module.exports = {
     storyAgent,
     ComiCraftStoryAgent,
     AGENT_CONFIG,
+    AGENT_TOOLS,
 };

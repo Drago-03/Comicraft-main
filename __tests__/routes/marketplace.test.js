@@ -83,7 +83,7 @@ describe('Marketplace Routes — /api/v1/marketplace', () => {
 
     beforeEach(() => {
         jest.resetModules();
-        process.env.MONAD_RPC_URL = 'https://rpc.test';
+        process.env.ETH_RPC_URL = 'https://eth-mainnet.g.alchemy.com/v2/test-key';
         process.env.CRAFTS_MARKETPLACE_ADDRESS = '0xMARKETPLACE000000000000000000000000000001';
 
         app = express();

@@ -55,7 +55,7 @@ describe('Wallet Routes — /api/v1/wallets', () => {
 
     beforeEach(() => {
         jest.resetModules();
-        process.env.MONAD_RPC_URL = 'https://rpc.test';
+        process.env.ETH_RPC_URL = 'https://eth-mainnet.g.alchemy.com/v2/test-key';
         process.env.CRAFTS_TOKEN_ADDRESS = '0xCRAFTS0000000000000000000000000000000001';
 
         app = express();
