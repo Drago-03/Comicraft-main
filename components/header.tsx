@@ -113,31 +113,14 @@ export function Header() {
   };
 
   const navItems: NavItem[] = [
-    { type: 'link', href: '/', label: 'Home' },
-    { type: 'link', href: '/genres', label: 'Genres' },
-    { type: 'link', href: '/create', label: 'Create' },
+    { type: 'link', href: '/', label: 'Prime' },
+    { type: 'link', href: '/genres', label: 'Worlds' },
+    { type: 'link', href: '/create', label: 'Forge' },
     { type: 'link', href: '/gallery', label: 'Gallery' },
-<<<<<<< HEAD
-    { type: 'link', href: '/marketplace', label: 'Marketplace' },
-    { type: 'link', href: '/buy/CRAFTS', label: 'Buy CRAFTS' },
-    { type: 'link', href: '/community', label: 'Community' },
-    { type: 'link', href: '/docs', label: 'Docs' },
-    ...(account
-      ? [
-        {
-          type: 'link' as const,
-          href: '/dashboard/royalties',
-          label: 'Earnings',
-          icon: <DollarSign className="h-4 w-4 mr-1.5 colorful-icon" />,
-        },
-      ]
-      : []),
-=======
     { type: 'link', href: '/marketplace', label: 'Bazaar' },
     { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS' },
     { type: 'link', href: '/community', label: 'Commons' },
     { type: 'link', href: '/docs', label: 'Atlas' },
->>>>>>> 4c24eab (fix: revert ui and fix auth)
   ];
 
   return (
