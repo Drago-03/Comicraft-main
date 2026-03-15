@@ -65,15 +65,15 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const router = useRouter();
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<import('@supabase/supabase-js').Session | null>(null);
   const supabase = React.useMemo(() => createClient(), []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+    supabase.auth.getSession().then((res: { data: { session: import('@supabase/supabase-js').Session | null } }) => {
+      setSession(res.data.session);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: import('@supabase/supabase-js').AuthChangeEvent, session: import('@supabase/supabase-js').Session | null) => {
       setSession(session);
     });
 
@@ -117,9 +117,9 @@ export function Header() {
     { type: 'link', href: '/create', label: 'Forge' },
     { type: 'link', href: '/gallery', label: 'Gallery' },
     { type: 'link', href: '/marketplace', label: 'Bazaar' },
-    { type: 'link', href: '/kavach', label: 'KAVACH' },
-    { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS' },
+    { type: 'link', href: '/buy/CRAFTS', label: 'CRAFTS' },
     { type: 'link', href: '/community', label: 'Commons' },
+    { type: 'link', href: '/aboutus', label: 'About Us' },
     ...(account
       ? [
         {

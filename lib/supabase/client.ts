@@ -71,6 +71,11 @@ export function createClient() {
         throw new Error('Supabase configuration is missing. Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.');
     }
 
-    return createBrowserClient(supabaseUrl, supabaseAnonKey);
+    return createBrowserClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+            flowType: 'implicit',
+            storageKey: 'comicraft-auth',
+        },
+    });
 }
 

@@ -1,29 +1,42 @@
 'use client';
 
+/**
+ * TTS Hook — Eleven Labs Integration
+ *
+ * Replaced Bulbul (Sarvam AI) with Eleven Labs for high-quality narration.
+ * Falls back to existing cached audio from the `/api/tts/audio` endpoint.
+ */
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export const BULBUL_SPEAKERS = [
-    'Shubh', 'Aditya', 'Ritu', 'Priya', 'Neha', 'Rahul', 'Pooja', 'Rohan',
-    'Simran', 'Kavya', 'Amit', 'Dev', 'Ishita', 'Shreya', 'Ratan', 'Varun',
-    'Manan', 'Sumit', 'Roopa', 'Kabir', 'Aayan', 'Ashutosh', 'Advait',
-    'Amelia', 'Sophia', 'Anand', 'Tanya', 'Tarun', 'Sunny', 'Mani',
-    'Gokul', 'Vijay', 'Shruti', 'Suhani', 'Mohit', 'Kavitha', 'Rehan',
-    'Soham', 'Rupali',
+// ─── Eleven Labs Voices ───
+export const ELEVENLABS_VOICES = [
+  { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George', accent: 'British' },
+  { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah', accent: 'American' },
+  { id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel', accent: 'British' },
+  { id: 'XB0fDUnXU5powFXDhCwa', name: 'Charlotte', accent: 'British' },
+  { id: 'TX3LPaxmHKxFdv7VOQHJ', name: 'Liam', accent: 'American' },
+  { id: 'pFZP5JQG7iQjIQuC4Bku', name: 'Lily', accent: 'British' },
+  { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum', accent: 'Scottish' },
+  { id: 'bIHbv24MWmeRgasZH58o', name: 'Will', accent: 'American' },
+  { id: 'cgSgspJ2msm6clMCkdW9', name: 'Jessica', accent: 'American' },
+  { id: 'iP95p4xoKVk53GoZ742B', name: 'Chris', accent: 'American' },
 ];
 
-export const BULBUL_LANGUAGES = [
-    { code: 'en-IN', label: 'English (India)' },
-    { code: 'hi-IN', label: 'हिंदी' },
-    { code: 'bn-IN', label: 'বাংলা' },
-    { code: 'ta-IN', label: 'தமிழ்' },
-    { code: 'te-IN', label: 'తెలుగు' },
-    { code: 'gu-IN', label: 'ગુજરાતી' },
-    { code: 'kn-IN', label: 'ಕನ್ನಡ' },
-    { code: 'ml-IN', label: 'മലയാളം' },
-    { code: 'mr-IN', label: 'मराठी' },
-    { code: 'pa-IN', label: 'ਪੰਜਾਬੀ' },
-    { code: 'od-IN', label: 'ଓଡ଼ିଆ' },
+export const ELEVENLABS_LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'हिंदी' },
+  { code: 'es', label: 'Español' },
+  { code: 'fr', label: 'Français' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'ja', label: '日本語' },
+  { code: 'ko', label: '한국어' },
+  { code: 'pt', label: 'Português' },
 ];
+
+// Legacy exports for backward compatibility
+export const BULBUL_SPEAKERS = ELEVENLABS_VOICES.map(v => v.name);
+export const BULBUL_LANGUAGES = ELEVENLABS_LANGUAGES.map(l => ({ code: l.code, label: l.label }));
 
 export interface TTSOptions {
     storyId: string;
@@ -42,6 +55,7 @@ interface TTSState {
     currentTime: number;
     duration: number;
     speaker: string;
+    voiceId: string;
     languageCode: string;
     pace: number;
     error: string | null;
@@ -49,8 +63,10 @@ interface TTSState {
 
 export const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Shubh', defaultLang = 'en-IN') {
+export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'George', defaultLang = 'en') {
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const defaultVoice = ELEVENLABS_VOICES.find(v => v.name === defaultSpeaker) ?? ELEVENLABS_VOICES[0];
+
     const [state, setState] = useState<TTSState>({
         audioUrl: null,
         isPlaying: false,
@@ -59,6 +75,7 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Shub
         currentTime: 0,
         duration: 0,
         speaker: defaultSpeaker,
+        voiceId: defaultVoice.id,
         languageCode: defaultLang,
         pace: 1,
         error: null,
@@ -160,7 +177,8 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Shub
             audioRef.current.src = '';
             audioRef.current = null;
         }
-        setState(prev => ({ ...prev, speaker, audioUrl: null, isPlaying: false }));
+        const voice = ELEVENLABS_VOICES.find(v => v.name === speaker) ?? ELEVENLABS_VOICES[0];
+        setState(prev => ({ ...prev, speaker, voiceId: voice.id, audioUrl: null, isPlaying: false }));
     }, []);
 
     const setLanguage = useCallback((languageCode: string) => {
@@ -173,6 +191,10 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Shub
         setState(prev => ({ ...prev, languageCode, audioUrl: null, isPlaying: false }));
     }, []);
 
+    /**
+     * Generate audio using Eleven Labs API via our backend endpoint.
+     * The API route handles the actual Eleven Labs API call and returns an audio URL.
+     */
     const generateAudio = useCallback(async (text: string, token?: string) => {
         if (!text || !storyId) return;
         setState(prev => ({ ...prev, isGenerating: true, error: null }));
@@ -187,9 +209,11 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Shub
                     storyId,
                     chapterIndex,
                     text,
+                    voiceId: state.voiceId,
                     speaker: state.speaker,
                     languageCode: state.languageCode,
                     pace: state.pace,
+                    provider: 'elevenlabs',
                 }),
             });
             const data = await res.json();
@@ -214,7 +238,7 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Shub
                 error: 'Audio generation failed. Check your connection.',
             }));
         }
-    }, [storyId, chapterIndex, state.speaker, state.languageCode, state.pace]);
+    }, [storyId, chapterIndex, state.voiceId, state.speaker, state.languageCode, state.pace]);
 
     return {
         ...state,
@@ -227,6 +251,9 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Shub
         setLanguage,
         generateAudio,
         SPEEDS,
+        ELEVENLABS_VOICES,
+        ELEVENLABS_LANGUAGES,
+        // Legacy compatibility
         BULBUL_SPEAKERS,
         BULBUL_LANGUAGES,
     };

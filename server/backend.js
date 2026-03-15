@@ -94,8 +94,19 @@ const options = {
       { name: 'Wallets', description: 'User wallet management, balances, and CRAFTS transfers' },
       { name: 'Marketplace', description: 'NFT marketplace — list, buy, cancel, and browse listings in CRAFTS' },
       { name: 'Comics', description: 'Comic creation and management' },
-      { name: 'SDK', description: 'External SDK integration endpoints' },
+      { name: 'SDK', description: 'White-label creative studio SDK — API keys, generation, billing' },
       { name: 'TTS', description: 'Text-to-speech narration via ElevenLabs' },
+      { name: 'Royalty', description: 'Secondary royalty engine — configure splits, view earnings' },
+      { name: 'Distribution', description: 'Cross-platform NFT distribution to OpenSea, Rarible, Blur' },
+      { name: 'Poetry', description: 'KavyaScript poetry engine — generation, rendering, iteration' },
+      { name: 'Dynamic NFT', description: 'Evolving NFTs — timed, voted, seasonal, milestone' },
+      { name: 'Licensing', description: 'IP licensing marketplace — list, offer, negotiate' },
+      { name: 'Governance', description: 'DAO governance — staking, proposals, voting' },
+      { name: 'Fund', description: 'Creator fund & grants — fund management, grant lifecycle' },
+      { name: 'Rewards', description: 'Reader rewards & collect-to-earn — earn CRAFTS for engagement' },
+      { name: 'Subscriptions', description: 'Serialized content subscriptions and episode releases' },
+      { name: 'FanPay', description: 'FanPay tipping — readers tip creators in CRAFTS' },
+      { name: 'KAVACH', description: 'IP compliance engine — scanning, licensing, DMCA, blocklist' },
     ],
     components: {
       securitySchemes: {
@@ -781,15 +792,26 @@ app.get('/', (req, res) => {
       stories: { path: '/api/v1/stories', description: 'Story CRUD, search, and AI generation' },
       comics: { path: '/api/v1/comics', description: 'Comic creation and management' },
       ai: { path: '/api/v1/ai', description: 'AI-powered content generation and analysis' },
+      poetry: { path: '/api/v1/ai/poetry', description: 'KavyaScript poetry engine — generate, render, iterate' },
       users: { path: '/api/v1/users', description: 'User profiles and account management' },
       nft: { path: '/api/v1/nft', description: 'NFT minting, marketplace, and royalty operations' },
+      royalty: { path: '/api/v1/nft/royalty', description: 'Secondary royalty engine — configure, earnings' },
+      dynamicNft: { path: '/api/v1/nft/dynamic', description: 'Dynamic & evolving NFTs — evolution, voting' },
+      distribution: { path: '/api/v1/distribution', description: 'Cross-platform NFT distribution — OpenSea, Rarible, Blur' },
       wallets: { path: '/api/v1/wallets', description: 'User wallet management, balances, and CRAFTS transfers' },
       marketplace: { path: '/api/v1/marketplace', description: 'NFT marketplace — browse, list, buy, cancel in CRAFTS' },
+      licensing: { path: '/api/v1/licensing', description: 'IP licensing marketplace — list, offer, negotiate' },
+      governance: { path: '/api/v1/governance', description: 'DAO governance — staking, proposals, voting' },
+      fund: { path: '/api/v1/fund', description: 'Creator fund & grants' },
+      rewards: { path: '/api/v1/rewards', description: 'Reader rewards & collect-to-earn' },
+      subscriptions: { path: '/api/v1/subscriptions', description: 'Serialized content subscriptions' },
+      fanpay: { path: '/api/v1/fanpay', description: 'FanPay tipping' },
+      kavach: { path: '/api/v1/kavach', description: 'KAVACH IP compliance — scan, DMCA, warranty, blocklist' },
       feed: { path: '/api/feed', description: 'Public story feed (from Supabase)' },
       helpbot: { path: '/api/helpbot', description: 'MADHAVA AI help bot chat' },
       settings: { path: '/api/v1/settings', description: 'User settings: profile, notifications, privacy, wallet' },
       drafts: { path: '/api/v1/drafts', description: 'Story draft management' },
-      sdk: { path: '/sdk/v1', description: 'External SDK integration endpoints' },
+      sdk: { path: '/sdk/v1', description: 'White-label creative studio SDK' },
     },
     links: {
       documentation: '/api/docs',
@@ -909,6 +931,19 @@ app.use('/api/v1/settings/notifications', require('./routes/settings/notificatio
 app.use('/api/v1/settings/privacy', require('./routes/settings/privacy'));
 app.use('/api/v1/settings/wallet', require('./routes/settings/wallet'));
 app.use('/api/v1/settings/profile', require('./routes/settings/profile'));
+
+// ── CTP v3.0 Routes ─────────────────────────────────────────────────────────
+app.use('/api/v1/nft/royalty', require('./routes/royalty'));
+app.use('/api/v1/nft/dynamic', require('./routes/dynamic-nft'));
+app.use('/api/v1/distribution', require('./routes/distribution'));
+app.use('/api/v1/ai/poetry', require('./routes/poetry'));
+app.use('/api/v1/licensing', require('./routes/licensing'));
+app.use('/api/v1/governance', require('./routes/governance'));
+app.use('/api/v1/fund', require('./routes/fund'));
+app.use('/api/v1/rewards', require('./routes/rewards'));
+app.use('/api/v1/subscriptions', require('./routes/subscriptions'));
+app.use('/api/v1/fanpay', require('./routes/fanpay'));
+app.use('/api/v1/kavach', require('./routes/kavach'));
 
 // Dashboard endpoint — aggregated user metrics
 const { authRequired: dashAuthRequired } = require('./middleware/auth');
