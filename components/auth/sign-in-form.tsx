@@ -41,11 +41,24 @@ export function SignInForm({ onToggleMode }: { onToggleMode: () => void }) {
     try {
       const result = await loginWithUsernameOrEmail(identifier, password);
       if (result.error) throw new Error(result.error);
-      if (result.data?.tokens?.accessToken && typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', result.data.tokens.accessToken);
-        if (result.data.tokens.refreshToken) localStorage.setItem('refreshToken', result.data.tokens.refreshToken);
-        window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
+
+      const tokens = result.data?.tokens;
+      if (tokens?.accessToken && tokens?.refreshToken) {
+        // CRITICAL: Inject the session into the browser's Supabase client.
+        // This triggers onAuthStateChange in UserNav → session updates → avatar shows.
+        await supabase.auth.setSession({
+          access_token: tokens.accessToken,
+          refresh_token: tokens.refreshToken,
+        });
+
+        // Also persist to localStorage for legacy hooks/API calls
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', tokens.accessToken);
+          localStorage.setItem('refreshToken', tokens.refreshToken);
+          window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
+        }
       }
+
       setSuccess(true);
       toast({ title: 'Authentication Successful', description: 'You have securely logged in.' });
       setTimeout(() => { router.push('/dashboard'); router.refresh(); }, 800);

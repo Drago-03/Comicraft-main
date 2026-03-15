@@ -5,7 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.1] - 2026-03-15
+## [3.2.0] - 2026-03-15
+
+### Added
+- **ComiCraftTimelock.sol**: OpenZeppelin TimelockController with 48-hour delay for all privileged operations (minting, fee changes, parameter updates). Prevents rug-pulls and enables DAO governance.
+- **Supply Cap**: CraftToken.sol now enforces a hard 100M CRAFTS max supply with `require(totalSupply() + amount <= MAX_SUPPLY)` in `mint()`.
+- **Pausable Staking**: CRAFTSStaking.sol now supports emergency pause/unpause (controlled by owner/timelock). `completeUnstake()` remains unpausable so users can always withdraw after cooldown.
+- `mintableSupply()` view on CraftToken for remaining mintable tokens.
+- `SupplyCapReached` event emitted when max supply is hit.
+
+### Fixed
+- **Auth Persistence**: `sign-in-form.tsx` now calls `supabase.auth.setSession()` after backend login, so `onAuthStateChange` fires and UserNav switches from Login button to user avatar.
+- **Cross-Page Session**: Added `visibilitychange` and `focus` event listeners in `user-nav.tsx` to re-check the session when navigating between pages or returning to tab.
+- **Login Button Stays**: Fixed the issue where the Login button remained visible after successful authentication by properly injecting the session into the browser's Supabase client.
+
+### Changed
+- Complete rewrite of `report.md` covering all 12 smart contracts, decentralization architecture, auth flow, AI pipeline, KAVACH, 56 pages, 32 routes, and security analysis.
+
+## [3.1.0] - 2026-03-15
 
 ### Changed
 - **Panelra Image Generation**: Updated the Panelra Engine (`server/routes/comics.js`) to use `gemini-2.5-flash-image` API directly for comic generation.

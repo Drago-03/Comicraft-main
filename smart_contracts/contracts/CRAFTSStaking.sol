@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 /**
@@ -11,8 +12,16 @@ import '@openzeppelin/contracts/access/Ownable.sol';
  * @notice Stake CRAFTS tokens to receive governance voting power (sCRAFTS).
  *         Staking locks tokens, unstaking requires a 7-day cooldown.
  *         Voting power = staked amount (1 CRAFTS = 1 sCRAFTS = 1 vote).
+ *
+ *         Ethereum Mainnet — Chain ID 1
+ *
+ * @dev    **Decentralization features**:
+ *         - Pausable: Owner (ideally ComiCraftTimelock) can pause staking/unstaking
+ *           in emergencies (e.g. exploit found)
+ *         - Ownership should be transferred to ComiCraftTimelock after deployment
+ *         - ReentrancyGuard on all token-transferring functions
  */
-contract CRAFTSStaking is ReentrancyGuard, Ownable {
+contract CRAFTSStaking is ReentrancyGuard, Pausable, Ownable {
     using SafeERC20 for IERC20;
 
     IERC20 public immutable craftsToken;
@@ -44,7 +53,7 @@ contract CRAFTSStaking is ReentrancyGuard, Ownable {
      * @notice Stake CRAFTS to receive governance power.
      * @param amount Amount of CRAFTS to stake (18 decimals)
      */
-    function stake(uint256 amount) external nonReentrant {
+    function stake(uint256 amount) external nonReentrant whenNotPaused {
         require(amount >= MIN_STAKE, 'Below minimum stake');
 
         craftsToken.safeTransferFrom(msg.sender, address(this), amount);
@@ -60,7 +69,7 @@ contract CRAFTSStaking is ReentrancyGuard, Ownable {
      * @notice Request to unstake. Starts a 7-day cooldown period.
      * @param amount Amount to unstake
      */
-    function requestUnstake(uint256 amount) external {
+    function requestUnstake(uint256 amount) external whenNotPaused {
         StakeInfo storage info = stakes[msg.sender];
         require(info.stakedAmount >= amount, 'Insufficient stake');
         require(amount > 0, 'Amount must be > 0');
@@ -78,6 +87,7 @@ contract CRAFTSStaking is ReentrancyGuard, Ownable {
     // ── Complete Unstake ─────────────────────────────────────────────────
     /**
      * @notice Complete unstake after cooldown period has passed.
+     * @dev    Not paused — users should always be able to withdraw after cooldown
      */
     function completeUnstake() external nonReentrant {
         StakeInfo storage info = stakes[msg.sender];
@@ -108,6 +118,21 @@ contract CRAFTSStaking is ReentrancyGuard, Ownable {
 
         info.unstakeRequestedAt = 0;
         info.unstakeAmount = 0;
+    }
+
+    // ── Emergency Controls ──────────────────────────────────────────────
+    /**
+     * @notice Pause staking and new unstake requests (owner/timelock only).
+     */
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    /**
+     * @notice Unpause staking and new unstake requests (owner/timelock only).
+     */
+    function unpause() external onlyOwner {
+        _unpause();
     }
 
     // ── Views ────────────────────────────────────────────────────────────
