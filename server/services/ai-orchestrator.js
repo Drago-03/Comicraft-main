@@ -166,27 +166,63 @@ async function executeGroqTask(taskName, prompt, correlationId) {
 function buildChairmanPrompt(userInput, config, groqContext = {}) {
     const sections = [];
 
-    // 1. Core Directive — PREMISE FIRST
     sections.push(`# STORY GENERATION DIRECTIVE`);
-    sections.push(`You are a world-class fiction writer. Generate a complete, compelling story based on the user's concept below.`);
-    sections.push(`Write ONLY the story prose — no commentary, no meta-text, no authors notes.`);
+    sections.push(`You are the Comicraft AI Engine. Your task is to generate a complete, compelling story based on the user's premise and their provided \`.toon\` configuration profile.`);
+    sections.push(``);
+    sections.push(`Write ONLY the story prose — no commentary, no meta-text, no author's notes.`);
     sections.push(`Start immediately with the narrative.`);
     sections.push(``);
 
-    // 2. THE USER'S STORY CONCEPT — MOST IMPORTANT PART
-    sections.push(`## ⚡ USER'S STORY CONCEPT (THIS IS YOUR PRIMARY DIRECTIVE — FOLLOW IT CLOSELY)`);
-    if (config.customPremise) {
-        sections.push(config.customPremise);
-    }
-    if (userInput && userInput.trim()) {
-        sections.push(userInput);
-    }
-    if (!config.customPremise && !userInput) {
-        sections.push(`(No specific premise provided — generate an original story in the ${config.primaryGenre || 'fantasy'} genre)`);
-    }
+    sections.push(`## ⚡ USER'S STORY CONCEPT`);
+    const storyConcept = config.customPremise || userInput || `(No specific premise provided — generate an original story in the ${config.primaryGenre || 'fantasy'} genre)`;
+    sections.push(storyConcept);
     sections.push(``);
 
-    // 3. Include Groq context if available (pre-processed insights)
+    sections.push(`## ⚙️ COMICRAFT .TOON PROFILE`);
+    sections.push(`The following is the .toon config file parameters provided by the user. Adhere strictly to these tuning directives:`);
+    sections.push(``);
+
+    sections.push(`[CORE]`);
+    sections.push(`TargetWords = ${config.targetWordCount || 800}`);
+    sections.push(`Chapters = ${config.chapterCount || 1}`);
+    sections.push(`Format = ${config.mode || 'story-only'}`);
+    sections.push(`GenerationSeed = ${config.generationSeed || 'random'}`);
+    sections.push(``);
+
+    sections.push(`[GENRE_AND_TONE]`);
+    sections.push(`Primary = ${config.primaryGenre || 'fantasy'}`);
+    sections.push(`Secondary = ${config.secondaryGenres?.length ? config.secondaryGenres.join(', ') : 'none'}`);
+    sections.push(`Tone = ${Array.isArray(config.tone) ? config.tone.join(', ') : (config.tone || 'standard')}`);
+    sections.push(`Pacing = ${config.pacing || 'moderate'}`);
+    sections.push(`HumorLevel = ${config.humorLevel || 5}`);
+    sections.push(``);
+
+    sections.push(`[PLOT_AND_STRUCTURE]`);
+    sections.push(`Structure = ${config.structureTemplate || 'three-act'}`);
+    sections.push(`EndingStyle = ${config.endingStyle || 'resolved'}`);
+    sections.push(`TwistIntensity = ${config.twistIntensity || 5}`);
+    sections.push(`Themes = ${Array.isArray(config.themes) ? config.themes.join(', ') : (config.themes || 'none')}`);
+    sections.push(``);
+
+    sections.push(`[CHARACTERS]`);
+    sections.push(`MainCount = ${config.mainCharacterCount || 1}`);
+    sections.push(`SupportingCount = ${config.supportingCharacterCount || 5}`);
+    sections.push(`ProtagonistArchetype = ${config.protagonistArchetype || 'standard'}`);
+    sections.push(`AntagonistType = ${config.antagonistType || 'standard'}`);
+    sections.push(``);
+
+    sections.push(`[STYLE]`);
+    sections.push(`POV = ${config.narrativePOV || 'third-person limited'}`);
+    sections.push(`Tense = ${config.tense || 'past'}`);
+    sections.push(`ProseDensity = ${config.proseDensity || 'balanced'}`);
+    sections.push(`DialogueRatio = ${config.dialogueToDescriptionRatio || 50}`);
+    sections.push(``);
+
+    sections.push(`[CONSTRAINTS]`);
+    sections.push(`NSFW = ${config.nsfwToggle || 'false'}`);
+    sections.push(`BlockTrademarks = ${config.blockRealPeopleTrademarks || 'false'}`);
+    sections.push(``);
+
     if (groqContext.classification) {
         sections.push(`## PRE-ANALYZED INSIGHTS`);
         sections.push(`Classification: ${groqContext.classification}`);
@@ -202,13 +238,12 @@ function buildChairmanPrompt(userInput, config, groqContext = {}) {
     }
 
     if (groqContext.vectorTwists && groqContext.vectorTwists.length > 0) {
-        sections.push(`## STORYLINE UNIQUENESS PROTOCOL (RAG VECTOR SEARCH)`);
-        sections.push(`We found highly similar stories already exist in our database. To ensure this new story stands out, you MUST subvert expectations and introduce UNIQUE twists.`);
-        sections.push(`Avoid these common tropes found in similar stories:`);
+        sections.push(`## STORYLINE UNIQUENESS PROTOCOL`);
+        sections.push(`Avoid these common similar storylines:`);
         groqContext.vectorTwists.forEach((story, i) => {
             sections.push(`- Similar Idea ${i + 1}: "${story.storyline.substring(0, 150)}..." -> DIVERGE FROM THIS`);
         });
-        sections.push(`Inject a surprising twist or use an unconventional narrative approach so this story is completely unique.`);
+        sections.push(`Inject a surprising twist. Ensure story is unique.`);
         sections.push(``);
     }
 
@@ -292,6 +327,11 @@ function buildChairmanPrompt(userInput, config, groqContext = {}) {
     if (config.generationSeed) {
         sections.push(`[Generation Seed: ${config.generationSeed} — use this for creative variation within the user's premise]`);
     }
+
+    sections.push(`## IMPORTANT REMINDERS`);
+    sections.push(`1. Your story MUST be about the user's concept described above.`);
+    sections.push(`2. Stay closely within the boundaries of the .toon profile constraints.`);
+    sections.push(`3. Be creative and original — generate a UNIQUE story every time.`);
     sections.push(``);
     sections.push(`BEGIN WRITING THE USER'S STORY:`);
 

@@ -8,7 +8,7 @@ const { describe, it, expect, jest, beforeEach, afterEach } = require('@jest/glo
 // Mock ethers before importing the service
 jest.mock('ethers', () => {
     const mockProvider = {
-        getNetwork: jest.fn().mockResolvedValue({ chainId: 10143n }),
+        getNetwork: jest.fn().mockResolvedValue({ chainId: 1n }),
         getBlockNumber: jest.fn().mockResolvedValue(12345),
         getBalance: jest.fn().mockResolvedValue(1000000000000000000n),
         estimateGas: jest.fn().mockResolvedValue(21000n),
@@ -42,8 +42,8 @@ describe('web3Service', () => {
 
     beforeEach(() => {
         jest.resetModules();
-        process.env.MONAD_RPC_URL = 'https://monad-testnet.g.alchemy.com/v2/test-key';
-        process.env.MONAD_CHAIN_ID = '10143';
+        process.env.ETH_RPC_URL = 'https://eth-mainnet.g.alchemy.com/v2/test-key';
+        process.env.ETHEREUM_CHAIN_ID = '1';
         process.env.PLATFORM_SIGNER_KEY = '0x' + 'a'.repeat(64);
         web3Service = require('../../server/services/web3Service');
     });
@@ -56,17 +56,17 @@ describe('web3Service', () => {
     });
 
     describe('getProvider', () => {
-        it('should return a provider when MONAD_RPC_URL is set', () => {
+        it('should return a provider when ETH_RPC_URL is set', () => {
             const provider = web3Service.getProvider();
             expect(provider).toBeDefined();
         });
 
-        it('should throw when MONAD_RPC_URL is not set', () => {
-            delete process.env.MONAD_RPC_URL;
+        it('should throw when ETH_RPC_URL is not set', () => {
+            delete process.env.ETH_RPC_URL;
             web3Service.resetConnections();
             jest.resetModules();
             const freshService = require('../../server/services/web3Service');
-            expect(() => freshService.getProvider()).toThrow('MONAD_RPC_URL');
+            expect(() => freshService.getProvider()).toThrow('ETH_RPC_URL');
         });
 
         it('should return the same provider on subsequent calls (singleton)', () => {
@@ -148,12 +148,12 @@ describe('web3Service', () => {
             const health = await web3Service.checkWeb3Health();
             expect(health.configured).toBe(true);
             expect(health.connected).toBe(true);
-            expect(health.chainId).toBe(10143);
+            expect(health.chainId).toBe(1);
             expect(health.blockNumber).toBe(12345);
         });
 
-        it('should return not-configured when MONAD_RPC_URL is missing', async () => {
-            delete process.env.MONAD_RPC_URL;
+        it('should return not-configured when ETH_RPC_URL is missing', async () => {
+            delete process.env.ETH_RPC_URL;
             web3Service.resetConnections();
             jest.resetModules();
             const freshService = require('../../server/services/web3Service');

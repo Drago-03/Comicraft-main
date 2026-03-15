@@ -616,11 +616,11 @@ function AIStoryContent() {
       defaultValue: p.defaultValue,
       constraints: p.constraints || null,
     }));
-    const blob = new Blob([JSON.stringify(paramData, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(paramData, null, 2)], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'comicraft-vedascript-parameters.json';
+    a.download = 'comicraft-vedascript-parameters.toon';
     a.click();
     URL.revokeObjectURL(url);
   };
