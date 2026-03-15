@@ -92,15 +92,22 @@ router.post('/generate', async (req, res) => {
       length,
       rhyme_scheme,
       calligraphy_style = 'modern',
+      metre = 'Free rhythm',
+      tone = 'Optimistic',
+      imagery_focus = 'Nature',
+      perspective = '1st-person',
+      metaphor_density = 'Medium',
+      vocabulary_complexity = 'Intermediate',
+      cultural_context = 'Global/Universal',
+      era = 'Modern',
+      pacing = 'Slow and lingering',
+      emotive_intensity = 'Subtle',
+      core_emotion = 'Awe',
+      sound_devices = 'None',
+      ending_type = 'Resolved'
     } = req.body;
 
-    const formSpec = POETRY_FORMS[form];
-    if (!formSpec) {
-      return res.status(400).json({
-        error: `Invalid form. Must be one of: ${Object.keys(POETRY_FORMS).join(', ')}`,
-      });
-    }
-
+    const formSpec = POETRY_FORMS[form] || POETRY_FORMS.free_verse;
     const stanzas = length || formSpec.defaultStanzas;
 
     const prompt = `You are KavyaScript, a master poetry engine. Generate a ${formSpec.name} poem.
@@ -111,14 +118,27 @@ Mood: ${mood}
 Language Style: ${language_style}
 Number of stanzas: ${stanzas}
 ${rhyme_scheme ? `Rhyme scheme: ${rhyme_scheme}` : ''}
+Metre/Rhythm: ${metre}
+Tone: ${tone}
+Imagery Focus: ${imagery_focus}
+Perspective/Voice: ${perspective}
+Metaphor Density: ${metaphor_density}
+Vocabulary Complexity: ${vocabulary_complexity}
+Cultural Context: ${cultural_context}
+Era/Time Period: ${era}
+Pacing: ${pacing}
+Emotive Intensity: ${emotive_intensity}
+Core Emotion: ${core_emotion}
+Sound Devices: ${sound_devices}
+Ending Type: ${ending_type}
 
 Rules:
 - Follow the structural rules of ${formSpec.name} precisely
 - Express the theme with vivid imagery and emotional depth
-- Match the requested mood throughout
-- Use the ${language_style} language style
-
-Return ONLY the poem text, nothing else. Separate stanzas with blank lines.`;
+- Match the requested mood and tone exactly
+- Use the specified language style, vocabulary complexity, and metre
+- Make sure to implement the requested sound devices and ending type
+- Return ONLY the poem text, nothing else. Separate stanzas with blank lines.`;
 
     const poemText = await geminiService.generateContent({
       prompt,

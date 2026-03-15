@@ -119,7 +119,6 @@ export function Header() {
     { type: 'link', href: '/marketplace', label: 'Bazaar' },
     { type: 'link', href: '/buy/CRAFTS', label: 'CRAFTS' },
     { type: 'link', href: '/community', label: 'Commons' },
-    { type: 'link', href: '/aboutus', label: 'About Us' },
     ...(account
       ? [
         {
