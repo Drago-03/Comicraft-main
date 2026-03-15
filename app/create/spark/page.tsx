@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Copy, Check, ArrowRight, BookOpen, ArrowLeft, Zap } from 'lucide-react';
+import { Sparkles, Copy, Check, ArrowRight, BookOpen, ArrowLeft, Zap, Play, Square, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -24,7 +24,7 @@ const moods = [
   { id: 'mysterious', label: '🔮 Mysterious', color: 'border-indigo-500/40 bg-indigo-500/10 text-indigo-300' },
 ];
 
-export default function ShaktiSparkPage() {
+export default function KavyaScriptPage() {
   const { toast } = useToast();
   const router = useRouter();
 
@@ -34,15 +34,24 @@ export default function ShaktiSparkPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState('');
   const [copied, setCopied] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isTtsLoading, setIsTtsLoading] = useState(false);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   const handleSpark = useCallback(async () => {
     if (!prompt.trim()) {
-      toast({ title: 'Enter a prompt', description: 'Give Shakti Spark an idea to work with.', variant: 'destructive' });
+      toast({ title: 'Enter a prompt', description: 'Give KavyaScript an idea to work with.', variant: 'destructive' });
       return;
     }
 
     setIsGenerating(true);
     setGeneratedContent('');
+    setAudioUrl(null);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
@@ -93,7 +102,7 @@ export default function ShaktiSparkPage() {
         genre: selectedGenre,
         mood: selectedMood,
         prompt,
-        source: 'shakti-spark',
+        source: 'kavyascript',
         savedAt: new Date().toISOString(),
       };
       const existing = JSON.parse(localStorage.getItem('sparkDrafts') || '[]');
@@ -114,6 +123,46 @@ export default function ShaktiSparkPage() {
     router.push('/create/ai-story');
   }, [generatedContent, selectedGenre, prompt, router]);
 
+  const handlePlayTts = async () => {
+    if (isPlaying && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    if (audioUrl && audioRef.current) {
+      audioRef.current.play();
+      setIsPlaying(true);
+      return;
+    }
+
+    setIsTtsLoading(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+      const response = await fetch(`${apiUrl}/api/v1/ai/poetry/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ poem: generatedContent })
+      });
+
+      if (!response.ok) throw new Error('Failed to generate audio');
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setAudioUrl(url);
+
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => setIsPlaying(false);
+      await audio.play();
+      setIsPlaying(true);
+    } catch (error) {
+      toast({ title: 'TTS Error', description: 'Failed to generate speech', variant: 'destructive' });
+    } finally {
+      setIsTtsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#EEDFCA] relative text-black font-sans overflow-hidden">
       {/* Background */}
@@ -133,8 +182,9 @@ export default function ShaktiSparkPage() {
                 <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-amber-400" />
                 </div>
-                <h1 className="text-3xl font-black text-black uppercase tracking-tight">
-                  Shakti Spark
+
+                <h1 className="text-3xl font-black text-white uppercase tracking-tight">
+                  KavyaScript
                 </h1>
               </div>
               <p className="text-black/70 font-bold">Instant ideas and short story sparks.</p>
@@ -279,6 +329,26 @@ export default function ShaktiSparkPage() {
 
                 {/* Output Actions */}
                 <div className="px-6 py-4 border-t border-black flex flex-wrap gap-3">
+                  <Button
+                    onClick={handlePlayTts}
+                    disabled={isTtsLoading}
+                    variant="outline"
+                    size="sm"
+                    className={`rounded-lg transition-all ${
+                      isPlaying 
+                        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30 hover:text-amber-200' 
+                        : 'bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {isTtsLoading ? (
+                      <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                    ) : isPlaying ? (
+                      <Square className="w-4 h-4 mr-1.5 fill-current" />
+                    ) : (
+                      <Play className="w-4 h-4 mr-1.5 fill-current" />
+                    )}
+                    {isTtsLoading ? 'Generating Audio...' : isPlaying ? 'Stop reading' : 'Read aloud'}
+                  </Button>
                   <Button
                     onClick={handleSaveDraft}
                     variant="outline"

@@ -1,0 +1,174 @@
+/* ============================================================================
+   KAVACH Phase 1 — IP Compliance Engine Styles (Vintage Comic Theme)
+   ============================================================================ */
+
+/* Hero gradient — comic book style */
+.kavach-hero {
+  background: var(--background, #fef9ef);
+  border-bottom: 4px solid var(--foreground, #1a1a2e);
+  position: relative;
+  padding-top: 100px; /* Navbar clearance */
+}
+
+.kavach-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--foreground, #1a1a2e) 1px, transparent 1px);
+  background-size: 16px 16px;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+/* Card styling — bold comic cards */
+.kavach-card {
+  background: var(--card, #ffffff);
+  border: 4px solid var(--foreground, #1a1a2e);
+  padding: 1.5rem;
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kavach-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 10px 0px 0px var(--foreground, #1a1a2e);
+}
+
+/* Stat cards — punchy with thick borders */
+.kavach-stat-card {
+  background: var(--card, #ffffff);
+  border: 4px solid var(--foreground, #1a1a2e);
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 4px 4px 0px 0px var(--foreground, #1a1a2e);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.kavach-stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%231a1a2e' fill-opacity='0.06'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.kavach-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 7px 0px 0px var(--foreground, #1a1a2e);
+}
+
+/* Pipeline card — featured scan display */
+.kavach-pipeline-card {
+  background: var(--card, #ffffff);
+  border: 4px solid var(--foreground, #1a1a2e);
+  padding: 1.5rem;
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e);
+  position: relative;
+}
+
+.kavach-pipeline-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%231a1a2e' fill-opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Pipeline steps */
+.pipeline-step {
+  display: flex;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1.75rem;
+  flex-shrink: 0;
+}
+
+.step-dot {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: white;
+  z-index: 1;
+  border: 3px solid var(--foreground, #1a1a2e);
+}
+
+.step-line {
+  width: 3px;
+  flex: 1;
+  min-height: 1rem;
+  background: var(--foreground, #1a1a2e);
+  opacity: 0.2;
+  margin-top: 0.25rem;
+}
+
+.pipeline-step:last-child .step-line {
+  display: none;
+}
+
+.step-content {
+  flex: 1;
+  padding-bottom: 0.75rem;
+}
+
+.pipeline-step.complete .step-line {
+  background: #2d9c68;
+  opacity: 0.6;
+}
+
+.pipeline-step.active .step-line {
+  background: linear-gradient(to bottom, #e63946, var(--foreground, #1a1a2e));
+  opacity: 0.4;
+}
+
+/* Action cards — comic buttons */
+.kavach-action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border: 4px solid var(--foreground, #1a1a2e);
+  background: var(--card, #ffffff);
+  box-shadow: 4px 4px 0px 0px var(--foreground, #1a1a2e);
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.kavach-action-card:hover {
+  background: var(--primary, #e63946);
+  color: white;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--foreground, #1a1a2e);
+}
+
+/* Scan detail score glow — adapted to comic theme */
+.score-glow-green {
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e), 0 0 20px rgba(45, 156, 104, 0.2);
+}
+
+.score-glow-blue {
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e), 0 0 20px rgba(69, 123, 157, 0.2);
+}
+
+.score-glow-amber {
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e), 0 0 20px rgba(251, 191, 36, 0.2);
+}
+
+.score-glow-red {
+  box-shadow: 6px 6px 0px 0px var(--foreground, #1a1a2e), 0 0 20px rgba(230, 57, 70, 0.2);
+}

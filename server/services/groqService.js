@@ -24,8 +24,8 @@ try {
 // ---------------------------------------------------------------------------
 
 const GEMINI_CONFIG = {
-    apiKey: process.env.GEMINI_API_KEY,
-    model: process.env.GEMINI_MODEL || 'gemini-3.1-pro',
+    get apiKey() { return process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY; },
+    get model() { return process.env.GEMINI_MODEL || 'gemini-3-flash-preview'; },
     baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
 };
 
@@ -33,15 +33,15 @@ const GEMINI_CONFIG = {
 // Models — Mapped from old Groq names to Gemini equivalents
 // ---------------------------------------------------------------------------
 const MODELS = {
-    PRIMARY: 'gemini-3.1-pro',
-    FAST: 'gemini-3.0-flash',
-    LONG_CONTEXT: 'gemini-3.1-pro',
+    PRIMARY: 'gemini-3-flash-preview',
+    FAST: 'gemini-3-flash-preview',
+    LONG_CONTEXT: 'gemini-3-flash-preview',
 };
 
 const MODEL_DISPLAY_NAMES = {
-    [MODELS.PRIMARY]: 'Gemini 3.1 Pro',
-    [MODELS.FAST]: 'Gemini 3.0 Flash',
-    [MODELS.LONG_CONTEXT]: 'Gemini 3.1 Pro (Long Context)',
+    [MODELS.PRIMARY]: 'Gemini 3 Flash Preview',
+    [MODELS.FAST]: 'Gemini 3 Flash Preview',
+    [MODELS.LONG_CONTEXT]: 'Gemini 3 Flash Preview (Long Context)',
 };
 
 // ---------------------------------------------------------------------------

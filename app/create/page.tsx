@@ -69,8 +69,8 @@ const engines = [
     available: false,
   },
   {
-    id: 'shakti',
-    title: 'Shakti Spark',
+    id: 'kavyascript',
+    title: 'KavyaScript',
     subtitle: 'Instant ideas and short story sparks.',
     description:
       'Generate story seeds, concept prompts, and short fiction in seconds. Perfect for brainstorming or kickstarting a larger project in VedaScript.',

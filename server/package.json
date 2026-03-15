@@ -1,7 +1,7 @@
 {
   "name": "comicraft-backend",
-  "version": "1.3.102",
-  "description": "Backend API for Comicraft Web3 storytelling platform",
+  "version": "3.0.1",
+  "description": "Backend API for Comicraft Web3 storytelling platform — CTP (Creativity Tokenization Platform)",
   "license": "MIT",
   "author": "",
   "type": "commonjs",

@@ -13,7 +13,9 @@ import {
   Sparkles,
   BookOpen,
   Compass,
-  Filter
+  Filter,
+  Check,
+  X
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -89,7 +91,7 @@ const heroStories = [
   "Draft with VedaScript Engine...",
   "Visualize with Panelra Engine...",
   "Blend with Mythloom Engine...",
-  "Spark ideas with Shakti Spark...",
+  "Compose poetry with KavyaScript...",
 ];
 
 export default function Home() {
@@ -157,7 +159,7 @@ export default function Home() {
 
             {/* Tagline Badge */}
             <motion.div variants={fadeUp} className="relative bg-white border-2 border-ink px-6 py-3 mb-10 inline-block" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%231a100f' fill-opacity='0.06'/%3E%3C/svg%3E")` }}>
-              <span className="text-ink font-bold uppercase text-xs tracking-[0.2em] relative z-10">Comicraft : Creativity Tokenization PLatform (CTP)</span>
+              <span className="text-ink font-bold uppercase text-xs tracking-[0.2em] relative z-10">"Comicraft" - Creativity Tokenization PLatform (CTP) : The Future of Creative world</span>
               {/* Speech bubble tail */}
               <span className="absolute -bottom-[10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-ink" />
             </motion.div>
@@ -174,7 +176,7 @@ export default function Home() {
               The cinematic platform where creators, collectors, and communities build immersive universes together.
             </motion.p>
 
-            {/* Shakti Spark Typewriter */}
+            {/* KavyaScript Typewriter */}
             <motion.div variants={fadeUp} className="mb-10 font-mono text-sm text-ink/60 tracking-wide">
               {'>'} {typedString}
               <motion.span
@@ -296,20 +298,36 @@ export default function Home() {
               </p>
             </motion.div>
 
-            {/* Engine Card 4: Shakti Spark */}
+            {/* Engine Card 4: KavyaScript */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
+              onClick={() => { if (typeof window !== 'undefined') window.location.href = '/kavyascript'; }}
               className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
-              <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">04</span>
-              <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>Shakti Spark</h4>
-              <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
-                Lightning-fast idea generator to spark concepts and plant seeds.
-              </p>
+              {/* Background Image */}
+              <div className="absolute inset-0 z-0">
+                <Image
+                   src="/kavyascript-engine-logo.png"
+                   alt="KavyaScript Engine Logo"
+                   fill
+                   className="object-cover transition-opacity duration-500"
+                 />
+                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+               </div>
+
+              <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
+              
+              <div className="relative z-20">
+                <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">04</span>
+                <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>KavyaScript Engine</h4>
+                <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
+                  AI poetry engine — haiku, sonnets, ghazals, free verse & calligraphy NFTs.
+                </p>
+              </div>
             </motion.div>
           </div>
 
@@ -451,6 +469,71 @@ export default function Home() {
             <Link href="/create/ai-story" className="inline-flex items-center gap-2 bg-comic-primary text-white border-[3px] border-ink shadow-[4px_4px_0px_#1a100f] px-8 py-3 font-black uppercase tracking-wider hover:translate-y-[-2px] transition-all" style={{ color: '#fff' }}>
               <PenSquare className="w-4 h-4" /> Create a Story
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          COMPARISON — How Comicraft Stacks Up
+          ═══════════════════════════════════════ */}
+      <section className="py-20 px-6 md:px-10 bg-ink text-background-light border-t-8 border-background-light">
+        <div className="max-w-6xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="mb-12">
+            <motion.div variants={fadeUp} className="flex items-center gap-4 mb-4">
+              <Image src="/comicraft-logo.png" alt="Comicraft Logo" width={48} height={48} className="object-contain" />
+              <h2 className="text-4xl font-black uppercase italic tracking-tighter">How Comicraft Stacks Up</h2>
+            </motion.div>
+            <motion.p variants={fadeUp} className="text-background-light/60 text-lg max-w-2xl">
+              The only platform that combines every layer of the creative economy under one roof.
+            </motion.p>
+          </motion.div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[700px] border-4 border-background-light text-sm">
+              <thead>
+                <tr className="border-b-4 border-background-light">
+                  <th className="text-left p-4 font-black uppercase text-background-light/40">Feature</th>
+                  <th className="p-4 font-black uppercase text-center bg-comic-primary">Comicraft</th>
+                  <th className="p-4 font-black uppercase text-center text-background-light/40">OpenSea</th>
+                  <th className="p-4 font-black uppercase text-center text-background-light/40">Readl</th>
+                  <th className="p-4 font-black uppercase text-center text-background-light/40">IQ AI ATP</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['AI Story Engine', true, false, false, false],
+                  ['AI Comic Engine', true, false, false, false],
+                  ['AI Poetry Engine', true, false, false, false],
+                  ['NFT Minting', true, true, true, false],
+                  ['Platform Token Economy', '✓ (CRAFTS)', false, false, '✓ (IQ)'],
+                  ['Secondary Royalties (enforced)', true, '⚠ Optional', false, false],
+                  ['Cross-Platform Distribution', true, true, false, false],
+                  ['Dynamic / Evolving NFTs', true, false, false, false],
+                  ['IP Licensing Marketplace', true, false, false, false],
+                  ['DAO Governance', true, false, false, false],
+                  ['Creator Fund & Grants', true, false, false, false],
+                  ['Reader Rewards', true, false, false, false],
+                  ['Serialized Subscriptions', true, false, true, false],
+                  ['White-Label API', true, false, false, false],
+                  ['DEX Trading (Serum)', true, false, false, false],
+                ].map(([feature, cc, os, rl, iq], idx) => {
+                  const renderCell = (val: any, isPositiveColor: boolean = false) => {
+                    if (val === true) return <Check className={`w-5 h-5 mx-auto ${isPositiveColor ? 'text-emerald-400' : 'text-emerald-500/60'}`} />;
+                    if (val === false) return <X className="w-5 h-5 mx-auto text-red-500/40" />;
+                    return val;
+                  };
+                  return (
+                    <tr key={idx} className={`border-b-2 border-background-light/20 ${idx % 2 === 0 ? 'bg-white/5' : ''}`}>
+                      <td className="p-4 font-bold text-background-light/80">{feature}</td>
+                      <td className="p-4 text-center font-black text-emerald-400 bg-comic-primary/10">{renderCell(cc, true)}</td>
+                      <td className="p-4 text-center text-background-light/40">{renderCell(os)}</td>
+                      <td className="p-4 text-center text-background-light/40">{renderCell(rl)}</td>
+                      <td className="p-4 text-center text-background-light/40">{renderCell(iq)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
