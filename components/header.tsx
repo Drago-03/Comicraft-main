@@ -39,7 +39,7 @@ import { createClient } from '@/lib/supabase/client';
 
 import { CreateStoryDialog } from './create-story-dialog';
 import { ModeToggle } from './mode-toggle';
-import { UploadStoryTrigger } from './upload-story-trigger';
+import { GlobalSearch } from './global-search';
 import { ComiCraftLogo } from './comicraft-logo';
 
 // Type definitions for nav items
@@ -214,7 +214,9 @@ export function Header() {
 
         <div className="flex items-center space-x-2">
           <div className="flex items-center gap-2 mr-2">
-            <UploadStoryTrigger variant="outline" className="hidden lg:flex" buttonText="Upload" />
+            <div className="hidden lg:block">
+              <GlobalSearch />
+            </div>
             <Button
               variant="outline"
               size="sm"
@@ -298,11 +300,9 @@ export function Header() {
                     </div>
                   ))}
                   <div className="pt-4 mt-4 border-t-2 border-white/10 space-y-3">
-                    <UploadStoryTrigger
-                      variant="outline"
-                      className="w-full justify-start text-lg text-white border-white/50 hover:bg-white/10"
-                      buttonText="Upload Story"
-                    />
+                    <div className="w-full">
+                      <GlobalSearch />
+                    </div>
                     <Button
                       variant="outline"
                       className="w-full justify-start text-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-full font-semibold"
