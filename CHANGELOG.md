@@ -7,7 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Supported Versions
 
-Active full support: 1.1.5 (latest). See `SECURITY.md` for the support policy.
+Active full support: 1.2.0 (latest). See `SECURITY.md` for the support policy.
+                                                                                
+## [1.2.0] - 2026-03-14
+
+### Added
+
+- **KAVACH Phase 1 — IP Compliance Engine**: Complete intellectual property scanning, licensing, and compliance system built on Supabase with real-time pipeline dashboard. Legal compliance with Indian law (Copyright Act 1957, IT Act 2000 §79, Trademark Act 1999, DPIIT 2025 guidelines) and international law (DMCA §512, Berne Convention, EU Digital Services Act).
+
+### Fixed
+
+- **Authentication Error in Preview Builds**: Added missing `signUp`, `verifyOtp`, and `resend` methods to the Supabase no-op client proxy to prevent "signup is not a function" crashes when static environment variables are temporarily unavailable.
+
+
+#### Database
+- **10 New Tables** (`supabase/kavach-schema.sql`): `blocked_entities`, `entity_seed_batches`, `license_tiers`, `kavach_scans`, `dmca_takedowns`, `creator_warranties`, `pipeline_events`, `scan_audit_log`, `tos_versions`, plus ALTER to existing `stories` table. All with RLS policies, indexes, pg_trgm trigram extension for fuzzy matching, and Supabase Realtime publications.
+- **Seed Data** (`supabase/kavach-seed.sql`): 4-tier license system with full legal basis, ToS v1.0 with IP warranty, indemnification, AI disclosure, DMCA policy, and Indian/international law provisions.
+- **Entity Blocklist Generator** (`lib/kavach/seed-data.ts`): 500+ named IP entities across 7 categories (Marvel, DC, Disney, Anime, Tolkien, Indian IP, Other) with Soundex phonetic hashing, normalization, and alias expansion.
+
+#### Backend — API Routes
+- **`POST /api/kavach/scan`** (`app/api/kavach/scan/route.ts`): Full 5-step KAVACH scan pipeline — entity scan (substring + alias + Soundex phonetic matching), text plagiarism scan (Copyleaks API with mock fallback), originality scoring, license tier assignment, and SHA-256 audit hash chain.
+- **`GET /api/kavach/scan/[id]`** (`app/api/kavach/scan/[id]/route.ts`): Scan status with pipeline events, audit log, and story details.
+- **`POST /api/kavach/dmca`** (`app/api/kavach/dmca/route.ts`): DMCA takedown processing with §512(c)(3) validation and 48-hour response deadline.
+- **`POST /api/kavach/warranty`** (`app/api/kavach/warranty/route.ts`): Creator warranty acceptance with Indian law human authorship requirement.
+- **`GET /api/kavach/blocklist`** (`app/api/kavach/blocklist/route.ts`): Searchable, filterable, paginated blocklist API with category stats.
+
+#### Frontend — KAVACH Pages
+- **`/kavach`** (`app/kavach/page.tsx`): Live Pipeline Dashboard with stats bar, real-time scan pipeline view using Supabase Realtime, recent scans table, entity blocklist stats by category, and quick action cards.
+- **`/kavach/scan/[id]`** (`app/kavach/scan/[id]/page.tsx`): Scan Detail & Originality Report — big originality score, license tier rights breakdown, entity/text match issues list with risk levels, legal compliance badges, and audit trail with hash chain display.
+- **`/kavach/submit`** (`app/kavach/submit/page.tsx`): Story Submission with Creator Warranty — two-step flow with content entry and legal warranty modal (4 declarations, human author info per DPIIT 2025).
+- **`/kavach/dmca`** (`app/kavach/dmca/page.tsx`): Public DMCA Takedown Form — claimant info, claim details, jurisdiction selector, 3 legal declarations per DMCA §512(c)(3), digital signature.
+- **`/kavach/blocklist`** (`app/kavach/blocklist/page.tsx`): Entity Blocklist Explorer — searchable, filterable table with category pills, entity type/risk level filters, and pagination.
+
+#### Shared Libraries
+- **Types** (`lib/kavach/types.ts`): Complete TypeScript type definitions for all KAVACH entities.
+- **Constants** (`lib/kavach/constants.ts`): Pipeline steps, risk levels, license tiers, entity categories, legal references, compliance badges, warranty/indemnification/AI disclosure text.
+- **Scan Pipeline** (`lib/kavach/scan-pipeline.ts`): Full orchestration engine with entity matching, text scanning, scoring algorithm, and audit hash chain.
+- **Realtime Hook** (`hooks/use-kavach-realtime.ts`): Supabase Realtime subscription hook for live pipeline event streaming.
+- **Navigation** (`components/header.tsx`): Added KAVACH link to main navigation.
 
 ## [1.1.5] - 2026-03-14
 

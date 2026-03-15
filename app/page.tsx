@@ -157,7 +157,7 @@ export default function Home() {
 
             {/* Tagline Badge */}
             <motion.div variants={fadeUp} className="relative bg-white border-2 border-ink px-6 py-3 mb-10 inline-block" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%231a100f' fill-opacity='0.06'/%3E%3C/svg%3E")` }}>
-              <span className="text-ink font-bold uppercase text-xs tracking-[0.2em] relative z-10">Comicraft : Creativity Tokenization PLatform (CTP)</span>
+              <span className="text-ink font-bold uppercase text-xs tracking-[0.2em] relative z-10">"Comicraft" - Creativity Tokenization PLatform (CTP) : The Future of Creative world</span>
               {/* Speech bubble tail */}
               <span className="absolute -bottom-[10px] left-8 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-ink" />
             </motion.div>

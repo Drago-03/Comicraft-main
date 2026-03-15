@@ -117,6 +117,7 @@ export function Header() {
     { type: 'link', href: '/create', label: 'Forge' },
     { type: 'link', href: '/gallery', label: 'Gallery' },
     { type: 'link', href: '/marketplace', label: 'Bazaar' },
+    { type: 'link', href: '/kavach', label: 'KAVACH' },
     { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS' },
     { type: 'link', href: '/community', label: 'Commons' },
     ...(account
