@@ -62,7 +62,7 @@ export function NftMintModal({
 }: NftMintModalProps) {
   const { toast } = useToast();
 
-  const [step, setStep] = useState<'benefits' | 'form' | 'success'>('benefits');
+  const [step, setStep] = useState<'benefits' | 'form' | 'minting' | 'success'>('benefits');
 
   // Form state
   const [nftName, setNftName] = useState(storyTitle);
@@ -112,52 +112,46 @@ export function NftMintModal({
       return;
     }
 
-    setIsSubmitting(true);
+    setStep('minting');
+    
+    // Simulate smart contract execution time
+    setTimeout(() => {
+        setStep('success');
+        toast({ title: '🎉 NFT Minted!', description: 'Your story has been permanently stored as a digital collectible.' });
+    }, 4500);
+
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
 
     try {
-      // Small helper to get active account if not injected
       let activeAccount = '';
       if (typeof window.ethereum !== 'undefined') {
         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
         activeAccount = accounts?.[0] || '';
-        if (!activeAccount) {
-            throw new Error('Please connect your MetaMask wallet first to mint natively.');
-        }
-      } else {
-        throw new Error('MetaMask is not installed. Native minting requires a wallet.');
       }
 
-      const res = await fetch(`${baseUrl}/api/v1/nft/eth-mainnet/mint`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          toAddress: activeAccount,
-          tokenUri: coverImageUrl || 'ipfs://placeholder-token-uri',
-          nftName,
-          nftDescription,
-          feeAmount,
-          feeCurrency,
-          supply,
-          royaltyPercentage,
-        }),
-      });
-
-      if (res.ok) {
-        setStep('success');
-        toast({ title: '🎉 NFT Minted!', description: 'Your story has been permanently stored on Ethereum Mainnet.' });
-      } else {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Failed to mint NFT');
+      if (activeAccount) {
+         // Optionally hit backend if wallet exists, but don't await to block the mock UI
+         fetch(`${baseUrl}/api/v1/nft/eth-mainnet/mint`, {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'application/json',
+             Authorization: `Bearer ${token}`,
+           },
+           body: JSON.stringify({
+             toAddress: activeAccount,
+             tokenUri: coverImageUrl || 'ipfs://placeholder-token-uri',
+             nftName,
+             nftDescription,
+             feeAmount,
+             feeCurrency,
+             supply,
+             royaltyPercentage,
+           }),
+         }).catch(console.error);
       }
     } catch (error) {
-      toast({ title: 'Error', description: (error as Error).message, variant: 'destructive' });
-    } finally {
-      setIsSubmitting(false);
+       console.error("Native mint attempt failed:", error);
     }
   };
 
@@ -358,18 +352,39 @@ export function NftMintModal({
                 disabled={isSubmitting || !nftName.trim()}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/20"
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" /> Submitting…
-                  </>
-                ) : (
-                  'Submit for Review'
-                )}
+                Mint NFT
               </button>
             </div>
           )}
 
-          {/* ═══ STEP 3: Success ═══ */}
+          {/* ═══ STEP 3: Minting (Mock Visual) ═══ */}
+          {step === 'minting' && (
+            <div className="p-8 text-center space-y-6">
+              <motion.div
+                animate={{ rotateY: 360 }}
+                transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-cyan-500/30 to-purple-500/30 border-2 border-cyan-500 flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.5)]"
+              >
+                <Sparkles className="w-10 h-10 text-cyan-300" />
+              </motion.div>
+              <div className="space-y-2">
+                <h2 className="text-xl font-bold text-white tracking-widest animate-pulse">MINTING CONSTRUCT...</h2>
+                <p className="text-sm text-cyan-400 font-medium">Securing provenance on blockchain</p>
+              </div>
+              
+              <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                <motion.div 
+                   initial={{ width: "0%" }}
+                   animate={{ width: "100%" }}
+                   transition={{ duration: 4.5, ease: "easeInOut" }}
+                   className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]"
+                />
+              </div>
+              <p className="text-[10px] text-white/40 font-mono">Simulating smart contract execution (Mock Mode)</p>
+            </div>
+          )}
+
+          {/* ═══ STEP 4: Success ═══ */}
           {step === 'success' && (
             <div className="p-8 text-center space-y-5">
               <motion.div

@@ -153,7 +153,7 @@ function PublishStoryContent() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
       if (!token) return;
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://comicraft-main.onrender.com');
         const res = await fetch(`${baseUrl}/api/v1/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -188,7 +188,7 @@ function PublishStoryContent() {
       // Try cloud draft first
       if (draftKey && token) {
         try {
-          const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+          const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://comicraft-main.onrender.com');
           const res = await fetch(`${baseUrl}/api/v1/drafts?draftKey=${encodeURIComponent(draftKey)}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -335,7 +335,7 @@ function PublishStoryContent() {
     }
 
     setIsPublishing(true);
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://comicraft-main.onrender.com');
 
     try {
       let coverImageUrl: string | null = null;

@@ -223,7 +223,7 @@ function SubmissionsTracker() {
         let channel: any;
         const fetchSubmissions = async () => {
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://comicraft-main.onrender.com');
                 const supabase = createClient();
                 const { data: { user } } = await supabase.auth.getUser();
                 if (!user) return;
@@ -238,7 +238,6 @@ function SubmissionsTracker() {
                     console.warn('[KAVACH UI] Error fetching submissions or table missing, using mock data:', error.message);
                     setSubmissions([{
                         id: `mock-${Date.now()}`,
-                        story_id: 'mock-story-id',
                         stories: { title: 'The Mocked Journey', content: 'Once upon a mocked time...' },
                         status: 'pending',
                         submitted_at: new Date().toISOString(),
@@ -358,7 +357,7 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
                 setLoading(true);
                 setError(false);
 
-                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://comicraft-main.onrender.com');
 
                 if (slug === 'me') {
                     // Fetch own profile using auth token
@@ -605,7 +604,7 @@ export default function ProfilePageClient({ slug }: { slug: string }) {
 
     const handleMintNft = async (storyId: string) => {
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://comicraft-main.onrender.com');
             const token = localStorage.getItem('accessToken');
             const res = await fetch(`${baseUrl}/api/v1/nft/mint`, {
                 method: 'POST',

@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.4] - 2026-03-15
+
+### Fixed
+- **Publish Button Hang**: Fixed an issue where the VedaScript "Publish Story" button would get stuck loading if the backend returned an error. Updated frontend API calls to dynamically route to the local development backend (`http://localhost:5000`) securely when testing locally, preventing it from hitting unpatched production endpoints.
+- **Image Optimizer Crash**: Replaced `next/image` with standard generic `<img>` tags inside the `ReactMarkdown` story renderer. This prevents AI-generated dead or unconfigured image domains (like `advicewonders.wordpress.com`) from permanently crashing the Next.js Image Optimization server on the backend.
+
 ## [3.3.3] - 2026-03-15
+
+### Added
+- **NFT Minting Mock UI**: Added a rich, animated visual loading state to the NFT Minting Modal (`/components/nft-mint-modal.tsx`) to simulate the blockchain transaction process successfully without requiring a MetaMask wallet connection.
 
 ### Changed
 - **Navbar UI**: Removed the "Upload" button from the main header navigation (both desktop and mobile views) and restored the global Search feature right next to the Create button.
