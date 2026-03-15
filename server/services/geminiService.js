@@ -10,7 +10,7 @@
  *  - Fallback to Groq if needed
  */
 
-const DEFAULT_MODEL = 'gemini-3.1-pro';
+const DEFAULT_MODEL = 'gemini-3-flash-preview';
 
 let logger;
 try {
@@ -24,8 +24,8 @@ try {
 // ─────────────────────────────────────────────────────────────────────────
 
 const GEMINI_CONFIG = {
-    apiKey: process.env.GEMINI_API_KEY,
-    model: process.env.GEMINI_MODEL || DEFAULT_MODEL,
+    get apiKey() { return process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY; },
+    get model() { return process.env.GEMINI_MODEL || DEFAULT_MODEL; },
     baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
 };
 
@@ -118,6 +118,10 @@ async function generateContent({ prompt, config = {}, stream = false, onChunk = 
         temp: generationConfig.temperature,
     });
 
+    // DEBUG: Log the actual URL and key being used
+    const maskedKey = GEMINI_CONFIG.apiKey ? `${GEMINI_CONFIG.apiKey.substring(0, 10)}...${GEMINI_CONFIG.apiKey.substring(GEMINI_CONFIG.apiKey.length - 4)}` : 'MISSING';
+    console.log(`[GEMINI DEBUG] Model: ${GEMINI_CONFIG.model}, API Key: ${maskedKey}, URL: ${GEMINI_CONFIG.baseUrl}/${GEMINI_CONFIG.model}:generateContent`);
+
     let lastError;
     for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
         try {
@@ -143,6 +147,7 @@ async function generateContent({ prompt, config = {}, stream = false, onChunk = 
                     }
                 }
                 lastError = new Error(`Gemini API error ${response.status}: ${errorText}`);
+                console.error(`[GEMINI ERROR] Status: ${response.status}, Body: ${errorText.substring(0, 500)}`);
                 throw lastError;
             }
 
@@ -230,13 +235,12 @@ async function generateContent({ prompt, config = {}, stream = false, onChunk = 
 function buildSafetySettings(config) {
     const settings = [];
 
-    // HARM_CATEGORY_UNSPECIFIED
-    // HARM_CATEGORY_DEROGATORY_CONTENT
-    // HARM_CATEGORY_GRAPHIC_CONTENT
-    // HARM_CATEGORY_HARASSMENT
-    // HARM_CATEGORY_ILLEGAL_CONTENT
-    // HARM_CATEGORY_SELF_INJURY
-    // HARM_CATEGORY_SEXUAL_CONTENT
+    // Valid Gemini v1beta HarmCategory values:
+    //   HARM_CATEGORY_HARASSMENT
+    //   HARM_CATEGORY_HATE_SPEECH
+    //   HARM_CATEGORY_SEXUALLY_EXPLICIT
+    //   HARM_CATEGORY_DANGEROUS_CONTENT
+    //   HARM_CATEGORY_CIVIC_INTEGRITY
 
     const nsfwLevel = config.nsfwToggle || 'standard';
     const blockMap = {
@@ -247,14 +251,11 @@ function buildSafetySettings(config) {
 
     const threshold = blockMap[nsfwLevel] || 'BLOCK_MEDIUM_AND_ABOVE';
 
-    // Apply filters based on config.contentFilters
-    const filters = config.contentFilters || {};
     const harmCategories = [
-        'HARM_CATEGORY_GRAPHIC_CONTENT',
         'HARM_CATEGORY_HARASSMENT',
-        'HARM_CATEGORY_ILLEGAL_CONTENT',
-        'HARM_CATEGORY_SELF_INJURY',
-        'HARM_CATEGORY_SEXUAL_CONTENT',
+        'HARM_CATEGORY_HATE_SPEECH',
+        'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+        'HARM_CATEGORY_DANGEROUS_CONTENT',
     ];
 
     harmCategories.forEach((category) => {

@@ -281,18 +281,19 @@ function buildChairmanPrompt(userInput, config, groqContext = {}) {
         sections.push(``);
     }
 
-    // 11. Final reminder
-    sections.push(`## IMPORTANT REMINDERS`);
-    sections.push(`1. Your story MUST be about the user's concept described above`);
-    sections.push(`2. Stay within ${wordCount} words (±20%)`);
-    sections.push(`3. Generate exactly ${chapterCount} chapter(s)`);
-    sections.push(`4. Write ONLY the story — no meta-commentary`);
-    sections.push(`5. Be creative and original — generate a UNIQUE story every time`);
+    // 11. Final reminder — CRITICALLY IMPORTANT for plot adherence
+    sections.push(`## CRITICAL INSTRUCTIONS (DO NOT IGNORE)`);
+    sections.push(`1. **FOLLOW THE USER'S CONCEPT EXACTLY** — Your story MUST directly follow the plot, characters, setting, and themes described in "USER'S STORY CONCEPT" above. Do not invent a completely different story.`);
+    sections.push(`2. Every scene, character, and event must serve the user's stated premise. If they described specific characters, USE those characters. If they described a specific plot, FOLLOW that plot.`);
+    sections.push(`3. Stay within ${wordCount} words (±20%)`);
+    sections.push(`4. Generate exactly ${chapterCount} chapter(s)`);
+    sections.push(`5. Write ONLY the story — no meta-commentary, no author notes, no preamble`);
+    sections.push(`6. Be creative within the user's concept — add depth and detail, but do NOT deviate from their premise`);
     if (config.generationSeed) {
-        sections.push(`[Generation Seed: ${config.generationSeed} — use this for creative variation]`);
+        sections.push(`[Generation Seed: ${config.generationSeed} — use this for creative variation within the user's premise]`);
     }
     sections.push(``);
-    sections.push(`BEGIN WRITING:`);
+    sections.push(`BEGIN WRITING THE USER'S STORY:`);
 
     return sections.join('\n');
 }
@@ -432,7 +433,7 @@ async function orchestrateGeneration({
         const chairmanPrompt = buildChairmanPrompt(userInput, config, groqContext);
 
         let generatedContent;
-        const geminiConfigured = !!process.env.GEMINI_API_KEY;
+        const geminiConfigured = !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);
 
         if (geminiConfigured) {
             // Use Gemini as chairman
