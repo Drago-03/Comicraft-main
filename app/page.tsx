@@ -129,7 +129,7 @@ export default function Home() {
   ];
 
   return (
-    <main className="flex min-h-[calc(100vh-80px)] w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] mb-0 pt-[100px] flex-col overflow-x-hidden bg-background-light font-display text-ink">
+    <main className="-mt-8 flex min-h-[calc(100vh-80px)] w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] mb-0 flex-col overflow-x-hidden bg-background-light font-display text-ink">
 
       {/* Load Spline Viewer */}
       <Script
@@ -141,7 +141,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           HERO SECTION — Centered with Spline 3D BG
           ═══════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden bg-background-light">
         {/* Spline 3D Background */}
         <div className="absolute inset-0 w-full h-full z-0" style={{ pointerEvents: 'none' }}>
           {/* @ts-ignore — custom element from Spline viewer script */}
@@ -152,6 +152,9 @@ export default function Home() {
         </div>
         {/* Overlay for text readability */}
         <div className="absolute inset-0 bg-background-light/60 z-[1]" />
+
+        {/* Blend into dark Engines section to avoid a hard color seam */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent via-[#1a100f]/35 to-[#1a100f] z-[2]" />
 
         {/* Hero Content */}
         <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto px-6 py-16">
@@ -209,7 +212,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           THE ENGINES — Heavy Inked Grid
           ═══════════════════════════════════════ */}
-      <section className="bg-ink text-background-light py-20 px-6 md:px-10">
+      <section className="relative -mt-px bg-ink text-background-light py-20 px-6 md:px-10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden"
@@ -228,9 +231,12 @@ export default function Home() {
                   Choose your engine and bring your stories to life. From intelligent prose to rich comic panels, Comicraft Forge gives you the exact tools you need.
                 </motion.p>
               </div>
-              <motion.div variants={fadeUp}>
-                <Link href="/upload" className="bg-background-light text-ink px-6 py-2 font-black uppercase text-sm border-[3px] border-background-light shadow-[4px_4px_0px_rgba(245,230,200,0.3)] hover:translate-y-[-2px] transition-all inline-block">
+              <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
+                <Link href="/create" className="bg-background-light text-ink px-6 py-2 font-black uppercase text-sm border-[3px] border-background-light shadow-[4px_4px_0px_rgba(245,230,200,0.3)] hover:translate-y-[-2px] transition-all inline-block">
                   Begin Formatting
+                </Link>
+                <Link href="/upload" className="bg-comic-primary text-white px-6 py-2 font-black uppercase text-sm border-[3px] border-background-light shadow-[4px_4px_0px_rgba(245,230,200,0.3)] hover:translate-y-[-2px] transition-all inline-block">
+                  Upload to Library
                 </Link>
               </motion.div>
             </div>
@@ -238,24 +244,23 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Engine Card 1: VedaScript */}
+            <Link href="/create/ai-story" className="block">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
             >
-              {/* Background Image */}
               <div className="absolute inset-0 z-0">
                 <Image
-                   src="/vedascript-engine.png"
-                   alt="VedaScript Engine"
-                   fill
-                   className="object-cover transition-opacity duration-500"
-                 />
-                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
-                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
-               </div>
-
+                  src="/vedascript-engine.png"
+                  alt="VedaScript Engine"
+                  fill
+                  className="object-cover transition-opacity duration-500"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+              </div>
               <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
               <div className="relative z-20">
                 <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">01</span>
@@ -265,8 +270,10 @@ export default function Home() {
                 </p>
               </div>
             </motion.div>
+            </Link>
 
             {/* Engine Card 2: Panelra */}
+            <Link href="/create/comic" className="block">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -274,13 +281,26 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
-              <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">02</span>
-              <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>Panelra Engine</h4>
-              <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
-                Panel-based visual storytelling and cinematic image generation.
-              </p>
+              <div className="absolute inset-0 z-0">
+                <Image
+                  src="/panelra-comic-engine-logo.png"
+                  alt="Panelra Engine Logo"
+                  fill
+                  className="object-cover transition-opacity duration-500"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+              </div>
+              <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
+              <div className="relative z-20">
+                <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">02</span>
+                <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>Panelra Engine</h4>
+                <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
+                  Panel-based visual storytelling and cinematic image generation.
+                </p>
+              </div>
             </motion.div>
+            </Link>
 
             {/* Engine Card 3: Mythloom */}
             <motion.div
@@ -288,47 +308,62 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
+              className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group transition-colors cursor-not-allowed overflow-hidden relative"
             >
-              <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
-              <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">03</span>
-              <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>Mythloom Engine</h4>
-              <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
-                Seamlessly blend prose and comic panels into multimedia experiences.
-              </p>
+              <div className="absolute inset-0 z-0">
+                <Image
+                  src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80"
+                  alt="Mythloom Engine"
+                  fill
+                  className="object-cover transition-opacity duration-500"
+                />
+                <div className="absolute inset-0 bg-black/45" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+              </div>
+              <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
+              <div className="absolute top-3 right-3 z-20">
+                <span className="bg-amber-400 text-black text-[10px] font-black uppercase px-2 py-1 border-2 border-black">
+                  Coming Soon
+                </span>
+              </div>
+              <div className="relative z-20">
+                <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">03</span>
+                <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>Mythloom Engine</h4>
+                <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
+                  Seamlessly blend prose and comic panels into multimedia experiences.
+                </p>
+              </div>
             </motion.div>
 
             {/* Engine Card 4: KavyaScript */}
+            <Link href="/kavyascript" className="block">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              onClick={() => { if (typeof window !== 'undefined') window.location.href = '/kavyascript'; }}
               className="border-4 border-background-light p-6 aspect-square flex flex-col justify-end group hover:bg-comic-primary transition-colors cursor-pointer overflow-hidden relative"
             >
-              {/* Background Image */}
               <div className="absolute inset-0 z-0">
                 <Image
-                   src="/kavyascript-engine-logo.png"
-                   alt="KavyaScript Engine Logo"
-                   fill
-                   className="object-cover transition-opacity duration-500"
-                 />
-                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
-                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
-               </div>
-
+                  src="/kavyascript-engine-logo.png"
+                  alt="KavyaScript Engine Logo"
+                  fill
+                  className="object-cover transition-opacity duration-500"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+              </div>
               <div className="absolute inset-0 pointer-events-none z-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8' fill-opacity='0.1'/%3E%3C/svg%3E")` }} />
-              
               <div className="relative z-20">
                 <span className="text-6xl font-black mb-4 opacity-30 group-hover:opacity-100 transition-opacity">04</span>
                 <h4 className="text-2xl font-black uppercase" style={{ color: 'inherit' }}>KavyaScript Engine</h4>
                 <p className="text-sm font-bold uppercase mt-2 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'inherit' }}>
-                  AI poetry engine — haiku, sonnets, ghazals, free verse & calligraphy NFTs.
+                  AI poetry engine - haiku, sonnets, ghazals, free verse and calligraphy NFTs.
                 </p>
               </div>
             </motion.div>
+            </Link>
           </div>
 
           <div className="mt-8 text-center">

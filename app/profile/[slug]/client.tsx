@@ -31,7 +31,10 @@ import {
     Clock,
     XCircle,
     AlertCircle,
-    Loader2
+    Loader2,
+    Pickaxe,
+    Store,
+    FileText
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -116,7 +119,22 @@ interface SubmissionItem {
     stories?: {
         title: string;
         content: string;
+        cover_image?: string;
+        views?: number;
+        likes?: number;
     };
+    nft_token_id?: string;
+    nft_transaction_hash?: string;
+}
+
+interface RoyaltyItem {
+    id: string;
+    nft_token_id: string;
+    sale_price: number;
+    royalty_amount: number;
+    buyer_address: string;
+    marketplace: string;
+    created_at: string;
 }
 
 /* ───────────── Helpers ───────────── */
@@ -213,6 +231,161 @@ function StoryCard({ story, showStatus }: { story: StoryItem; showStatus?: boole
     }
     return cardContent;
 }
+
+/* ───────────── User NFTs Component ───────────── */
+function UserNFTs({ userId }: { userId: string }) {
+    const [nfts, setNfts] = useState<SubmissionItem[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchNFTs = async () => {
+            try {
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://comicraft-main.onrender.com');
+                const res = await fetch(`${baseUrl}/api/v1/users/${userId}/nfts`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setNfts(data.data || []);
+                }
+            } catch (err) {
+                console.error("Error fetching NFTs:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchNFTs();
+    }, [userId]);
+
+    if (loading) return <div className="p-8 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto text-purple-500" /></div>;
+    
+    if (nfts.length === 0) {
+        return (
+            <div className="p-12 text-center text-slate-500 bg-slate-900/30 rounded-xl border border-slate-800 border-dashed">
+                <Pickaxe className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                <p className="font-medium">No NFTs Minted Yet</p>
+                <p className="text-sm mt-1">Submit a story to KAVACH to mint it on the blockchain.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {nfts.map(nft => (
+                <div key={nft.id} className="group bg-neutral-900 border border-neutral-800 hover:border-purple-500/50 rounded-xl overflow-hidden transition-all shadow-lg hover:shadow-purple-500/10">
+                    <div className="aspect-square bg-neutral-800 relative overflow-hidden">
+                        {nft.stories?.cover_image ? (
+                            <img src={nft.stories.cover_image} alt={nft.stories.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                                <FileText className="w-12 h-12 text-neutral-600" />
+                            </div>
+                        )}
+                        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-xs font-mono text-amber-400 border border-white/10 flex items-center gap-1">
+                            <Pickaxe className="w-3 h-3" /> #{nft.nft_token_id}
+                        </div>
+                    </div>
+                    <div className="p-5">
+                        <h3 className="font-bold text-lg text-white mb-1 truncate">{nft.stories?.title}</h3>
+                        <p className="text-xs text-neutral-400 mb-4 font-mono truncate">Tx: {nft.nft_transaction_hash}</p>
+                        
+                        <div className="flex justify-between items-center text-sm">
+                            <div className="flex gap-3 text-neutral-400">
+                                <span className="flex items-center gap-1"><Eye className="w-4 h-4" />{formatCount(nft.stories?.views || 0)}</span>
+                                <span className="flex items-center gap-1"><Heart className="w-4 h-4" />{formatCount(nft.stories?.likes || 0)}</span>
+                            </div>
+                            <Button variant="ghost" size="sm" className="h-8 text-xs hover:text-white" onClick={() => window.open(`https://testnets.opensea.io/assets/${nft.nft_token_id}`, '_blank')}>
+                                View OpenSea <ExternalLink className="w-3 h-3 ml-1" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+/* ───────────── User Royalties Component ───────────── */
+function UserRoyalties({ userId }: { userId: string }) {
+    const [royalties, setRoyalties] = useState<RoyaltyItem[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchRoyalties = async () => {
+            try {
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://comicraft-main.onrender.com');
+                const res = await fetch(`${baseUrl}/api/v1/users/${userId}/royalties`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setRoyalties(data.data || []);
+                }
+            } catch (err) {
+                console.error("Error fetching royalties:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRoyalties();
+    }, [userId]);
+
+    if (loading) return <div className="p-8 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto text-purple-500" /></div>;
+    
+    if (royalties.length === 0) {
+        return (
+            <div className="p-12 text-center text-slate-500 bg-slate-900/30 rounded-xl border border-slate-800 border-dashed">
+                <Store className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                <p className="font-medium">No Royalty Earnings Yet</p>
+                <p className="text-sm mt-1">When your NFTs are traded on secondary markets, your earnings will appear here.</p>
+            </div>
+        );
+    }
+
+    const totalEarnings = royalties.reduce((sum, item) => sum + Number(item.royalty_amount), 0);
+
+    return (
+        <div className="space-y-6">
+            <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/5 border border-amber-500/20 rounded-2xl p-6 flex justify-between items-center">
+                <div>
+                    <h3 className="text-neutral-400 font-medium mb-1">Total Royalty Earnings</h3>
+                    <div className="text-4xl font-black text-amber-400 flex items-center gap-2">
+                         {totalEarnings.toFixed(4)} <span className="text-base text-amber-500/50">ETH</span>
+                    </div>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 text-sm px-4 py-2 bg-black/40 rounded-full border border-black/50 text-neutral-300">
+                    <Wallet className="w-4 h-4 text-neutral-400" />
+                    Withdraw Available
+                </div>
+            </div>
+
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden">
+                <div className="grid grid-cols-4 md:grid-cols-5 gap-4 p-4 font-medium text-sm text-neutral-400 border-b border-neutral-800 bg-black/20">
+                    <div className="col-span-2 md:col-span-1">Token ID</div>
+                    <div className="hidden md:block col-span-1">Marketplace</div>
+                    <div className="col-span-1 text-right">Sale Price</div>
+                    <div className="col-span-1 text-right text-amber-400">Royalty</div>
+                </div>
+                <div className="divide-y divide-neutral-800">
+                    {royalties.map(item => (
+                        <div key={item.id} className="grid grid-cols-4 md:grid-cols-5 gap-4 p-4 text-sm items-center hover:bg-white/[0.02] transition-colors">
+                            <div className="col-span-2 md:col-span-1 font-mono flex items-center gap-2">
+                                <Pickaxe className="w-4 h-4 text-neutral-500" /> 
+                                #{item.nft_token_id}
+                            </div>
+                            <div className="hidden md:block col-span-1 capitalize text-neutral-400">
+                                {item.marketplace}
+                            </div>
+                            <div className="col-span-1 text-right font-mono">
+                                {item.sale_price} ETH
+                            </div>
+                            <div className="col-span-1 text-right font-mono text-amber-400 font-bold">
+                                +{item.royalty_amount} ETH
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 
 /* ───────────── Submission Tracker Component ───────────── */
 function SubmissionsTracker() {

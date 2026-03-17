@@ -6,8 +6,14 @@ Comicraft follows a rolling support window. The latest release receives full sup
 
 | Version | Status             | Support Level              |
 | ------- | ------------------ | -------------------------- |
-| 1.0.1   | ✅ Active (Latest) | Full (features + security) |
-| 1.0.0   | ✅ Active          | Security & critical fixes  |
+| 1.0.106 | ✅ Active (Latest) | Full (features + security) |
+| 1.0.105 | ✅ Active          | Security & critical fixes  |
+
+## Current Security Release
+
+- **Current stable release:** 1.0.106
+- **Release focus:** homepage navigation consistency, interaction hardening for non-live features, and build/release metadata alignment.
+- **Previous security patch line:** 1.0.105
 
 ## Reporting a Vulnerability
 
@@ -67,21 +73,21 @@ We welcome reports regarding our backend, smart contracts, AI implementation, an
 
 ## Current Technology Stack (Security-Relevant)
 
-| Component     | Technology                       | Version  |
-| ------------- | -------------------------------- | -------- |
-| Runtime       | Node.js                          | ≥ 20.0.0 |
-| Framework     | Next.js                          | 14.1.0   |
-| Backend       | Express.js                       | 5.1.0    |
-| Database      | Supabase (PostgreSQL)            | latest   |
-| Auth          | Supabase Auth + Wallet Signatures | 2.x     |
-| AI            | Google Gemini + Groq LPU         | latest   |
-| TTS           | Sarvam AI Bulbul v3              | latest   |
-| Blockchain    | Ethereum Mainnet via Alchemy     | latest   |
-| HTTP Security | Helmet                           | 8.x      |
-| Rate Limiting | express-rate-limit               | 8.x      |
-| Validation    | Zod + express-validator          | 3.x / 7.x |
-| TypeScript    | TypeScript (strict)              | 5.8.x    |
-| Container     | Docker (multi-stage build)       | latest   |
+| Component     | Technology                         | Version  |
+|---------------|------------------------------------|----------|
+| Runtime       | Node.js                            | ≥ 20.0.0 |
+| Framework     | Next.js                            | 14.1.0   |
+| Backend       | Express.js                         | 5.1.0    |
+| Database      | Supabase (PostgreSQL)              | latest   |
+| Auth          | Supabase Auth + Wallet Signatures  | 2.x      |
+| AI            | Google Gemini + Groq LPU           | latest   |
+| TTS           | Sarvam AI Bulbul v3                | latest   |
+| Blockchain    | Ethereum Mainnet via Alchemy       | latest   |
+| HTTP Security | Helmet                             | 8.x      |
+| Rate Limiting | express-rate-limit                 | 8.x      |
+| Validation    | Zod + express-validator            | 3.x / 7.x|
+| TypeScript    | TypeScript (strict)                | 5.8.x    |
+| Container     | Docker (multi-stage build)         | latest   |
 
 ---
 

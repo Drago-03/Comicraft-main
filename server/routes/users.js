@@ -581,4 +581,59 @@ function getDefaultPreferences() {
   };
 }
 
+/**
+ * @swagger
+ * /api/v1/users/{id}/nfts:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get minted NFTs for a user
+ */
+router.get('/:id/nfts', async (req, res) => {
+  try {
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database not configured' });
+    const { id } = req.params;
+
+    // We fetch submissions that have an nft_token_id, and also fetch the connected story
+    const { data: submissions, error } = await supabaseAdmin
+      .from('submissions')
+      .select('*, stories!inner(title, cover_image, views, likes)')
+      .eq('user_id', id)
+      .not('nft_token_id', 'is', null);
+
+    if (error) throw error;
+    res.json({ success: true, data: submissions || [] });
+  } catch (error) {
+    console.error('Fetch NFTs error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/users/{id}/royalties:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get royalty earnings for a user
+ */
+router.get('/:id/royalties', async (req, res) => {
+  try {
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database not configured' });
+    const { id } = req.params;
+
+    const { data: royalties, error } = await supabaseAdmin
+      .from('nft_royalties')
+      .select('*')
+      .eq('seller_address', id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    res.json({ success: true, data: royalties || [] });
+  } catch (error) {
+    console.error('Fetch Royalties error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

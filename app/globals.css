@@ -128,7 +128,7 @@
 
   html {
     font-family: var(--font-comic);
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

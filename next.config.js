@@ -45,6 +45,12 @@ function resolveAppVersion() {
 const APP_VERSION = resolveAppVersion();
 console.log(`[next.config.js] Resolved app version: ${APP_VERSION}`);
 
+// Turbo rules are experimental in Next 14 and can cause intermittent build
+// resolver crashes in some environments. Keep it opt-in for local debugging.
+const enableTurbo =
+  process.env.NODE_ENV === 'development' &&
+  process.env.NEXT_ENABLE_TURBO === 'true';
+
 /**
  * Cloudflare Pages adapter integration.
  *
@@ -265,14 +271,18 @@ const nextConfig = {
       'date-fns',
       'recharts',
     ],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
+    ...(enableTurbo
+      ? {
+          turbo: {
+            rules: {
+              '*.svg': {
+                loaders: ['@svgr/webpack'],
+                as: '*.js',
+              },
+            },
+          },
+        }
+      : {}),
   },
 
   // TypeScript configuration

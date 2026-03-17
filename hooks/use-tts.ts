@@ -1,42 +1,37 @@
 'use client';
 
 /**
- * TTS Hook — Eleven Labs Integration
+ * TTS Hook — Sarvam AI Bulbul v3 Integration
  *
- * Replaced Bulbul (Sarvam AI) with Eleven Labs for high-quality narration.
- * Falls back to existing cached audio from the `/api/tts/audio` endpoint.
+ * Uses the Bulbul v3 model for text-to-speech narration.
+ * Fetches existing cached audio from the `/api/tts/audio` endpoint.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-// ─── Eleven Labs Voices ───
-export const ELEVENLABS_VOICES = [
-  { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George', accent: 'British' },
-  { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah', accent: 'American' },
-  { id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel', accent: 'British' },
-  { id: 'XB0fDUnXU5powFXDhCwa', name: 'Charlotte', accent: 'British' },
-  { id: 'TX3LPaxmHKxFdv7VOQHJ', name: 'Liam', accent: 'American' },
-  { id: 'pFZP5JQG7iQjIQuC4Bku', name: 'Lily', accent: 'British' },
-  { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum', accent: 'Scottish' },
-  { id: 'bIHbv24MWmeRgasZH58o', name: 'Will', accent: 'American' },
-  { id: 'cgSgspJ2msm6clMCkdW9', name: 'Jessica', accent: 'American' },
-  { id: 'iP95p4xoKVk53GoZ742B', name: 'Chris', accent: 'American' },
+// ─── Bulbul v3 Speakers ───
+export const BULBUL_SPEAKERS = [
+  'Shubh', 'Aditya', 'Ritu', 'Priya', 'Neha', 'Rahul', 'Pooja', 'Rohan',
+  'Simran', 'Kavya', 'Amit', 'Dev', 'Ishita', 'Shreya', 'Ratan', 'Varun',
+  'Manan', 'Sumit', 'Roopa', 'Kabir', 'Aayan', 'Ashutosh', 'Advait',
+  'Amelia', 'Sophia', 'Anand', 'Tanya', 'Tarun', 'Sunny', 'Mani',
+  'Gokul', 'Vijay', 'Shruti', 'Suhani', 'Mohit', 'Kavitha', 'Rehan',
+  'Soham', 'Rupali',
 ];
 
-export const ELEVENLABS_LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'hi', label: 'हिंदी' },
-  { code: 'es', label: 'Español' },
-  { code: 'fr', label: 'Français' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'ja', label: '日本語' },
-  { code: 'ko', label: '한국어' },
-  { code: 'pt', label: 'Português' },
+export const BULBUL_LANGUAGES = [
+  { code: 'en-IN', label: 'English (India)' },
+  { code: 'hi-IN', label: 'हिंदी' },
+  { code: 'bn-IN', label: 'বাংলা' },
+  { code: 'ta-IN', label: 'தமிழ்' },
+  { code: 'te-IN', label: 'తెలుగు' },
+  { code: 'gu-IN', label: 'ગુજરાતી' },
+  { code: 'kn-IN', label: 'ಕನ್ನಡ' },
+  { code: 'ml-IN', label: 'മലയാളം' },
+  { code: 'mr-IN', label: 'मराठी' },
+  { code: 'pa-IN', label: 'ਪੰਜਾਬੀ' },
+  { code: 'od-IN', label: 'ଓଡ଼ିଆ' },
 ];
-
-// Legacy exports for backward compatibility
-export const BULBUL_SPEAKERS = ELEVENLABS_VOICES.map(v => v.name);
-export const BULBUL_LANGUAGES = ELEVENLABS_LANGUAGES.map(l => ({ code: l.code, label: l.label }));
 
 export interface TTSOptions {
     storyId: string;
@@ -55,7 +50,6 @@ interface TTSState {
     currentTime: number;
     duration: number;
     speaker: string;
-    voiceId: string;
     languageCode: string;
     pace: number;
     error: string | null;
@@ -63,9 +57,8 @@ interface TTSState {
 
 export const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'George', defaultLang = 'en') {
+export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Shubh', defaultLang = 'en-IN') {
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const defaultVoice = ELEVENLABS_VOICES.find(v => v.name === defaultSpeaker) ?? ELEVENLABS_VOICES[0];
 
     const [state, setState] = useState<TTSState>({
         audioUrl: null,
@@ -75,7 +68,6 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Geor
         currentTime: 0,
         duration: 0,
         speaker: defaultSpeaker,
-        voiceId: defaultVoice.id,
         languageCode: defaultLang,
         pace: 1,
         error: null,
@@ -177,8 +169,7 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Geor
             audioRef.current.src = '';
             audioRef.current = null;
         }
-        const voice = ELEVENLABS_VOICES.find(v => v.name === speaker) ?? ELEVENLABS_VOICES[0];
-        setState(prev => ({ ...prev, speaker, voiceId: voice.id, audioUrl: null, isPlaying: false }));
+        setState(prev => ({ ...prev, speaker, audioUrl: null, isPlaying: false }));
     }, []);
 
     const setLanguage = useCallback((languageCode: string) => {
@@ -192,8 +183,8 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Geor
     }, []);
 
     /**
-     * Generate audio using Eleven Labs API via our backend endpoint.
-     * The API route handles the actual Eleven Labs API call and returns an audio URL.
+     * Generate audio using Sarvam AI Bulbul v3 via our backend endpoint.
+     * The API route handles the actual Sarvam API call and returns an audio URL.
      */
     const generateAudio = useCallback(async (text: string, token?: string) => {
         if (!text || !storyId) return;
@@ -209,11 +200,10 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Geor
                     storyId,
                     chapterIndex,
                     text,
-                    voiceId: state.voiceId,
                     speaker: state.speaker,
                     languageCode: state.languageCode,
                     pace: state.pace,
-                    provider: 'elevenlabs',
+                    provider: 'bulbul',
                 }),
             });
             const data = await res.json();
@@ -238,7 +228,7 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Geor
                 error: 'Audio generation failed. Check your connection.',
             }));
         }
-    }, [storyId, chapterIndex, state.voiceId, state.speaker, state.languageCode, state.pace]);
+    }, [storyId, chapterIndex, state.speaker, state.languageCode, state.pace]);
 
     return {
         ...state,
@@ -251,9 +241,6 @@ export function useTTS(storyId: string, chapterIndex = 0, defaultSpeaker = 'Geor
         setLanguage,
         generateAudio,
         SPEEDS,
-        ELEVENLABS_VOICES,
-        ELEVENLABS_LANGUAGES,
-        // Legacy compatibility
         BULBUL_SPEAKERS,
         BULBUL_LANGUAGES,
     };

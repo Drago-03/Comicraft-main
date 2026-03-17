@@ -113,14 +113,11 @@ export function Header() {
   };
 
   const navItems: NavItem[] = [
-    { type: 'link', href: '/', label: 'Prime' },
     { type: 'link', href: '/genres', label: 'Worlds' },
     { type: 'link', href: '/create', label: 'Forge' },
     { type: 'link', href: '/gallery', label: 'Gallery' },
     { type: 'link', href: '/marketplace', label: 'Bazaar' },
-    { type: 'link', href: '/buy/CRAFTS', label: 'Get CRAFTS' },
     { type: 'link', href: '/community', label: 'Commons' },
-    { type: 'link', href: '/docs', label: 'Atlas' },
   ];
 
   return (
@@ -129,7 +126,7 @@ export function Header() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        'border border-white/10 fixed top-4 left-4 right-4 z-50 rounded-2xl transition-all duration-300 bg-black/40 backdrop-blur-xl',
+        'border border-white/10 sticky top-4 left-4 right-4 z-50 rounded-2xl transition-all duration-300 bg-black/40 backdrop-blur-xl',
         scrolled && 'shadow-[0_10px_40px_rgba(0,0,0,0.7)] bg-black/60'
       )}
     >
@@ -217,16 +214,6 @@ export function Header() {
             <div className="hidden lg:block">
               <GlobalSearch />
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden lg:flex items-center gap-2 px-5 py-2 rounded-full border border-red-500/50 bg-red-500/10 text-red-400 font-semibold shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:bg-red-500 hover:text-black hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all duration-300"
-              onClick={handleCreateClick}
-              aria-label="Create a new story"
-            >
-              <PenSquare className="h-4 w-4 mr-2" />
-              Create
-            </Button>
           </div>
           {/* <ModeToggle /> Temporarily disabled */}
           <UserNav />

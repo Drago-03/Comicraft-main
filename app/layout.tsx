@@ -169,11 +169,6 @@ export default function RootLayout({
           src="/performance-fix.js"
           strategy="afterInteractive"
         />
-        <Script
-          id="scroll-optimization"
-          src="/scroll-optimization.js"
-          strategy="afterInteractive"
-        />
         {/* Removed PWA register script to prevent sw.js 404 errors in environments where static files aren't routed perfectly */}
       </head>
       <body
@@ -210,7 +205,7 @@ export default function RootLayout({
                     <main
                       id="main-content"
                       tabIndex={-1}
-                      className="container mx-auto px-4 pb-6 flex-grow focus:outline-2 focus:outline-primary relative z-10"
+                      className="container mx-auto px-4 pb-6 pt-8 flex-grow focus:outline-2 focus:outline-primary relative z-10"
                     >
                       <React.Suspense fallback={null}>
                         <GlobalLoadingWrapper>

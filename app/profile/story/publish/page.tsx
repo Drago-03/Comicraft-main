@@ -103,9 +103,9 @@ export default function PublishStoryPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-screen w-full items-center justify-center bg-black">
+        <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-[#1a1a2e] via-[#232946] to-[#16161a]">
           <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-            <Send className="w-12 h-12 text-blue-500" />
+            <Send className="w-12 h-12 text-[#ff4444] drop-shadow-lg" />
           </motion.div>
         </div>
       }
@@ -546,12 +546,13 @@ function PublishStoryContent() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-black text-white font-sans"
+      className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#232946] to-[#16161a] text-white font-sans"
     >
-      {/* Background */}
+      {/* Comic-style Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(59,130,246,0.07),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(16,185,129,0.04),_transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(255,68,68,0.07),_transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(59,130,246,0.04),_transparent_50%)]" />
+        <div className="absolute inset-0 bg-dot-pattern opacity-10" />
       </div>
 
       <div className="relative z-10">
@@ -589,16 +590,16 @@ function PublishStoryContent() {
 
         {/* ═══ MAIN LAYOUT ═══ */}
         <div className="max-w-[1600px] mx-auto px-6 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
             {/* ── LEFT: Story Preview ── */}
             <div className="lg:col-span-7 xl:col-span-8">
               <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl overflow-hidden">
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-white/[0.06]">
+                <div className="px-6 py-4 border-b border-white/[0.06] bg-gradient-to-r from-[#232946] to-[#1a1a2e]">
                   <div className="flex items-center gap-2 mb-1">
-                    <BookOpen className="w-4 h-4 text-blue-400" />
-                    <span className="text-sm font-semibold text-white/80">Story Preview</span>
+                    <BookOpen className="w-4 h-4 text-[#ff4444] drop-shadow" />
+                    <span className="text-sm font-semibold text-white/90">Story Preview</span>
                   </div>
                   {/* Editable Title */}
                   <input
@@ -607,8 +608,8 @@ function PublishStoryContent() {
                       setEditableTitle(e.target.value);
                       setErrors(prev => { const n = { ...prev }; delete n.title; return n; });
                     }}
-                    className={`w-full text-2xl font-bold text-white tracking-tight bg-transparent border-b-2 pb-1 focus:outline-none transition-colors ${
-                      errors.title ? 'border-red-500/60' : 'border-transparent hover:border-white/10 focus:border-blue-500/40'
+                    className={`w-full text-3xl font-bold text-white tracking-tight bg-transparent border-b-2 pb-1 focus:outline-none transition-colors font-sans ${
+                      errors.title ? 'border-red-500/60' : 'border-transparent hover:border-white/10 focus:border-[#ff4444]/40'
                     }`}
                     placeholder="Enter your story title…"
                   />
@@ -617,7 +618,7 @@ function PublishStoryContent() {
                   {storyData && storyData.genres.length > 0 && (
                     <div className="flex gap-2 mt-2">
                       {storyData.genres.map(g => (
-                        <span key={g} className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 border border-blue-500/20 text-blue-300">
+                        <span key={g} className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#ff4444]/10 border border-[#ff4444]/20 text-[#ff4444]">
                           {g}
                         </span>
                       ))}
@@ -631,14 +632,14 @@ function PublishStoryContent() {
                     <div className="prose prose-invert max-w-none">
                       {compiledStory.map((chapter, idx) => (
                         <div key={chapter.id} className="mb-10">
-                          {idx > 0 && <hr className="border-white/10 my-8" />}
-                          <h3 className="text-base font-bold text-white/90 mb-4 font-sans flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-md bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">
+                          {idx > 0 && <hr className="border-[#ff4444]/20 my-8" />}
+                          <h3 className="text-lg font-bold text-white/90 mb-4 font-sans flex items-center gap-2">
+                            <span className="w-7 h-7 rounded-md bg-[#ff4444]/10 border border-[#ff4444]/20 flex items-center justify-center text-[#ff4444] text-base font-bold">
                               {chapter.displayIndex}
                             </span>
                             {chapter.title}
                           </h3>
-                          <div className="whitespace-pre-wrap text-white/70 leading-[1.85] text-sm font-serif">
+                          <div className="whitespace-pre-wrap text-white/80 leading-[1.85] text-[15px] font-serif drop-shadow-sm">
                             {chapter.content}
                           </div>
                         </div>

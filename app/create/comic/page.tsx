@@ -20,13 +20,20 @@ import {
   ChevronDown,
   ChevronRight,
   ArrowLeft,
+  ArrowRight,
   Loader2,
   RefreshCw,
   Check,
   Palette,
   Type,
   Settings2,
-  LayoutDashboard
+  LayoutDashboard,
+  Eye,
+  Zap,
+  Star,
+  AlertCircle,
+  Smile,
+  BookOpenCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -155,10 +162,11 @@ export default function PanelraEnginePage() {
   // ── UI state ─────────────────────────────────────────────────
   const [expandedSections, setExpandedSections] = useState({
     story: true,
-    layout: true,
+    layout: false,
     beats: false,
     characters: false,
   });
+  const [step, setStep] = useState<'basics' | 'characters' | 'layout' | 'review'>('basics');
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -318,6 +326,24 @@ export default function PanelraEnginePage() {
 
   const isGenerating = !['idle', 'complete', 'error'].includes(phase);
 
+  // ── Helper: Panel Grid Preview ────────────────────────────────
+  const PanelGridPreview = ({ columns, rows }: { columns: number; rows: number }) => {
+    const totalPanels = columns * rows;
+    return (
+      <div className="grid gap-1.5 p-4 bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] rounded-xl border-2 border-dashed border-[#C0B591]/20">
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: '12px' }}>
+          {Array.from({ length: totalPanels }).map((_, i) => (
+            <div key={i} className="aspect-[3/4] rounded-lg bg-gradient-to-br from-[#C0B591]/10 to-[#FF4444]/5 border border-[#C0B591]/20 flex items-center justify-center">
+              <div className="text-center">
+                <span className="text-[10px] text-[#C0B591]/60 font-semibold">Panel {i + 1}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   // ── Render ───────────────────────────────────────────────────
 
   return (
@@ -331,118 +357,199 @@ export default function PanelraEnginePage() {
         transition={{ duration: 0.5 }}
         className="relative z-10"
       >
-        {/* ─── Sticky Top Bar ──────────────────────────────────── */}
-        <div className="sticky top-0 z-50 bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] backdrop-blur-xl border-b border-black px-4 py-3">
-          <div className="max-w-[1600px] mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        {/* ─── PROFESSIONAL HEADER ──────────────────────────────────── */}
+        <div className="sticky top-0 z-50 bg-gradient-to-r from-white via-[#EEDFCA] to-white border-b-4 border-[#C0B591] shadow-[0_4px_0_0_rgba(192,181,145,0.2)] backdrop-blur-xl px-4 py-4">
+          <div className="max-w-[1800px] mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-4">
               <Link href="/create">
-                <button className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-black opacity-20 text-black/70 font-bold hover:text-black hover:bg-white/10 transition-all text-sm">
-                  <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-                  Forge
+                <button className="group flex items-center gap-2 px-3 py-2 rounded-lg bg-white/30 border-2 border-[#C0B591] text-black font-bold hover:bg-white/50 transition-all text-sm">
+                  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                  Back to Forge
                 </button>
               </Link>
-              <div className="w-px h-6 bg-white/10" />
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                  <BookOpen className="w-4 h-4 text-blue-400" />
+              <div className="w-px h-8 bg-[#C0B591]/30" />
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#C0B591]/20 to-[#FF4444]/10 flex items-center justify-center border-2 border-[#C0B591]/30">
+                  <BookOpenCheck className="w-5 h-5 text-[#C0B591]" />
                 </div>
                 <div>
-                  <h1 className="text-sm font-bold text-black">Panelra Engine</h1>
-                  <p className="text-xs text-black/60 font-bold">AI Comic Generation</p>
+                  <h1 className="text-lg font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>Panelra Comic Engine</h1>
+                  <p className="text-xs text-black/60 font-medium">Create stunning AI-powered comics</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {title && (
-                <span className="text-xs text-black/30 mr-2 hidden sm:block">
-                  {title || 'Untitled Comic'}
+                <span className="text-sm text-black/50 px-3 py-1.5 bg-white/30 rounded-lg border border-[#C0B591]/20 hidden sm:block font-semibold">
+                  {title}
                 </span>
               )}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleReset}
-                className="text-xs border-black opacity-20 text-black/70 font-bold hover:text-black bg-white/5"
+                className="text-sm border-2 border-[#C0B591]/30 text-black bg-white/30 hover:bg-white/50 font-bold"
               >
-                <RotateCcw className="w-3 h-3 mr-1.5" />
-                Reset
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Reset All
               </Button>
             </div>
           </div>
         </div>
 
-        {/* ─── Split-View Studio Layout ────────────────────────────── */}
-        <div className="max-w-[1800px] mx-auto px-4 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* ─── MAIN CONTENT ──────────────────────────────────────────── */}
+        <div className="max-w-[1800px] mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
             {/* ════════════════════════════════════════════════════
-               LEFT SIDEBAR — Configuration Hub (Span 4)
+               LEFT SIDEBAR — Configuration (Span 1)
                ════════════════════════════════════════════════════ */}
             <motion.div
-              initial={{ x: -20, opacity: 0 }}
+              initial={{ x: -30, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="lg:col-span-4 space-y-4 sticky top-[80px] h-[calc(100vh-100px)] overflow-y-auto no-scrollbar pr-2 pb-10"
+              className="lg:col-span-1 space-y-5 sticky top-[100px] h-[calc(100vh-120px)] overflow-y-auto no-scrollbar pr-2 pb-10"
             >
-              {/* Header */}
-              <div className="flex items-center gap-2 px-1 mb-2">
-                <Settings2 className="w-4 h-4 text-red-400" />
-                <h2 className="text-sm font-semibold tracking-wider uppercase text-red-400/80">Configuration</h2>
-              </div>
-
-              {/* Accordion 1: Story Details */}
-              <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden shadow-lg">
-                <button
-                  onClick={() => toggleSection('story')}
-                  className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
-                >
-                  <div className="flex items-center gap-2 text-black font-bold uppercase text-base">
-                    <Type className="w-4 h-4 text-amber-400" />
-                    <span className="text-sm font-medium">Story Basics</span>
+              {/* Progress Steps */}
+              <Card className="bg-white/20 border-2 border-[#C0B591]/30 backdrop-blur-sm overflow-hidden shadow-lg">
+                <CardContent className="p-4 space-y-3">
+                  <div className="text-xs font-bold text-[#C0B591] uppercase tracking-wider">Your Journey</div>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'basics', label: 'Story Basics', icon: Type },
+                      { id: 'characters', label: 'Your Characters', icon: Users },
+                      { id: 'layout', label: 'Comic Layout', icon: LayoutDashboard },
+                      { id: 'review', label: 'Review & Generate', icon: Sparkles },
+                    ].map((st: any, idx) => {
+                      const Icon = st.icon;
+                      const isActive = step === st.id;
+                      return (
+                        <button
+                          key={st.id}
+                          onClick={() => setStep(st.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border-2 transition-all text-left ${
+                            isActive
+                              ? 'bg-gradient-to-r from-[#C0B591]/20 to-[#FF4444]/10 border-[#C0B591]/50 text-black font-bold'
+                              : 'bg-white/10 border-black/10 text-black/60 hover:border-[#C0B591]/30'
+                          }`}
+                        >
+                          <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[#C0B591]' : 'text-black/40'}`} />
+                          <span className="text-sm font-semibold">{st.label}</span>
+                        </button>
+                      );
+                    })}
                   </div>
-                  {expandedSections.story ? <ChevronDown className="w-4 h-4 text-black/60 font-bold" /> : <ChevronRight className="w-4 h-4 text-black/60 font-bold" />}
-                </button>
+                </CardContent>
+              </Card>
+
+              {/* Quick Stats */}
+              <Card className="bg-gradient-to-br from-[#C0B591]/10 to-[#FF4444]/5 border-2 border-[#C0B591]/20 backdrop-blur-sm shadow-lg">
+                <CardContent className="p-4 space-y-3">
+                  <div className="text-xs font-bold text-[#C0B591] uppercase tracking-wider">Comic Stats</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-white/30 rounded-lg p-2.5 text-center border border-[#C0B591]/20">
+                      <div className="text-lg font-bold text-[#C0B591]">{totalPages}</div>
+                      <div className="text-[10px] text-black/60 font-semibold">Pages</div>
+                    </div>
+                    <div className="bg-white/30 rounded-lg p-2.5 text-center border border-[#C0B591]/20">
+                      <div className="text-lg font-bold text-[#FF4444]">{totalPages * panelsPerPage}</div>
+                      <div className="text-[10px] text-black/60 font-semibold">Total Panels</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Helper Text */}
+              <Card className="bg-white/15 border-2 border-[#C0B591]/20 backdrop-blur-sm shadow-lg">
+                <CardContent className="p-3">
+                  <div className="text-[11px] text-black/70 leading-relaxed">
+                    <p className="font-bold text-[#C0B591] mb-1.5">💡 Tip:</p>
+                    <p>Create your masterpiece step-by-step. Each section helps Panelra understand your vision better, resulting in comics that truly match your story.</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* ════════════════════════════════════════════════════
+               MAIN CONTENT — Input & Results (Span 2)
+               ════════════════════════════════════════════════════ */}
+            <motion.div
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="lg:col-span-2 space-y-7 pb-20"
+            >
+
+              {/* ─── SECTION 1: STORY BASICS ─── */}
+              {(step === 'basics' || step === 'review') && (
                 <AnimatePresence>
-                  {expandedSections.story && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-black"
-                    >
-                      <CardContent className="p-4 space-y-4">
-                        <div className="space-y-1.5">
-                          <Label className="text-xs text-black/70 font-bold">Comic Title</Label>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="space-y-4"
+                  >
+                    <Card className="bg-gradient-to-br from-white/20 to-white/10 border-2 border-[#C0B591]/30 backdrop-blur-sm shadow-xl overflow-hidden">
+                      <div className="bg-gradient-to-r from-[#C0B591]/20 to-[#FF4444]/10 p-5 border-b-2 border-[#C0B591]/20">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-white/30 flex items-center justify-center border border-[#C0B591]/30">
+                            <Type className="w-5 h-5 text-[#C0B591]" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>Story Basics</h3>
+                            <p className="text-xs text-black/60">Tell us about your comic's foundation</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <CardContent className="p-6 space-y-5">
+                        {/* Title */}
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold text-black flex items-center gap-2">
+                            <Star className="w-3.5 h-3.5 text-[#FF4444]" />
+                            Comic Title
+                          </Label>
                           <Input
-                            placeholder="My Epic Comic"
+                            placeholder="e.g., 'The Last Shard', 'Neon Dreams', 'Echoes of Tomorrow'"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="text-sm bg-white/5 border-black opacity-20 placeholder:text-black/20"
+                            className="text-base bg-white/40 border-2 border-[#C0B591]/40 placeholder:text-black/40 focus:border-[#C0B591]/70 focus:bg-white/50 font-semibold"
                           />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-xs text-black/70 font-bold">Logline / Premise</Label>
-                          <Textarea
-                            placeholder="A brief description of your comic's story…"
-                            value={logline}
-                            onChange={(e) => setLogline(e.target.value)}
-                            className="text-sm bg-white/5 border-black opacity-20 placeholder:text-black/20 resize-none h-20"
-                          />
+                          <p className="text-xs text-black/50">Give your comic a memorable title that captures its essence</p>
                         </div>
 
-                        {/* Genre Pills */}
-                        <div className="space-y-1.5">
-                          <Label className="text-xs text-black/70 font-bold">Genres (up to 2)</Label>
-                          <div className="flex flex-wrap gap-1.5">
+                        {/* Logline */}
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold text-black flex items-center gap-2">
+                            <Star className="w-3.5 h-3.5 text-[#FF4444]" />
+                            Story Premise (Logline)
+                          </Label>
+                          <Textarea
+                            placeholder="Summarize your comic in 2-3 sentences. Example: 'A young detective discovers she can see people's memories, leading her down a dangerous path when she witnesses a crime that could change everything.'"
+                            value={logline}
+                            onChange={(e) => setLogline(e.target.value)}
+                            className="text-sm bg-white/40 border-2 border-[#C0B591]/40 placeholder:text-black/40 focus:border-[#C0B591]/70 focus:bg-white/50 resize-none h-24"
+                          />
+                          <p className="text-xs text-black/50">This helps Panelra understand your story's core concept and emotional tone</p>
+                        </div>
+
+                        {/* Genres */}
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold text-black flex items-center gap-2">
+                            <Palette className="w-3.5 h-3.5 text-[#FF4444]" />
+                            Select Up to 2 Genres
+                          </Label>
+                          <div className="grid grid-cols-2 gap-2">
                             {GENRES.map((g) => (
                               <button
                                 key={g}
                                 onClick={() => toggleGenre(g)}
-                                className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-all ${selectedGenres.includes(g)
-                                  ? 'bg-blue-500/20 border-blue-500/40 text-blue-300'
-                                  : 'bg-white/[0.03] border-black opacity-20 text-black/60 font-bold hover:border-black opacity-20 hover:text-black/70 font-bold'
-                                  }`}
+                                className={`px-3.5 py-2.5 rounded-lg text-sm font-semibold border-2 transition-all ${
+                                  selectedGenres.includes(g)
+                                    ? 'bg-gradient-to-r from-[#C0B591]/30 to-[#FF4444]/20 border-[#C0B591]/50 text-black shadow-lg'
+                                    : 'bg-white/20 border-black/20 text-black/70 hover:border-[#C0B591]/30 hover:bg-white/30'
+                                }`}
                               >
                                 {g}
                               </button>
@@ -451,549 +558,580 @@ export default function PanelraEnginePage() {
                         </div>
 
                         {/* Art Style */}
-                        <div className="space-y-1.5">
-                          <Label className="text-xs text-black/70 font-bold">Art Style</Label>
-                          <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold text-black flex items-center gap-2">
+                            <Sparkles className="w-3.5 h-3.5 text-[#FF4444]" />
+                            Visual Style
+                          </Label>
+                          <div className="grid grid-cols-3 gap-2">
                             {ART_STYLES.map((s) => (
                               <button
                                 key={s.value}
                                 onClick={() => setStylePreset(s.value)}
-                                className={`flex flex-col items-center gap-1 p-2 rounded-lg border text-[11px] transition-all ${stylePreset === s.value
-                                  ? 'bg-blue-500/15 border-blue-500/40 text-blue-300'
-                                  : 'bg-white/[0.02] border-black text-black/60 font-bold hover:border-black opacity-20'
-                                  }`}
+                                className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border-2 transition-all ${
+                                  stylePreset === s.value
+                                    ? 'bg-gradient-to-br from-[#C0B591]/20 to-[#FF4444]/15 border-[#C0B591]/50 text-black font-bold shadow-lg'
+                                    : 'bg-white/20 border-black/20 text-black/60 hover:border-[#C0B591]/30 hover:bg-white/30'
+                                }`}
                               >
-                                <span className="text-base">{s.icon}</span>
-                                <span>{s.label}</span>
+                                <span className="text-2xl">{s.icon}</span>
+                                <span className="text-[11px] font-semibold text-center">{s.label}</span>
                               </button>
                             ))}
                           </div>
                         </div>
                       </CardContent>
-                    </motion.div>
-                  )}
+                    </Card>
+                  </motion.div>
                 </AnimatePresence>
-              </Card>
+              )}
 
-              {/* Accordion 2: Layout Options */}
-              <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden shadow-lg">
-                <button
-                  onClick={() => toggleSection('layout')}
-                  className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
-                >
-                  <div className="flex items-center gap-2 text-black font-bold uppercase text-base">
-                    <LayoutDashboard className="w-4 h-4 text-red-400" />
-                    <span className="text-sm font-medium">Layout Config</span>
-                  </div>
-                  {expandedSections.layout ? <ChevronDown className="w-4 h-4 text-black/60 font-bold" /> : <ChevronRight className="w-4 h-4 text-black/60 font-bold" />}
-                </button>
+              {/* ─── SECTION 2: CHARACTER SKETCHES ─── */}
+              {(step === 'characters' || step === 'review') && (
                 <AnimatePresence>
-                  {expandedSections.layout && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-black"
-                    >
-                      <CardContent className="p-4 space-y-4">
-                        {/* Pages / Panels */}
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="space-y-1.5">
-                            <Label className="text-xs text-black/70 font-bold">Pages</Label>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="space-y-4"
+                  >
+                    <Card className="bg-gradient-to-br from-white/20 to-white/10 border-2 border-[#C0B591]/30 backdrop-blur-sm shadow-xl overflow-hidden">
+                      <div className="bg-gradient-to-r from-[#C0B591]/20 to-[#FF4444]/10 p-5 border-b-2 border-[#C0B591]/20">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-white/30 flex items-center justify-center border border-[#C0B591]/30">
+                            <Users className="w-5 h-5 text-[#C0B591]" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>Your Characters</h3>
+                            <p className="text-xs text-black/60">(Optional but recommended for consistent visuals)</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <CardContent className="p-6 space-y-6">
+                        {/* Hero */}
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-2 pb-2 border-b-2 border-[#C0B591]/20">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C0B591]/20 to-[#FF4444]/10 flex items-center justify-center border border-[#C0B591]/30">
+                              <Sparkles className="w-4 h-4 text-[#C0B591]" />
+                            </div>
+                            <h4 className="text-base font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>Main Hero</h4>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <div className="lg:col-span-2 space-y-3">
+                              <Input
+                                placeholder="Hero's name (e.g., 'Aria', 'Marcus')"
+                                value={hero.name}
+                                onChange={(e) => setHero(prev => ({ ...prev, name: e.target.value }))}
+                                className="text-sm bg-white/40 border-2 border-[#C0B591]/40 placeholder:text-black/40 focus:border-[#C0B591]/70 font-semibold"
+                              />
+                              <Textarea
+                                placeholder="Describe your hero (personality, appearance, role)..."
+                                value={hero.description}
+                                onChange={(e) => setHero(prev => ({ ...prev, description: e.target.value }))}
+                                className="text-sm bg-white/40 border-2 border-[#C0B591]/40 placeholder:text-black/40 focus:border-[#C0B591]/70 resize-none h-20"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-xs font-bold text-black/70">Character Sketch</Label>
+                              {hero.previewUrl ? (
+                                <div className="relative rounded-lg overflow-hidden border-2 border-[#C0B591]/30 bg-gradient-to-br from-[#C0B591]/10 to-white/5">
+                                  <img src={hero.previewUrl} alt="Hero" className="w-full h-32 object-contain" />
+                                  <button
+                                    onClick={() => setHero(prev => ({ ...prev, file: null, previewUrl: null }))}
+                                    className="absolute top-2 right-2 p-1.5 rounded-lg bg-[#FF4444]/80 hover:bg-[#FF4444] transition-colors"
+                                  >
+                                    <X className="w-4 h-4 text-white" />
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => heroInputRef.current?.click()}
+                                  className="w-full flex flex-col items-center gap-2 py-5 rounded-lg border-2 border-dashed border-[#C0B591]/40 bg-white/20 hover:bg-white/30 hover:border-[#C0B591]/60 transition-all"
+                                >
+                                  <Upload className="w-5 h-5 text-[#C0B591]/60" />
+                                  <span className="text-[11px] text-black/60 font-semibold">Upload Sketch</span>
+                                </button>
+                              )}
+                              <input
+                                ref={heroInputRef}
+                                type="file"
+                                accept="image/*"
+                                onChange={handleHeroFileChange}
+                                className="hidden"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Separator */}
+                        <div className="border-t-2 border-[#C0B591]/20" />
+
+                        {/* Co-Stars */}
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between pb-2 border-b-2 border-[#C0B591]/20">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C0B591]/20 to-[#FF4444]/10 flex items-center justify-center border border-[#C0B591]/30">
+                                <Users className="w-4 h-4 text-[#C0B591]" />
+                              </div>
+                              <h4 className="text-base font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>Supporting Characters</h4>
+                              {coStars.length > 0 && (
+                                <Badge className="bg-[#C0B591]/20 text-[#C0B591] border border-[#C0B591]/40 text-xs font-bold">{coStars.length}</Badge>
+                              )}
+                            </div>
+                            <Button
+                              onClick={addCoStar}
+                              className="bg-gradient-to-r from-[#C0B591]/60 to-[#FF4444]/40 hover:from-[#C0B591]/70 hover:to-[#FF4444]/50 text-black font-bold border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:shadow-[4px_4px_0px_0px_#000] transition-all text-sm"
+                            >
+                              <Plus className="w-4 h-4 mr-1.5" />
+                              Add Character
+                            </Button>
+                          </div>
+
+                          {coStars.length === 0 ? (
+                            <div className="py-8 text-center">
+                              <Smile className="w-10 h-10 text-[#C0B591]/30 mx-auto mb-2" />
+                              <p className="text-sm text-black/50 font-semibold">No supporting characters yet</p>
+                              <p className="text-xs text-black/40">Add up to 5 characters to bring your story to life</p>
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 gap-3">
+                              {coStars.map((cs) => (
+                                <div key={cs.id} className="p-4 rounded-lg bg-white/20 border-2 border-[#C0B591]/20 hover:border-[#C0B591]/40 transition-all hover:shadow-lg">
+                                  <div className="flex items-start gap-4">
+                                    <div className="flex-1 space-y-2">
+                                      <div className="flex items-center justify-between">
+                                        <Input
+                                          placeholder="Character name"
+                                          value={cs.name}
+                                          onChange={(e) => updateCoStar(cs.id, 'name', e.target.value)}
+                                          className="text-sm bg-transparent border-0 border-b-2 border-[#C0B591]/30 p-0 text-black font-bold placeholder:text-black/30 focus-visible:ring-0 focus-visible:border-[#C0B591]/60"
+                                        />
+                                        <button
+                                          onClick={() => removeCoStar(cs.id)}
+                                          className="p-1 rounded-lg hover:bg-[#FF4444]/20 transition-colors flex-shrink-0"
+                                        >
+                                          <X className="w-4 h-4 text-[#FF4444]/70" />
+                                        </button>
+                                      </div>
+                                      <Textarea
+                                        placeholder="Brief character description..."
+                                        value={cs.description}
+                                        onChange={(e) => updateCoStar(cs.id, 'description', e.target.value)}
+                                        className="text-xs bg-white/20 border border-[#C0B591]/20 placeholder:text-black/30 resize-none h-16"
+                                      />
+                                    </div>
+
+                                    {/* Sketch Preview */}
+                                    {cs.previewUrl ? (
+                                      <div className="relative rounded-lg overflow-hidden border-2 border-[#C0B591]/30 bg-gradient-to-br from-[#C0B591]/10 to-white/5 w-20 h-24 flex-shrink-0">
+                                        <img src={cs.previewUrl} alt={cs.name} className="w-full h-full object-contain" />
+                                        <button
+                                          onClick={() => updateCoStar(cs.id, 'previewUrl', null)}
+                                          className="absolute top-1 right-1 p-1 rounded-lg bg-[#FF4444]/80 hover:bg-[#FF4444]"
+                                        >
+                                          <X className="w-2.5 h-2.5 text-white" />
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <label className="flex items-center justify-center w-20 h-24 rounded-lg border-2 border-dashed border-[#C0B591]/30 bg-white/10 hover:bg-white/20 cursor-pointer transition-all">
+                                        <input
+                                          type="file"
+                                          accept="image/*"
+                                          className="hidden"
+                                          onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                              const reader = new FileReader();
+                                              reader.onload = (ev) => {
+                                                updateCoStar(cs.id, 'previewUrl', ev.target?.result as string);
+                                                updateCoStar(cs.id, 'file', file);
+                                              };
+                                              reader.readAsDataURL(file);
+                                            }
+                                          }}
+                                        />
+                                        <ImageIcon className="w-5 h-5 text-[#C0B591]/40" />
+                                      </label>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                </AnimatePresence>
+              )}
+
+              {/* ─── SECTION 3: LAYOUT CONFIGURATION ─── */}
+              {(step === 'layout' || step === 'review') && (
+                <AnimatePresence>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="space-y-4"
+                  >
+                    <Card className="bg-gradient-to-br from-white/20 to-white/10 border-2 border-[#C0B591]/30 backdrop-blur-sm shadow-xl overflow-hidden">
+                      <div className="bg-gradient-to-r from-[#C0B591]/20 to-[#FF4444]/10 p-5 border-b-2 border-[#C0B591]/20">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-white/30 flex items-center justify-center border border-[#C0B591]/30">
+                            <LayoutDashboard className="w-5 h-5 text-[#C0B591]" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-bold text-black" style={{ fontFamily: 'Georgia, serif' }}>Comic Layout</h3>
+                            <p className="text-xs text-black/60">Design your comic's structure and pacing</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <CardContent className="p-6 space-y-6">
+                        {/* Pages & Panels Configuration */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                          <div className="space-y-3">
+                            <Label className="text-sm font-bold text-black flex items-center gap-2">
+                              <BookOpen className="w-4 h-4 text-[#C0B591]" />
+                              Total Pages
+                            </Label>
                             <Select value={String(totalPages)} onValueChange={(v) => setTotalPages(Number(v))}>
-                              <SelectTrigger className="text-sm bg-white/5 border-black opacity-20">
+                              <SelectTrigger className="text-base bg-white/40 border-2 border-[#C0B591]/40 focus:border-[#C0B591]/70 font-semibold">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
                                 {[2, 4, 6, 8, 12].map((n) => (
-                                  <SelectItem key={n} value={String(n)}>{n} pages</SelectItem>
+                                  <SelectItem key={n} value={String(n)} className="text-base font-semibold">{n} pages</SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
+                            <p className="text-xs text-black/50">Recommended: 4-8 pages for optimal storytelling</p>
                           </div>
-                          <div className="space-y-1.5">
-                            <Label className="text-xs text-black/70 font-bold">Panels/Page</Label>
+
+                          <div className="space-y-3">
+                            <Label className="text-sm font-bold text-black flex items-center gap-2">
+                              <Grid3X3 className="w-4 h-4 text-[#FF4444]" />
+                              Panels Per Page
+                            </Label>
                             <Select value={String(panelsPerPage)} onValueChange={(v) => setPanelsPerPage(Number(v))}>
-                              <SelectTrigger className="text-sm bg-white/5 border-black opacity-20">
+                              <SelectTrigger className="text-base bg-white/40 border-2 border-[#C0B591]/40 focus:border-[#C0B591]/70 font-semibold">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
                                 {[3, 4, 6, 8, 9].map((n) => (
-                                  <SelectItem key={n} value={String(n)}>{n} panels</SelectItem>
+                                  <SelectItem key={n} value={String(n)} className="text-base font-semibold">{n} panels</SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
+                            <p className="text-xs text-black/50">More panels = faster pacing, fewer = cinematic feel</p>
                           </div>
                         </div>
 
-                        {/* Total estimate */}
-                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/5 border border-red-500/10">
-                          <Sparkles className="w-3.5 h-3.5 text-red-400" />
-                          <span className="text-xs text-red-300/80">
-                            {totalPages * panelsPerPage} total panels across {totalPages} pages
-                          </span>
+                        {/* Panel Grid Preview */}
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold text-black flex items-center gap-2">
+                            <Eye className="w-4 h-4 text-[#C0B591]" />
+                            Preview: Your Panel Layout
+                          </Label>
+                          <PanelGridPreview columns={panelsPerPage === 3 ? 3 : panelsPerPage <= 4 ? 2 : panelsPerPage === 6 ? 3 : 4} rows={panelsPerPage === 3 ? 1 : panelsPerPage <= 4 ? 2 : panelsPerPage === 6 ? 2 : panelsPerPage === 8 ? 2 : 3} />
+                          <div className="grid grid-cols-2 gap-3 text-center p-3 bg-white/20 rounded-lg border border-[#C0B591]/20">
+                            <div>
+                              <p className="text-lg font-bold text-[#C0B591]">{totalPages}</p>
+                              <p className="text-xs text-black/60 font-semibold">Pages</p>
+                            </div>
+                            <div>
+                              <p className="text-lg font-bold text-[#FF4444]">{totalPages * panelsPerPage}</p>
+                              <p className="text-xs text-black/60 font-semibold">Total Panels</p>
+                            </div>
+                          </div>
                         </div>
 
                         {/* Layout Style */}
-                        <div className="space-y-2">
-                          <Label className="text-xs text-black/70 font-bold">Layout Style</Label>
-                          <div className="space-y-1.5">
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold text-black flex items-center gap-2">
+                            <Palette className="w-4 h-4 text-[#FF4444]" />
+                            Panel Layout Style
+                          </Label>
+                          <div className="space-y-2">
                             {LAYOUT_STYLES.map((l) => {
                               const Icon = l.icon;
                               return (
                                 <button
                                   key={l.value}
                                   onClick={() => setLayoutStyle(l.value)}
-                                  className={`w-full flex items-center gap-3 p-2.5 rounded-lg border transition-all text-left ${layoutStyle === l.value
-                                    ? 'bg-red-500/10 border-red-500/30 text-red-200'
-                                    : 'bg-white/[0.02] border-black text-black/60 font-bold hover:border-black opacity-20'
-                                    }`}
+                                  className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 transition-all ${
+                                    layoutStyle === l.value
+                                      ? 'bg-gradient-to-r from-[#C0B591]/20 to-[#FF4444]/10 border-[#C0B591]/50 text-black font-bold shadow-lg'
+                                      : 'bg-white/20 border-black/20 text-black/70 hover:border-[#C0B591]/30 hover:bg-white/30'
+                                  }`}
                                 >
-                                  <Icon className="w-4 h-4 flex-shrink-0" />
-                                  <div>
-                                    <p className="text-xs font-medium">{l.label}</p>
-                                    <p className="text-[10px] opacity-60">{l.desc}</p>
+                                  <Icon className="w-5 h-5" />
+                                  <div className="text-left">
+                                    <p className="text-base font-bold">{l.label}</p>
+                                    <p className="text-xs text-black/60">{l.desc}</p>
                                   </div>
                                 </button>
                               );
                             })}
                           </div>
                         </div>
-                      </CardContent>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Card>
 
-              {/* Accordion 3: Beat Outline */}
-              <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden shadow-lg">
-                <button
-                  onClick={() => toggleSection('beats')}
-                  className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
-                >
-                  <div className="flex items-center gap-2 text-black font-bold uppercase text-base">
-                    <Palette className="w-4 h-4 text-pink-400" />
-                    <span className="text-sm font-medium">Beat Outline</span>
-                    <span className="text-[10px] text-black/30 font-normal lowercase">(optional)</span>
-                  </div>
-                  {expandedSections.beats ? <ChevronDown className="w-4 h-4 text-black/60 font-bold" /> : <ChevronRight className="w-4 h-4 text-black/60 font-bold" />}
-                </button>
-                <AnimatePresence>
-                  {expandedSections.beats && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-black"
-                    >
-                      <CardContent className="p-4 space-y-3">
-                        {BEAT_SLOTS.map((label, i) => (
-                          <div key={label} className="flex items-start flex-col gap-1.5">
-                            <div className={`px-2 py-0.5 rounded flex items-center justify-center text-[10px] font-bold ${i === 0 ? 'bg-amber-500/15 text-amber-400' :
-                              i === 1 ? 'bg-orange-500/15 text-orange-400' :
-                                i === 2 ? 'bg-red-500/15 text-red-400' :
-                                  'bg-blue-500/15 text-blue-400'
-                              }`}>
-                              {i + 1}. {label}
-                            </div>
-                            <Input
-                              placeholder={`Enter beat details…`}
-                              value={beats[i]}
-                              onChange={(e) => updateBeat(i, e.target.value)}
-                              className="text-xs h-8 bg-white/5 border-black placeholder:text-black/15"
-                            />
-                          </div>
-                        ))}
-                      </CardContent>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Card>
-
-              {/* Accordion 4: Character Sketches (Optional) */}
-              <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden shadow-lg">
-                <button
-                  onClick={() => toggleSection('characters')}
-                  className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
-                >
-                  <div className="flex items-center gap-2 text-black font-bold uppercase text-base">
-                    <User className="w-4 h-4 text-purple-400" />
-                    <span className="text-sm font-medium">Hero & Co-Stars</span>
-                    <span className="text-[10px] text-black/30 font-normal lowercase">(optional)</span>
-                  </div>
-                  {expandedSections.characters ? <ChevronDown className="w-4 h-4 text-black/60 font-bold" /> : <ChevronRight className="w-4 h-4 text-black/60 font-bold" />}
-                </button>
-                <AnimatePresence>
-                  {expandedSections.characters && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-black"
-                    >
-                      <CardContent className="p-4 space-y-5">
-                        {/* Hero Section */}
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="w-6 h-6 rounded-md bg-purple-500/15 flex items-center justify-center">
-                              <User className="w-3 h-3 text-purple-400" />
-                            </div>
-                            <Label className="text-xs font-semibold text-purple-300">Main Hero</Label>
-                          </div>
-
-                          <div className="space-y-2">
-                            <Input
-                              placeholder="Hero name"
-                              value={hero.name}
-                              onChange={(e) => setHero(prev => ({ ...prev, name: e.target.value }))}
-                              className="text-sm bg-white/5 border-black opacity-20 placeholder:text-black/20"
-                            />
-                            <Textarea
-                              placeholder="Brief description of the hero..."
-                              value={hero.description}
-                              onChange={(e) => setHero(prev => ({ ...prev, description: e.target.value }))}
-                              className="text-sm bg-white/5 border-black opacity-20 placeholder:text-black/20 resize-none h-16"
-                            />
-                          </div>
-
-                          {/* Hero Sketch Upload */}
-                          <div className="space-y-1.5">
-                            <Label className="text-[11px] text-black/60 font-bold">Character Sketch</Label>
-                            {hero.previewUrl ? (
-                              <div className="relative rounded-lg overflow-hidden border border-purple-500/20 bg-purple-500/5">
-                                <img src={hero.previewUrl} alt="Hero sketch" className="w-full h-32 object-contain" />
-                                <button
-                                  onClick={() => setHero(prev => ({ ...prev, file: null, previewUrl: null }))}
-                                  className="absolute top-2 right-2 p-1 rounded-md bg-black/60 hover:bg-white border-b-4 border-black shadow-[0_4px_0_0_#000] transition-colors"
-                                >
-                                  <X className="w-3 h-3 text-black" />
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() => heroInputRef.current?.click()}
-                                className="w-full flex flex-col items-center gap-2 py-6 rounded-lg border-2 border-dashed border-black opacity-20 hover:border-purple-500/30 bg-white/[0.02] hover:bg-purple-500/5 transition-all"
-                              >
-                                <Upload className="w-5 h-5 text-black/20" />
-                                <span className="text-[11px] text-black/30">Upload hero sketch (optional)</span>
-                              </button>
-                            )}
-                            <input
-                              ref={heroInputRef}
-                              type="file"
-                              accept="image/*"
-                              onChange={handleHeroFileChange}
-                              className="hidden"
-                            />
-                          </div>
-                        </div>
-
-                        {/* Separator */}
-                        <div className="border-t border-black" />
-
-                        {/* Co-Stars Section */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-md bg-blue-500/15 flex items-center justify-center">
-                                <Users className="w-3 h-3 text-blue-400" />
-                              </div>
-                              <Label className="text-xs font-semibold text-blue-300">Co-Stars</Label>
-                              {coStars.length > 0 && (
-                                <span className="text-[10px] text-black/30">({coStars.length})</span>
-                              )}
-                            </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={addCoStar}
-                              className="h-7 text-[11px] border-blue-500/20 text-blue-400 bg-blue-500/5 hover:bg-blue-500/10"
-                            >
-                              <Plus className="w-3 h-3 mr-1" />
-                              Add
-                            </Button>
-                          </div>
-
-                          {coStars.length === 0 && (
-                            <p className="text-[11px] text-black/25 text-center py-3">
-                              No co-stars added. Click &quot;Add&quot; to include supporting characters.
-                            </p>
-                          )}
-
-                          {coStars.map((cs) => (
-                            <div key={cs.id} className="p-3 rounded-lg bg-white/[0.02] border border-black space-y-2">
-                              <div className="flex items-center justify-between">
+                        {/* Beat Outline */}
+                        <div className="border-t-2 border-[#C0B591]/20 pt-6 space-y-3">
+                          <Label className="text-sm font-bold text-black flex items-center gap-2">
+                            <Zap className="w-4 h-4 text-[#FF4444]" />
+                            Story Beat Outline (Optional)
+                          </Label>
+                          <p className="text-xs text-black/50">Guide Panelra through your story structure</p>
+                          <div className="grid grid-cols-2 gap-3">
+                            {BEAT_SLOTS.map((label, i) => (
+                              <div key={label} className="space-y-1.5">
+                                <div className={`px-3 py-1.5 rounded-lg text-xs font-bold text-white inline-block ${
+                                  i === 0 ? 'bg-[#FF4444]' :
+                                    i === 1 ? 'bg-orange-500' :
+                                      i === 2 ? 'bg-amber-500' : 'bg-[#C0B591]'
+                                }`}>
+                                  {i + 1}. {label}
+                                </div>
                                 <Input
-                                  placeholder="Character name"
-                                  value={cs.name}
-                                  onChange={(e) => updateCoStar(cs.id, 'name', e.target.value)}
-                                  className="text-xs h-7 bg-transparent border-0 p-0 text-black/90 font-bold placeholder:text-black/20 font-medium focus-visible:ring-0"
+                                  placeholder={`${label} details...`}
+                                  value={beats[i]}
+                                  onChange={(e) => updateBeat(i, e.target.value)}
+                                  className="text-xs h-9 bg-white/30 border border-[#C0B591]/30 placeholder:text-black/30 focus:border-[#C0B591]/60"
                                 />
-                                <button
-                                  onClick={() => removeCoStar(cs.id)}
-                                  className="p-1 rounded hover:bg-red-500/10 transition-colors flex-shrink-0"
-                                >
-                                  <X className="w-3 h-3 text-red-400/60" />
-                                </button>
                               </div>
-                              <Textarea
-                                placeholder="Brief description..."
-                                value={cs.description}
-                                onChange={(e) => updateCoStar(cs.id, 'description', e.target.value)}
-                                className="text-[11px] bg-white/[0.03] border-black placeholder:text-black/15 resize-none h-12"
-                              />
-                              {/* Co-star sketch upload */}
-                              {cs.previewUrl ? (
-                                <div className="relative rounded-md overflow-hidden border border-blue-500/20 bg-blue-500/5">
-                                  <img src={cs.previewUrl} alt={cs.name} className="w-full h-20 object-contain" />
-                                  <button
-                                    onClick={() => updateCoStar(cs.id, 'previewUrl', null)}
-                                    className="absolute top-1 right-1 p-0.5 rounded bg-black/60 hover:bg-white border-b-4 border-black shadow-[0_4px_0_0_#000]"
-                                  >
-                                    <X className="w-2.5 h-2.5 text-black" />
-                                  </button>
-                                </div>
-                              ) : (
-                                <label className="flex items-center gap-2 py-2 px-3 rounded-md border border-dashed border-black hover:border-blue-500/20 bg-white/[0.01] hover:bg-blue-500/5 cursor-pointer transition-all">
-                                  <ImageIcon className="w-3 h-3 text-black/20" />
-                                  <span className="text-[10px] text-black/25">Add sketch</span>
-                                  <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={(e) => {
-                                      const file = e.target.files?.[0];
-                                      if (file) {
-                                        const reader = new FileReader();
-                                        reader.onload = (ev) => {
-                                          updateCoStar(cs.id, 'previewUrl', ev.target?.result as string);
-                                          updateCoStar(cs.id, 'file', file);
-                                        };
-                                        reader.readAsDataURL(file);
-                                      }
-                                    }}
-                                  />
-                                </label>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Card>
-
-            </motion.div>
-
-            {/* ════════════════════════════════════════════════════
-               MAIN STAGE — Sketches & Generation (Span 8)
-               ════════════════════════════════════════════════════ */}
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="lg:col-span-8 space-y-6 pb-20"
-            >
-              {/* Generate Button */}
-              <Card className="bg-white/[0.03] border-black backdrop-blur-xl">
-                <CardContent className="py-4">
-                  <Button
-                    onClick={handleGenerate}
-                    disabled={isGenerating || !title.trim() || !logline.trim()}
-                    className="w-full py-6 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-black border-0 shadow-lg shadow-blue-500/20 disabled:opacity-40 disabled:shadow-none transition-all"
-                  >
-                    {isGenerating ? (
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    ) : (
-                      <Sparkles className="w-5 h-5 mr-2" />
-                    )}
-                    {isGenerating ? 'Generating…' : 'Generate Comic with Panelra Engine'}
-                  </Button>
-
-                  {/* Error display */}
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-3 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-xs"
-                    >
-                      {error}
-                    </motion.div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Progress States */}
-              <AnimatePresence>
-                {isGenerating && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                  >
-                    <Card className="bg-white/[0.03] border-black backdrop-blur-xl overflow-hidden">
-                      <CardContent className="py-6">
-                        <div className="space-y-4">
-                          {/* Progress bar */}
-                          <div className="h-1 rounded-full bg-white/5 overflow-hidden">
-                            <motion.div
-                              className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
-                              initial={{ width: '0%' }}
-                              animate={{
-                                width:
-                                  phase === 'analyzing' ? '25%' :
-                                    phase === 'composing' ? '50%' :
-                                      phase === 'rendering' ? '75%' :
-                                        phase === 'finalizing' ? '90%' : '100%',
-                              }}
-                              transition={{ duration: 0.8 }}
-                            />
-                          </div>
-
-                          {/* Phase steps */}
-                          <div className="space-y-2">
-                            {(['analyzing', 'composing', 'rendering', 'finalizing'] as GenerationPhase[]).map((p, i) => {
-                              const phaseIndex = ['analyzing', 'composing', 'rendering', 'finalizing'].indexOf(phase);
-                              const thisIndex = i;
-                              const isDone = thisIndex < phaseIndex;
-                              const isCurrent = p === phase;
-
-                              return (
-                                <div key={p} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${isCurrent ? 'bg-blue-500/10 border border-blue-500/20' :
-                                  isDone ? 'opacity-50' : 'opacity-20'
-                                  }`}>
-                                  {isDone ? (
-                                    <Check className="w-4 h-4 text-red-400" />
-                                  ) : isCurrent ? (
-                                    <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />
-                                  ) : (
-                                    <div className="w-4 h-4 rounded-full border border-black opacity-20" />
-                                  )}
-                                  <span className="text-xs text-black/80 font-bold">
-                                    {PHASE_MESSAGES[p]}
-                                  </span>
-                                </div>
-                              );
-                            })}
+                            ))}
                           </div>
                         </div>
                       </CardContent>
                     </Card>
                   </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Result — Panel Preview Grid */}
-              {result && phase === 'complete' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="space-y-4"
-                >
-                  {/* Summary */}
-                  <Card className="bg-red-500/5 border-red-500/20 backdrop-blur-xl">
-                    <CardContent className="py-3">
-                      <div className="flex items-center gap-2 text-red-300">
-                        <Check className="w-4 h-4" />
-                        <span className="text-sm font-medium">{result.summary}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Panel Grid by Page */}
-                  {Array.from({ length: result.totalPages }, (_, pageIdx) => {
-                    const pagePanels = result.panels.filter((p) => p.pageNumber === pageIdx + 1);
-                    return (
-                      <Card key={pageIdx} className="bg-white/[0.03] border-black backdrop-blur-xl">
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-xs flex items-center gap-2 text-black/70 font-bold">
-                            <BookOpen className="w-3.5 h-3.5" />
-                            Page {pageIdx + 1}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className={`grid gap-2 ${result.panelsPerPage <= 4 ? 'grid-cols-2' :
-                            result.panelsPerPage <= 6 ? 'grid-cols-3' : 'grid-cols-4'
-                            }`}>
-                            {pagePanels.map((panel) => (
-                              <div
-                                key={panel.panelIndex}
-                                className="group relative rounded-lg border border-black bg-white/[0.02] overflow-hidden hover:border-blue-500/30 transition-all"
-                              >
-                                {/* Panel image placeholder */}
-                                <div className="aspect-[3/4] bg-gradient-to-br from-white/[0.04] to-white/[0.01] flex flex-col items-center justify-center p-2">
-                                  <ImageIcon className="w-8 h-8 text-black/10 mb-1" />
-                                  <span className="text-[9px] text-black/20 text-center">
-                                    {panel.cameraDirection}
-                                  </span>
-                                </div>
-
-                                {/* Caption */}
-                                <div className="p-2 border-t border-white/[0.04]">
-                                  <p className="text-[10px] text-black/70 font-bold line-clamp-2">{panel.caption}</p>
-                                  {panel.characters.length > 0 && (
-                                    <div className="flex flex-wrap gap-1 mt-1">
-                                      {panel.characters.map((c, ci) => (
-                                        <Badge key={ci} variant="outline" className="text-[8px] px-1 py-0 h-4 border-black opacity-20 text-black/30">
-                                          {c}
-                                        </Badge>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-
-                                {/* Hover actions */}
-                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
-                                  <button className="p-1.5 rounded-md bg-white/10 hover:bg-white/20 transition-colors">
-                                    <RefreshCw className="w-3 h-3" />
-                                  </button>
-                                  <button className="p-1.5 rounded-md bg-white/10 hover:bg-white/20 transition-colors">
-                                    <Type className="w-3 h-3" />
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => setPhase('idle')}
-                      className="flex-1 border-black opacity-20 text-black/70 font-bold bg-white/5 hover:text-black"
-                    >
-                      <RefreshCw className="w-4 h-4 mr-2" />
-                      Regenerate
-                    </Button>
-                    <Button className="flex-1 bg-red-500 border-4 border-black text-white hover:bg-red-600 active:translate-y-1 shadow-[4px_4px_0_0_#000] hover:from-red-500 hover:to-red-600 text-black border-0">
-                      <Save className="w-4 h-4 mr-2" />
-                      Save Comic
-                    </Button>
-                  </div>
-                </motion.div>
+                </AnimatePresence>
               )}
 
-              {/* Empty State */}
-              {phase === 'idle' && !result && (
-                <Card className="bg-white/[0.02] border-black backdrop-blur-xl">
-                  <CardContent className="py-12">
-                    <div className="text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
-                        <BookOpen className="w-8 h-8 text-blue-400/50" />
-                      </div>
-                      <p className="text-sm font-medium text-black/60 font-bold mb-1">Your comic will appear here</p>
-                      <p className="text-xs text-black/20">
-                        Fill in the setup, then hit Generate to create your AI comic
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+              {/* ─── SECTION 4: REVIEW & GENERATE ─── */}
+              {(step === 'review' || isGenerating || phase === 'complete' || phase === 'error') && (
+                <AnimatePresence>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="space-y-4"
+                  >
+                    {/* Generate Button */}
+                    <Card className="bg-gradient-to-r from-[#C0B591]/30 to-[#FF4444]/20 border-2 border-[#C0B591]/40 backdrop-blur-sm shadow-xl overflow-hidden">
+                      <CardContent className="p-6">
+                        <Button
+                          onClick={handleGenerate}
+                          disabled={isGenerating || !title.trim() || !logline.trim()}
+                          className="w-full py-7 text-lg font-bold bg-gradient-to-r from-[#C0B591] to-[#FF4444] hover:from-[#D4C4A8] hover:to-[#FF6666] text-black border-3 border-black shadow-[4px_4px_0px_0px_#000] hover:shadow-[6px_6px_0px_0px_#000] active:shadow-[2px_2px_0px_0px_#000] active:translate-y-1 transition-all"
+                        >
+                          {isGenerating ? (
+                            <Loader2 className="w-6 h-6 mr-3 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-6 h-6 mr-3" />
+                          )}
+                          {isGenerating ? `${PHASE_MESSAGES[phase]}` : 'Generate Your Comic'}
+                        </Button>
+
+                        {error && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-4 px-4 py-3 rounded-lg bg-[#FF4444]/20 border-2 border-[#FF4444]/40 text-[#FF4444]/80 text-sm font-semibold flex items-start gap-3"
+                          >
+                            <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                            {error}
+                          </motion.div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Progress States */}
+                    <AnimatePresence>
+                      {isGenerating && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                        >
+                          <Card className="bg-white/20 border-2 border-[#C0B591]/30 backdrop-blur-sm overflow-hidden shadow-xl">
+                            <CardContent className="p-6">
+                              <div className="space-y-4">
+                                <div className="h-2 rounded-full bg-white/10 overflow-hidden border border-[#C0B591]/20">
+                                  <motion.div
+                                    className="h-full rounded-full bg-gradient-to-r from-[#C0B591] to-[#FF4444]"
+                                    initial={{ width: '0%' }}
+                                    animate={{
+                                      width:
+                                        phase === 'analyzing' ? '25%' :
+                                          phase === 'composing' ? '50%' :
+                                            phase === 'rendering' ? '75%' :
+                                              phase === 'finalizing' ? '90%' : '100%',
+                                    }}
+                                    transition={{ duration: 0.8 }}
+                                  />
+                                </div>
+
+                                <div className="space-y-2">
+                                  {(['analyzing', 'composing', 'rendering', 'finalizing'] as GenerationPhase[]).map((p, i) => {
+                                    const phaseIndex = ['analyzing', 'composing', 'rendering', 'finalizing'].indexOf(phase);
+                                    const thisIndex = i;
+                                    const isDone = thisIndex < phaseIndex;
+                                    const isCurrent = p === phase;
+
+                                    return (
+                                      <div key={p} className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all ${
+                                        isCurrent ? 'bg-[#C0B591]/20 border-2 border-[#C0B591]/40' :
+                                          isDone ? 'opacity-50' : 'opacity-30'
+                                      }`}>
+                                        {isDone ? (
+                                          <Check className="w-5 h-5 text-[#FF4444]" />
+                                        ) : isCurrent ? (
+                                          <Loader2 className="w-5 h-5 text-[#C0B591] animate-spin" />
+                                        ) : (
+                                          <div className="w-5 h-5 rounded-full border-2 border-black/20" />
+                                        )}
+                                        <span className="text-sm font-bold text-black">
+                                          {PHASE_MESSAGES[p]}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Results */}
+                    {result && phase === 'complete' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="space-y-4"
+                      >
+                        <Card className="bg-gradient-to-r from-[#C0B591]/30 to-[#FF4444]/20 border-2 border-[#FF4444]/40 backdrop-blur-sm shadow-xl">
+                          <CardContent className="py-4 flex items-center gap-3">
+                            <Check className="w-6 h-6 text-[#FF4444]" />
+                            <span className="text-base font-bold text-black">{result.summary}</span>
+                          </CardContent>
+                        </Card>
+
+                        {/* Pages */}
+                        {Array.from({ length: result.totalPages }, (_, pageIdx) => {
+                          const pagePanels = result.panels.filter((p) => p.pageNumber === pageIdx + 1);
+                          return (
+                            <Card key={pageIdx} className="bg-white/20 border-2 border-[#C0B591]/30 backdrop-blur-sm overflow-hidden shadow-xl">
+                              <CardHeader className="bg-gradient-to-r from-[#C0B591]/20 to-[#FF4444]/10 border-b-2 border-[#C0B591]/20 pb-3">
+                                <CardTitle className="text-base flex items-center gap-3 text-black font-bold">
+                                  <div className="w-8 h-8 rounded-lg bg-white/30 flex items-center justify-center border border-[#C0B591]/30">
+                                    <span className="text-sm font-bold text-[#C0B591]">{pageIdx + 1}</span>
+                                  </div>
+                                  Page {pageIdx + 1}
+                                </CardTitle>
+                              </CardHeader>
+                              <CardContent className="p-5">
+                                <div className={`grid gap-3 ${
+                                  result.panelsPerPage <= 4 ? 'grid-cols-2' :
+                                    result.panelsPerPage <= 6 ? 'grid-cols-3' : 'grid-cols-4'
+                                }`}>
+                                  {pagePanels.map((panel) => (
+                                    <div
+                                      key={panel.panelIndex}
+                                      className="group relative rounded-lg border-2 border-[#C0B591]/30 bg-gradient-to-br from-white/20 to-white/5 overflow-hidden hover:border-[#C0B591]/60 transition-all hover:shadow-lg"
+                                    >
+                                      <div className="aspect-[3/4] bg-gradient-to-br from-[#C0B591]/5 to-[#FF4444]/5 flex flex-col items-center justify-center p-2">
+                                        <ImageIcon className="w-8 h-8 text-[#C0B591]/30 mb-1" />
+                                        <span className="text-[9px] text-[#C0B591]/50 text-center font-bold">{panel.cameraDirection}</span>
+                                      </div>
+
+                                      <div className="p-2.5 border-t-2 border-[#C0B591]/20">
+                                        <p className="text-[10px] text-black font-bold line-clamp-2 mb-1">{panel.caption}</p>
+                                        {panel.characters.length > 0 && (
+                                          <div className="flex flex-wrap gap-1">
+                                            {panel.characters.map((c, ci) => (
+                                              <Badge key={ci} className="text-[8px] px-1.5 py-0 h-5 bg-[#C0B591]/20 text-[#C0B591] border border-[#C0B591]/40 font-bold">
+                                                {c}
+                                              </Badge>
+                                            ))}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          );
+                        })}
+
+                        {/* Actions */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <Button
+                            variant="outline"
+                            onClick={() => setPhase('idle')}
+                            className="border-2 border-[#C0B591]/40 text-black bg-white/30 hover:bg-white/50 font-bold py-6 text-base"
+                          >
+                            <RefreshCw className="w-5 h-5 mr-2" />
+                            Regenerate
+                          </Button>
+                          <Button className="bg-gradient-to-r from-[#C0B591] to-[#FF4444] hover:from-[#D4C4A8] hover:to-[#FF6666] text-black font-bold border-3 border-black shadow-[3px_3px_0px_0px_#000] hover:shadow-[5px_5px_0px_0px_#000] active:shadow-[1px_1px_0px_0px_#000] active:translate-y-1 py-6 text-base transition-all">
+                            <Save className="w-5 h-5 mr-2" />
+                            Save Comic
+                          </Button>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Empty State */}
+                    {phase === 'idle' && !result && step === 'review' && (
+                      <Card className="bg-white/15 border-2 border-[#C0B591]/30 backdrop-blur-sm shadow-xl">
+                        <CardContent className="py-12 text-center">
+                          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#C0B591]/20 to-[#FF4444]/10 flex items-center justify-center mx-auto mb-4 border-2 border-[#C0B591]/30">
+                            <BookOpen className="w-10 h-10 text-[#C0B591]/50" />
+                          </div>
+                          <p className="text-lg font-bold text-black mb-2" style={{ fontFamily: 'Georgia, serif' }}>Ready to Create?</p>
+                          <p className="text-sm text-black/60 mb-4">Review your settings and click Generate to bring your comic to life</p>
+                          <Button onClick={() => setStep('basics')} className="bg-[#C0B591] hover:bg-[#D4C4A8] text-black font-bold border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+                            Edit Setup
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              )}
+
+              {/* Navigation Buttons for Steps */}
+              {!isGenerating && phase === 'idle' && !result && (
+                <div className="flex gap-3">
+                  {step !== 'basics' && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setStep(step === 'characters' ? 'basics' : step === 'layout' ? 'characters' : 'layout')}
+                      className="flex-1 border-2 border-[#C0B591]/40 text-black bg-white/30 hover:bg-white/50 font-bold py-6 text-base"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Previous
+                    </Button>
+                  )}
+                  {step !== 'review' && (
+                    <Button
+                      onClick={() => setStep(step === 'basics' ? 'characters' : step === 'characters' ? 'layout' : 'review')}
+                      className="flex-1 bg-gradient-to-r from-[#C0B591] to-[#FF4444] hover:from-[#D4C4A8] hover:to-[#FF6666] text-black font-bold border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:shadow-[4px_4px_0px_0px_#000] active:shadow-[1px_1px_0px_0px_#000] active:translate-y-1 py-6 text-base transition-all"
+                    >
+                      {step === 'layout' ? 'Review & Generate' : 'Next Step'}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )}
+                </div>
               )}
             </motion.div>
           </div>

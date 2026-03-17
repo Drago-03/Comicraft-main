@@ -86,21 +86,21 @@ export default function StoryClient({ id }: { id: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#080b11] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-red-400 animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-[#1a1a1a] via-[#242424] to-[#1a1a1a] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#C0B591] animate-spin" />
       </div>
     );
   }
 
   if (notFound || !story) {
     return (
-      <div className="min-h-screen bg-[#080b11] flex items-center justify-center text-white">
+      <div className="min-h-screen bg-gradient-to-br from-[#1a1a1a] via-[#242424] to-[#1a1a1a] flex items-center justify-center text-white">
         <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold" style={{ textTransform: 'none' }}>Story Not Found</h2>
-          <p className="text-white/40" style={{ fontWeight: 400 }}>This story may have been removed or doesn't exist.</p>
+          <h2 className="text-3xl font-bold" style={{ textTransform: 'none', fontFamily: 'Georgia, serif', color: '#C0B591' }}>Story Not Found</h2>
+          <p className="text-white/40" style={{ fontWeight: 400, fontFamily: 'Georgia, serif' }}>This story may have been removed or doesn't exist.</p>
           <Link href="/gallery"
-            className="inline-block mt-4 px-6 py-3 border border-white/20 rounded-full text-sm hover:bg-white/5 transition-colors"
-            style={{ fontWeight: 500 }}>
+            className="inline-block mt-4 px-6 py-3 border rounded-full text-sm transition-colors hover:bg-[#C0B591]/10"
+            style={{ fontWeight: 500, fontFamily: 'Georgia, serif', borderColor: '#C0B591', color: '#C0B591' }}>
             ← Back to Gallery
           </Link>
         </div>
@@ -112,10 +112,10 @@ export default function StoryClient({ id }: { id: string }) {
   const ttsSettings = story.parameters || {};
 
   return (
-    <div className="min-h-screen bg-[#080b11] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#1a1a1a] via-[#242424] to-[#1a1a1a] text-white">
 
       {/* ── Compact Header Bar ───────────────────────────────── */}
-      <div className="sticky top-0 z-50 bg-[#080b11]/90 backdrop-blur-xl border-b border-white/[0.06]">
+      <div className="sticky top-0 z-50 bg-[#1a1a1a]/90 backdrop-blur-xl border-b" style={{ borderColor: 'rgba(192, 181, 145, 0.1)' }}>
         <div className="container mx-auto max-w-6xl px-4 md:px-8">
           <div className="flex items-center gap-4 h-14">
             <Link href="/gallery"
@@ -128,9 +128,9 @@ export default function StoryClient({ id }: { id: string }) {
             <div className="h-5 w-px bg-white/10" />
 
             <div className="flex items-center gap-3 min-w-0 flex-1">
-              {story.genre && (
-                <span className="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border border-red-500/30 text-red-400 bg-red-500/10 shrink-0"
-                  style={{ fontWeight: 700 }}>
+            {story.genre && (
+                <span className="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider shrink-0"
+                  style={{ fontWeight: 700, borderColor: '#C0B591', color: '#C0B591', backgroundColor: 'rgba(192, 181, 145, 0.1)', border: '1px solid' }}>
                   {story.genre}
                 </span>
               )}
@@ -161,17 +161,17 @@ export default function StoryClient({ id }: { id: string }) {
       {/* ── Story Title Section ──────────────────────────────── */}
       <section className="container mx-auto max-w-4xl px-4 md:px-8 pt-10 pb-6 text-center">
         <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-3"
-          style={{ fontFamily: "'Georgia', serif", textTransform: 'none', lineHeight: 1.2 }}>
+          style={{ fontFamily: "'Georgia', serif", textTransform: 'none', lineHeight: 1.2, color: '#C0B591' }}>
           {story.title}
         </h1>
         {story.author_name && (
-          <p className="text-base text-white/40 mb-2" style={{ fontWeight: 400, textTransform: 'none' }}>
+          <p className="text-base mb-2" style={{ fontWeight: 400, textTransform: 'none', color: '#C0B591', fontFamily: "'Georgia', serif" }}>
             by {story.author_name}
           </p>
         )}
         {story.description && (
-          <p className="text-sm text-white/30 leading-relaxed max-w-2xl mx-auto mt-4"
-            style={{ fontWeight: 400, textTransform: 'none' }}>
+          <p className="text-sm leading-relaxed max-w-2xl mx-auto mt-4"
+            style={{ fontWeight: 400, textTransform: 'none', color: 'rgba(192, 181, 145, 0.8)', fontFamily: "'Georgia', serif" }}>
             {story.description}
           </p>
         )}
@@ -191,7 +191,7 @@ export default function StoryClient({ id }: { id: string }) {
       </section>
 
       {/* ── Engagement Section ───────────────────────────────── */}
-      <section className="border-t border-white/[0.06] bg-[#060912]">
+      <section style={{ borderTop: '1px solid rgba(192, 181, 145, 0.1)', backgroundColor: '#1a1a1a' }}>
         <div className="container mx-auto max-w-4xl px-4 md:px-8 py-10">
           <StoryEngagement storyId={story.id} />
         </div>

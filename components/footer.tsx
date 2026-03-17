@@ -112,15 +112,15 @@ export function Footer({ version }: { version?: string }) {
               </h3>
               <ul className="space-y-4 pl-0 list-none">
                 {[
-                  { href: '/', label: 'Prime' },
                   { href: '/genres', label: 'Worlds' },
                   { href: '/create', label: 'Forge' },
+                  { href: '/gallery', label: 'Gallery' },
                   { href: '/marketplace', label: 'Bazaar' },
                   { href: '/community', label: 'Commons' },
-                  { href: '/docs', label: 'Atlas' },
                   { href: '/community/creators', label: 'Top Creators' },
                   { href: '/dashboard/royalties', label: 'Earnings' },
                   { href: '#', label: 'Upload Story', isUpload: true },
+                  { href: '/buy/CRAFTS', label: 'CRAFTS' },
                 ].map((link) => (
                   <li key={link.label}>
                     {link.isUpload ? (
