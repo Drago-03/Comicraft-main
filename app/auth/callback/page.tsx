@@ -119,6 +119,7 @@ function persistSession(session: any) {
     localStorage.setItem('refreshToken', session.refresh_token);
   }
   window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
+  window.dispatchEvent(new Event('auth-changed'));
 }
 
 export default function AuthCallbackPage() {

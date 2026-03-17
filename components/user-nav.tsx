@@ -46,13 +46,40 @@ export function UserNav() {
 
   useEffect(() => {
     // Check Supabase session
-    const refreshSession = () => {
-      supabase.auth.getSession().then(({ data: { session } }: { data: { session: any } }) => {
-        setSession(session);
-        if (session?.user) {
-          setDbUser({ username: session.user.user_metadata?.username || session.user.email?.split('@')[0], avatar: session.user.user_metadata?.avatar_url, id: session.user.id });
+    const refreshSession = async () => {
+      let currentSession: any = null;
+
+      const { data: { session: initialSession } }: { data: { session: any } } = await supabase.auth.getSession();
+      currentSession = initialSession;
+
+      // Production fallback: if Supabase session is missing but tokens are present,
+      // rehydrate session from localStorage so nav updates from Login -> Profile.
+      if (!currentSession && typeof window !== 'undefined') {
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+
+        if (accessToken && refreshToken) {
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+
+          if (!error) {
+            currentSession = data.session;
+          }
         }
-      });
+      }
+
+      setSession(currentSession);
+      if (currentSession?.user) {
+        setDbUser({
+          username: currentSession.user.user_metadata?.username || currentSession.user.email?.split('@')[0],
+          avatar: currentSession.user.user_metadata?.avatar_url,
+          id: currentSession.user.id,
+        });
+      } else if (!account) {
+        setDbUser(null);
+      }
     };
 
     refreshSession();
@@ -76,6 +103,10 @@ export function UserNav() {
     };
     window.addEventListener('storage', handleStorageChange);
 
+    // Custom same-tab auth event (more reliable than synthetic storage events in some browsers)
+    const handleAuthChanged = () => refreshSession();
+    window.addEventListener('auth-changed', handleAuthChanged);
+
     // Re-check session when user returns to this tab or navigates back
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') refreshSession();
@@ -86,6 +117,7 @@ export function UserNav() {
     return () => {
       subscription.unsubscribe();
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('auth-changed', handleAuthChanged);
       document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('focus', refreshSession);
     };

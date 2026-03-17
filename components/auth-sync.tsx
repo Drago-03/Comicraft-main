@@ -25,6 +25,7 @@ export function AuthSync() {
         }
         // Notify other components that auth state has changed
         window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
+        window.dispatchEvent(new Event('auth-changed'));
       }
     });
 
@@ -37,10 +38,12 @@ export function AuthSync() {
         }
         // Notify other components that auth state has changed
         window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken' }));
+        window.dispatchEvent(new Event('auth-changed'));
       } else if (event === 'SIGNED_OUT') {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken', newValue: null }));
+        window.dispatchEvent(new Event('auth-changed'));
       }
     });
 

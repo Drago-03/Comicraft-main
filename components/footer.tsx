@@ -21,7 +21,6 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 import { AdminLoginModal } from './admin-login-modal';
-import { UploadStoryTrigger } from './upload-story-trigger';
 import { ComiCraftLogo } from './comicraft-logo';
 import { useSystemHealth } from '@/hooks/use-system-health';
 
@@ -65,7 +64,7 @@ export function Footer({ version }: { version?: string }) {
             {/* Brand Section */}
             <div className="space-y-6 flex flex-col items-start lg:col-span-2">
               <Link href="/" className="group inline-block mb-2" aria-label="Comicraft home">
-                <ComiCraftLogo variant="full" colorScheme="color" size={32} animate={false} />
+                <ComiCraftLogo variant="full" colorScheme="color" size={78} animate={false} />
               </Link>
               <div className="text-left font-sans">
                 <p className="text-sm font-medium text-background-light/70 leading-relaxed max-w-sm">
@@ -113,30 +112,29 @@ export function Footer({ version }: { version?: string }) {
               <ul className="space-y-4 pl-0 list-none">
                 {[
                   { href: '/genres', label: 'Worlds' },
-                  { href: '/create', label: 'Forge' },
+                  { href: '/forge', label: 'Forge' },
+                  { href: '/create', label: 'Create Studio' },
                   { href: '/gallery', label: 'Gallery' },
                   { href: '/marketplace', label: 'Bazaar' },
                   { href: '/community', label: 'Commons' },
                   { href: '/community/creators', label: 'Top Creators' },
                   { href: '/dashboard/royalties', label: 'Earnings' },
-                  { href: '#', label: 'Upload Story', isUpload: true },
+                  { href: '/upload', label: 'Upload Story' },
+                  { href: '/governance', label: 'DAO Governance' },
+                  { href: '/trading', label: 'Trading Space' },
+                  { href: '/creator-fund', label: 'Creator Fund' },
+                  { href: '/reader-rewards', label: 'Reader Rewards' },
+                  { href: '/subscriptions', label: 'Subscriptions' },
                   { href: '/buy/CRAFTS', label: 'CRAFTS' },
                 ].map((link) => (
                   <li key={link.label}>
-                    {link.isUpload ? (
-                      <span className="relative group inline-block">
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-400 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3 top-[50%] -translate-y-[50%] pointer-events-none" />
-                        <UploadStoryTrigger variant="ghost" className="p-0 h-auto font-medium text-white/60 group-hover:text-white transition-colors duration-300" buttonText="Upload Story" icon={false} />
-                      </span>
-                    ) : (
-                      <Link
-                        href={link.href}
-                        className="group relative inline-flex items-center text-sm font-medium text-white/60 hover:text-white transition-colors duration-300"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-400 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3" />
-                        {link.label}
-                      </Link>
-                    )}
+                    <Link
+                      href={link.href}
+                      className="group relative inline-flex items-center text-sm font-medium text-white/60 hover:text-white transition-colors duration-300"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-400 opacity-0 group-hover:opacity-100 transition-opacity absolute -left-3" />
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -174,8 +172,20 @@ export function Footer({ version }: { version?: string }) {
               </h3>
               <ul className="space-y-4 pl-0 list-none">
                 {[
+                  { href: '/aboutus', label: 'About Us' },
+                  { href: '/blogs', label: 'Blogs' },
                   { href: '/docs', label: 'Documentation' },
                   { href: '/faq', label: 'FAQ' },
+                  { href: '/kavach', label: 'IQ Compliance Hub (KAVACH)' },
+                  { href: '/kavach/submit', label: 'KAVACH Submit' },
+                  { href: '/kavach/blocklist', label: 'KAVACH Blocklist' },
+                  { href: '/kavach/dmca', label: 'KAVACH DMCA' },
+                  { href: '/governance', label: 'DAO Governance' },
+                  { href: '/ip-licensing', label: 'IP Licensing' },
+                  { href: '/whitelabel', label: 'White Label API' },
+                  { href: '/dynamic-nfts', label: 'Dynamic NFTs' },
+                  { href: '/story-tools', label: 'Story Tools' },
+                  { href: '/status', label: 'Status' },
                   { href: '/buy/CRAFTS', label: 'Buy CRAFTS' },
                   { href: '/feedback', label: 'Feedback' },
                 ].map((link) => (
@@ -247,7 +257,7 @@ export function Footer({ version }: { version?: string }) {
             >
               <span
                 className={`w-1.5 h-1.5 rounded-full ${status === 'ok'
-                  ? 'bg-red-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse'
+                  ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse'
                   : status === 'degraded'
                     ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse'
                     : status === 'down'

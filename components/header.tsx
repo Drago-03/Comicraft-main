@@ -126,90 +126,90 @@ export function Header() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        'border border-white/10 sticky top-4 left-4 right-4 z-50 rounded-2xl transition-all duration-300 bg-black/40 backdrop-blur-xl',
+        'border border-white/10 sticky top-3 z-50 w-[min(84vw,980px)] mx-auto rounded-xl transition-all duration-300 bg-black/40 backdrop-blur-xl',
         scrolled && 'shadow-[0_10px_40px_rgba(0,0,0,0.7)] bg-black/60'
       )}
     >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center">
+      <div className="px-3 lg:px-4 h-12 grid grid-cols-[auto,1fr,auto] items-center gap-2">
+        <div className="flex items-center justify-self-center">
           <Link
             href="/"
             aria-label="Comicraft home"
-            className="flex items-center mr-4 sm:mr-8"
+            className="flex items-center"
           >
-            <ComiCraftLogo variant="full" colorScheme="color" size={48} animate />
+            <ComiCraftLogo variant="full" colorScheme="color" size={56} animate />
           </Link>
+        </div>
 
-          <nav role="navigation" aria-label="Primary navigation" className="hidden lg:flex items-center space-x-2">
-            {navItems.map((item, index) => (
-              <motion.div
-                key={
-                  item.type === 'dropdown'
-                    ? `dropdown-${item.label}`
-                    : item.href || `item-${index}`
-                }
-                initial={false}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
-                whileHover={{ scale: 1.03 }}
-                className="inline-flex items-center font-medium"
-              >
-                {item.type === 'dropdown' ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      aria-haspopup="true"
-                      className={`px-4 py-2 text-sm rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-[#ff4444] hover:bg-[#cc3333]/10`}
-                    >
-                      {item.icon}
-                      {item.label}
-                      <ChevronDown className="ml-1 h-3 w-3" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      side="bottom"
-                      align="start"
-                      sideOffset={8}
-                      collisionPadding={16}
-                      className="
-                        z-50
-                        w-[160px] sm:w-[180px]
-                        bg-black/90
-                        backdrop-blur-xl
-                        border border-white/10
-                        shadow-2xl
-                        rounded-xl
-                        p-2
-                      "
-                    >
-                      {item.items?.map((subItem) => (
-                        <DropdownMenuItem key={subItem.href} asChild>
-                          <Link
-                            href={subItem.href}
-                            aria-current={pathname === subItem.href ? 'page' : undefined}
-                            className="flex items-center w-full text-white/80 hover:text-[#ff4444] hover:bg-white/10 rounded-lg"
-                          >
-                            {subItem.icon && subItem.icon}
-                            {subItem.label}
-                          </Link>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : item.href ? (
-                  <Link
-                    href={item.href}
-                    aria-current={pathname === item.href ? 'page' : undefined}
-                    className={`px-4 py-2 text-sm rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-[#ff4444] hover:bg-[#cc3333]/10 ${pathname === item.href ? 'text-[#ff4444] bg-[#cc3333]/10' : ''}`}
+        <nav role="navigation" aria-label="Primary navigation" className="hidden lg:flex items-center justify-center gap-1 place-self-center">
+          {navItems.map((item, index) => (
+            <motion.div
+              key={
+                item.type === 'dropdown'
+                  ? `dropdown-${item.label}`
+                  : item.href || `item-${index}`
+              }
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 + 0.1, duration: 0.2 }}
+              whileHover={{ scale: 1.03 }}
+              className="inline-flex items-center font-medium"
+            >
+              {item.type === 'dropdown' ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    aria-haspopup="true"
+                    className={`px-3 py-1.5 text-[13px] rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-[#ff4444] hover:bg-[#cc3333]/10`}
                   >
                     {item.icon}
                     {item.label}
-                  </Link>
-                ) : null}
-              </motion.div>
-            ))}
-          </nav>
-        </div>
+                    <ChevronDown className="ml-1 h-3 w-3" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="bottom"
+                    align="start"
+                    sideOffset={8}
+                    collisionPadding={16}
+                    className="
+                      z-50
+                      w-[160px] sm:w-[180px]
+                      bg-black/90
+                      backdrop-blur-xl
+                      border border-white/10
+                      shadow-2xl
+                      rounded-xl
+                      p-2
+                    "
+                  >
+                    {item.items?.map((subItem) => (
+                      <DropdownMenuItem key={subItem.href} asChild>
+                        <Link
+                          href={subItem.href}
+                          aria-current={pathname === subItem.href ? 'page' : undefined}
+                          className="flex items-center w-full text-white/80 hover:text-[#ff4444] hover:bg-white/10 rounded-lg"
+                        >
+                          {subItem.icon && subItem.icon}
+                          {subItem.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : item.href ? (
+                <Link
+                  href={item.href}
+                  aria-current={pathname === item.href ? 'page' : undefined}
+                  className={`px-3 py-1.5 text-[13px] rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-[#ff4444] hover:bg-[#cc3333]/10 ${pathname === item.href ? 'text-[#ff4444] bg-[#cc3333]/10' : ''}`}
+                >
+                  {item.icon}
+                  {item.label}
+                </Link>
+              ) : null}
+            </motion.div>
+          ))}
+        </nav>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-self-center space-x-2">
           <div className="flex items-center gap-2 mr-2">
             <div className="hidden lg:block">
               <GlobalSearch />

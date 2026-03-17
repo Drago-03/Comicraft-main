@@ -221,6 +221,11 @@ export default function BuyCRAFTSPage() {
                   </div>
                 )}
 
+                <div className="mb-5 space-y-1 text-xs font-bold text-black/70">
+                  <p>Total Credits: {pack.coins + pack.bonus} CRAFTS</p>
+                  <p>Value Rate: {Math.round(((pack.coins + pack.bonus) / pack.priceUSD) * 10) / 10} CRAFTS per $1</p>
+                </div>
+
                 {/* Price */}
                 <div className="mt-auto space-y-4">
                   <div className="pt-4 border-t-[3px] border-black flex justify-between items-end">
@@ -275,6 +280,98 @@ export default function BuyCRAFTSPage() {
               <p className="font-black uppercase text-black text-sm">Direct Wallet Sync</p>
               <p className="text-black/60 font-bold text-xs">Tokens reflect instantly in your connected wallet</p>
             </div>
+          </div>
+        </div>
+
+        {/* ── Utility Details ── */}
+        <div className="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {[
+            {
+              title: 'Create with Engines',
+              copy: 'Spend CRAFTS for story generation in VedaScript, visual comics in Panelra, and premium creation workflows.',
+              icon: <Sparkles className="w-5 h-5" />,
+              tone: 'bg-[#fff7e6]'
+            },
+            {
+              title: 'Governance & Community',
+              copy: 'Use staked CRAFTS in DAO governance to vote on platform proposals, treasury priorities, and ecosystem upgrades.',
+              icon: <ShieldCheck className="w-5 h-5" />,
+              tone: 'bg-[#e8f4ff]'
+            },
+            {
+              title: 'Trading & Ownership',
+              copy: 'Use CRAFTS in marketplace actions, licensing flows, and tokenized creator economy features across Comicraft.',
+              icon: <Gem className="w-5 h-5" />,
+              tone: 'bg-[#f4ecff]'
+            },
+          ].map((item) => (
+            <div key={item.title} className={`${item.tone} border-[3px] border-black shadow-[6px_6px_0_0_#000] p-6`}>
+              <div className="w-11 h-11 border-[3px] border-black bg-white shadow-[3px_3px_0_0_#000] flex items-center justify-center mb-4">
+                {item.icon}
+              </div>
+              <h3 className="text-lg font-black uppercase mb-2">{item.title}</h3>
+              <p className="text-sm font-bold text-black/70 leading-relaxed">{item.copy}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Purchase Flow ── */}
+        <div className="mt-14 bg-white border-[3px] border-black shadow-[6px_6px_0_0_#000] p-6 md:p-8">
+          <h2 className="text-2xl md:text-3xl font-black uppercase mb-6">How Buying Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                step: '01',
+                title: 'Sign In',
+                desc: 'Log into Comicraft so purchased credits are associated with your creator account.',
+              },
+              {
+                step: '02',
+                title: 'Connect Wallet',
+                desc: 'Connect your Ethereum wallet to authenticate and authorize the transaction flow.',
+              },
+              {
+                step: '03',
+                title: 'Purchase Pack',
+                desc: 'Select a pack and complete payment. Your CRAFTS balance updates immediately after success.',
+              },
+            ].map((step) => (
+              <div key={step.step} className="border-[2px] border-black p-4 bg-[#faf7ef]">
+                <p className="text-xs font-black tracking-[0.2em] text-[#cc3333] mb-2">STEP {step.step}</p>
+                <h3 className="text-base font-black uppercase mb-1">{step.title}</h3>
+                <p className="text-sm font-bold text-black/70">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── FAQ ── */}
+        <div className="mt-14 mb-8">
+          <h2 className="text-2xl md:text-3xl font-black uppercase mb-5">Buy CRAFTS FAQ</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              {
+                q: 'Are prices fixed?',
+                a: 'Displayed INR values are estimated conversions for UX. Final wallet/payment values may vary based on live market and gateway rates.',
+              },
+              {
+                q: 'Where can I use CRAFTS?',
+                a: 'You can use CRAFTS for generation, platform features, tokenized assets, licensing, and governance actions where enabled.',
+              },
+              {
+                q: 'Do bonus credits expire?',
+                a: 'No expiration is currently enforced in this flow; bonus CRAFTS are credited with the same usability as base pack credits.',
+              },
+              {
+                q: 'Is wallet connection mandatory?',
+                a: 'Yes. Wallet connection is required for secure Web3-linked purchases and account-level transaction validation.',
+              },
+            ].map((item) => (
+              <div key={item.q} className="bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] p-5">
+                <p className="font-black uppercase mb-2">{item.q}</p>
+                <p className="text-sm font-bold text-black/70 leading-relaxed">{item.a}</p>
+              </div>
+            ))}
           </div>
         </div>
 
