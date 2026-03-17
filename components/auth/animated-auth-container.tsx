@@ -55,12 +55,13 @@ export function AnimatedAuthContainer({ initialMode }: AnimatedAuthContainerProp
       ──────────────────────────────────────────────────────────────────── */}
       {/* Desktop Login Panel — left half */}
       <div
-        className="hidden lg:flex absolute top-0 left-0 w-1/2 h-full flex-col items-center justify-center p-12 overflow-y-auto transition-all duration-[700ms] ease-[cubic-bezier(0.645,0.045,0.355,1)]"
+        className="hidden lg:flex absolute top-0 left-0 w-1/2 h-full flex-col items-center justify-center p-12 overflow-y-auto transition-all duration-700"
         style={{
           zIndex: isRegister ? 5 : 10,
           opacity: isRegister ? 0 : 1,
           transform: isRegister ? 'scale(0.95)' : 'scale(1)',
           pointerEvents: isRegister ? 'none' : 'auto',
+          transitionTimingFunction: 'cubic-bezier(0.645, 0.045, 0.355, 1)',
         }}
       >
         <div className="w-full max-w-md mx-auto relative z-10">
@@ -70,12 +71,13 @@ export function AnimatedAuthContainer({ initialMode }: AnimatedAuthContainerProp
 
       {/* Desktop Register Panel — right half */}
       <div
-        className="hidden lg:flex absolute top-0 right-0 w-1/2 h-full flex-col items-center justify-center p-12 overflow-y-auto transition-all duration-[700ms] ease-[cubic-bezier(0.645,0.045,0.355,1)]"
+        className="hidden lg:flex absolute top-0 right-0 w-1/2 h-full flex-col items-center justify-center p-12 overflow-y-auto transition-all duration-700"
         style={{
           zIndex: isRegister ? 10 : 5,
           opacity: isRegister ? 1 : 0,
           transform: isRegister ? 'scale(1)' : 'scale(0.95)',
           pointerEvents: isRegister ? 'auto' : 'none',
+          transitionTimingFunction: 'cubic-bezier(0.645, 0.045, 0.355, 1)',
         }}
       >
         <div className="w-full max-w-md mx-auto relative z-10">
