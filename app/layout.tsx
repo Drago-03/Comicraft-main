@@ -2,7 +2,7 @@ import React from 'react';
 
 import './globals.css';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Comic_Neue } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -117,10 +117,12 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
   maximumScale: 5,
+  userScalable: true,
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
     { media: '(prefers-color-scheme: dark)', color: '#111111' },
@@ -156,6 +158,7 @@ export default function RootLayout({
         {/* Optimize for performance */}
         <meta name="color-scheme" content="light dark" />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/logo.png" />
         <meta name="theme-color" content="#000000" />
         <meta name="mobile-web-app-capable" content="yes" />
         {/* Performance optimization scripts */}
@@ -195,7 +198,7 @@ export default function RootLayout({
             >
               <AnimatedLayout>
                 <ClientLayout>
-                  <div className="min-h-screen bg-[#EEDFCA] flex flex-col relative z-0">
+                  <div className="min-h-screen bg-[#EEDFCA] flex flex-col relative z-0 pb-[env(safe-area-inset-bottom)]">
                     {/* global comic dotted background */}
                     <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-[-1]" style={{ backgroundImage: 'radial-gradient(circle, #000 1.5px, transparent 1.5px)', backgroundSize: '6px 6px' }}></div>
                     {/* global subtle noise overlay */}
@@ -205,7 +208,7 @@ export default function RootLayout({
                     <main
                       id="main-content"
                       tabIndex={-1}
-                      className="container mx-auto px-4 pb-6 pt-8 flex-grow focus:outline-2 focus:outline-primary relative z-10"
+                      className="container mx-auto px-3 sm:px-4 pb-6 pt-5 sm:pt-8 flex-grow focus:outline-2 focus:outline-primary relative z-10"
                     >
                       <React.Suspense fallback={null}>
                         <GlobalLoadingWrapper>

@@ -34,17 +34,40 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const [ensName, setEnsName] = useState<string | null>(null);
   const [showInstallModal, setShowInstallModal] = useState(false);
 
+  const resolveNetworkName = useCallback((id: number) => {
+    if (id === 1) return 'Ethereum Mainnet';
+    if (id === 5) return 'Goerli Testnet';
+    if (id === 11155111) return 'Sepolia Testnet';
+    if (id === 137) return 'Polygon';
+    if (id === 8453) return 'Base';
+    if (id === 42161) return 'Arbitrum';
+    if (id === 10) return 'Optimism';
+    return `Chain ${id}`;
+  }, []);
+
+  const isMobileBrowser = useCallback(() => {
+    if (typeof navigator === 'undefined') return false;
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }, []);
+
+  const openMetaMaskDeepLink = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const target = `${window.location.host}${window.location.pathname}${window.location.search}`;
+    window.location.href = `https://metamask.app.link/dapp/${target}`;
+  }, []);
+
   // helper to get strictly MetaMask ethereum provider
   const getEthereum = useCallback(() => {
     if (typeof window !== 'undefined' && window.ethereum) {
       const ethAny = window.ethereum as any;
       // If multiple providers exist, handle EIP-6963 or find the MetaMask one
       if (ethAny.providers) {
-        return ethAny.providers.find((p: any) => p.isMetaMask) || null;
+        return ethAny.providers.find((p: any) => p.isMetaMask) || ethAny.providers[0] || null;
       }
       if (ethAny.isMetaMask) {
         return ethAny;
       }
+      return ethAny;
     }
     return null;
   }, []);
@@ -101,15 +124,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     const handleChainChanged = (chainIdHex: string) => {
       const newChainId = parseInt(chainIdHex, 16);
       setChainId(newChainId);
-      // Update network name based on chain ID
-      if (newChainId === 1) setNetworkName('Ethereum Mainnet');
-      else if (newChainId === 5) setNetworkName('Goerli Testnet');
-      else if (newChainId === 11155111) setNetworkName('Sepolia Testnet');
-      else if (newChainId === 137) setNetworkName('Polygon');
-      else if (newChainId === 8453) setNetworkName('Base');
-      else if (newChainId === 42161) setNetworkName('Arbitrum');
-      else if (newChainId === 10) setNetworkName('Optimism');
-      else setNetworkName(`Chain ${newChainId}`);
+      setNetworkName(resolveNetworkName(newChainId));
     };
       ethereum.on('accountsChanged', handleAccountsChanged);
       ethereum.on('chainChanged', handleChainChanged);
@@ -117,11 +132,15 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         ethereum.removeListener('accountsChanged', handleAccountsChanged);
         ethereum.removeListener('chainChanged', handleChainChanged);
       };
-  }, [getEthereum, disconnectWallet]);
+  }, [getEthereum, disconnectWallet, resolveNetworkName]);
 
   const connectWallet = async () => {
     const ethereum = getEthereum();
     if (!ethereum) {
+      if (isMobileBrowser()) {
+        openMetaMaskDeepLink();
+        return;
+      }
       setShowInstallModal(true);
       return;
     }
@@ -138,12 +157,15 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         const chainIdHex = await ethereum.request({
           method: 'eth_chainId',
         });
+        const parsedChainId = parseInt(chainIdHex, 16);
         const balanceWei = await ethereum.request({
           method: 'eth_getBalance',
           params: [selectedAccount, "latest"],
         });
         const balanceEth = Number(BigInt(balanceWei))/ 1e18;
         setAccount(selectedAccount);
+        setChainId(parsedChainId);
+        setNetworkName(resolveNetworkName(parsedChainId));
         setBalance(balanceEth.toFixed(4));
         setConnected(true);
 
@@ -198,16 +220,9 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     setConnected(true);
     if (newChainId) {
       setChainId(newChainId);
-      if (newChainId === 1) setNetworkName('Ethereum Mainnet');
-      else if (newChainId === 5) setNetworkName('Goerli Testnet');
-      else if (newChainId === 11155111) setNetworkName('Sepolia Testnet');
-      else if (newChainId === 137) setNetworkName('Polygon');
-      else if (newChainId === 8453) setNetworkName('Base');
-      else if (newChainId === 42161) setNetworkName('Arbitrum');
-      else if (newChainId === 10) setNetworkName('Optimism');
-      else setNetworkName(`Chain ${newChainId}`);
+      setNetworkName(resolveNetworkName(newChainId));
     }
-  }, []);
+  }, [resolveNetworkName]);
 
   const contextValue: Web3ContextType = {
     account,
@@ -234,6 +249,8 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
             <button 
               onClick={() => setShowInstallModal(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-black dark:hover:text-white"
+              aria-label="Close install wallet modal"
+              title="Close"
             >
               <X className="w-5 h-5" />
             </button>
@@ -257,6 +274,15 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
               >
                 Download Extension
               </a>
+              <button
+                onClick={() => {
+                  setShowInstallModal(false);
+                  openMetaMaskDeepLink();
+                }}
+                className="w-full border border-orange-500/40 text-orange-600 dark:text-orange-300 font-bold py-3 rounded-lg"
+              >
+                Open MetaMask App
+              </button>
             </div>
           </div>
         </div>

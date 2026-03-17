@@ -126,18 +126,18 @@ export function Header() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        'border border-white/10 sticky top-3 z-50 w-[min(84vw,980px)] mx-auto rounded-xl transition-all duration-300 bg-black/40 backdrop-blur-xl',
-        scrolled && 'shadow-[0_10px_40px_rgba(0,0,0,0.7)] bg-black/60'
+        'border-[3px] border-black sticky top-[calc(0.5rem+env(safe-area-inset-top))] z-50 w-[calc(100vw-1rem)] sm:w-[min(90vw,980px)] mx-auto rounded-xl transition-all duration-300 bg-[#EEDFCA]/95 backdrop-blur-xl',
+        scrolled && 'shadow-[0_10px_30px_rgba(0,0,0,0.35)] bg-[#fef9ef]/95'
       )}
     >
-      <div className="px-3 lg:px-4 h-12 grid grid-cols-[auto,1fr,auto] items-center gap-2">
+      <div className="px-2 sm:px-3 lg:px-4 h-14 sm:h-12 grid grid-cols-[auto,1fr,auto] items-center gap-2">
         <div className="flex items-center justify-self-center">
           <Link
             href="/"
             aria-label="Comicraft home"
             className="flex items-center"
           >
-            <ComiCraftLogo variant="full" colorScheme="color" size={56} animate />
+            <ComiCraftLogo variant="full" colorScheme="color" size={48} animate />
           </Link>
         </div>
 
@@ -159,7 +159,7 @@ export function Header() {
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     aria-haspopup="true"
-                    className={`px-3 py-1.5 text-[13px] rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-[#ff4444] hover:bg-[#cc3333]/10`}
+                    className="px-3 py-1.5 text-[13px] rounded-full transition-all duration-200 flex items-center text-black/70 hover:text-[#cc3333] hover:bg-[#cc3333]/10"
                   >
                     {item.icon}
                     {item.label}
@@ -173,9 +173,9 @@ export function Header() {
                     className="
                       z-50
                       w-[160px] sm:w-[180px]
-                      bg-black/90
+                      bg-[#fef9ef]
                       backdrop-blur-xl
-                      border border-white/10
+                      border-[2px] border-black
                       shadow-2xl
                       rounded-xl
                       p-2
@@ -186,7 +186,7 @@ export function Header() {
                         <Link
                           href={subItem.href}
                           aria-current={pathname === subItem.href ? 'page' : undefined}
-                          className="flex items-center w-full text-white/80 hover:text-[#ff4444] hover:bg-white/10 rounded-lg"
+                          className="flex items-center w-full text-black/80 hover:text-[#cc3333] hover:bg-black/5 rounded-lg"
                         >
                           {subItem.icon && subItem.icon}
                           {subItem.label}
@@ -199,7 +199,7 @@ export function Header() {
                 <Link
                   href={item.href}
                   aria-current={pathname === item.href ? 'page' : undefined}
-                  className={`px-3 py-1.5 text-[13px] rounded-full transition-all duration-200 flex items-center text-white/70 hover:text-[#ff4444] hover:bg-[#cc3333]/10 ${pathname === item.href ? 'text-[#ff4444] bg-[#cc3333]/10' : ''}`}
+                  className={`px-3 py-1.5 text-[13px] rounded-full transition-all duration-200 flex items-center text-black/70 hover:text-[#cc3333] hover:bg-[#cc3333]/10 ${pathname === item.href ? 'text-[#cc3333] bg-[#cc3333]/10' : ''}`}
                 >
                   {item.icon}
                   {item.label}
@@ -225,7 +225,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:bg-white/10"
+                  className="text-black hover:bg-black/5 h-10 w-10"
                   aria-label="Open menu"
                 >
                   <Menu className="h-6 w-6" />
@@ -233,10 +233,10 @@ export function Header() {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="bg-zinc-950/90 backdrop-blur-xl border-l border-white/10 text-white p-0"
+                className="bg-[#EEDFCA] backdrop-blur-xl border-l-[3px] border-black text-black p-0 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
               >
-                <SheetHeader className="p-6 border-b border-white/10">
-                  <SheetTitle className="text-white font-bold text-xl flex items-center gap-2">
+                <SheetHeader className="p-6 border-b border-black/10">
+                  <SheetTitle className="text-black font-bold text-xl flex items-center gap-2">
                     <ComiCraftLogo variant="full" colorScheme="color" size={28} animate={false} />
                   </SheetTitle>
                 </SheetHeader>
@@ -252,7 +252,7 @@ export function Header() {
                     >
                       {item.type === 'dropdown' ? (
                         <>
-                          <div className="px-4 py-2 text-sm font-bold uppercase text-white/60 mt-2">
+                          <div className="px-4 py-2 text-sm font-bold uppercase text-black/60 mt-2">
                             {item.label}
                           </div>
                           {item.items?.map((subItem) => (
@@ -260,7 +260,7 @@ export function Header() {
                               key={subItem.href}
                               href={subItem.href}
                               onClick={() => setSheetOpen(false)}
-                              className="px-6 py-3 text-lg hover:bg-white/10 rounded-md transition-colors flex items-center text-white/80 hover:text-white"
+                              className="px-6 py-3 text-lg hover:bg-black/5 rounded-md transition-colors flex items-center text-black/80 hover:text-black"
                             >
                               {subItem.icon}
                               {subItem.label}
@@ -273,10 +273,10 @@ export function Header() {
                             href={item.href}
                             onClick={() => setSheetOpen(false)}
                             className={cn(
-                              'px-4 py-3 text-lg hover:bg-white/10 rounded-md transition-colors flex items-center',
+                              'px-4 py-3 text-lg hover:bg-black/5 rounded-md transition-colors flex items-center',
                               pathname === item.href
                                 ? 'bg-primary/20 text-primary font-bold'
-                                : 'text-white/80 hover:text-white'
+                                : 'text-black/80 hover:text-black'
                             )}
                           >
                             {item.icon && <span className="mr-3">{item.icon}</span>}
@@ -286,13 +286,13 @@ export function Header() {
                       )}
                     </div>
                   ))}
-                  <div className="pt-4 mt-4 border-t-2 border-white/10 space-y-3">
+                  <div className="pt-4 mt-4 border-t-2 border-black/10 space-y-3">
                     <div className="w-full">
                       <GlobalSearch />
                     </div>
                     <Button
                       variant="outline"
-                      className="w-full justify-start text-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-full font-semibold"
+                      className="w-full justify-start text-lg bg-[#cc3333] hover:bg-[#e63946] text-white border-[3px] border-black rounded-none font-black uppercase tracking-wide"
                       onClick={() => {
                         setSheetOpen(false);
                         handleCreateClick();

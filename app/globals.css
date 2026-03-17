@@ -131,6 +131,7 @@
     scroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    min-height: 100%;
   }
 
   body {
@@ -139,6 +140,21 @@
     font-family: var(--font-comic);
     overflow-x: hidden;
     position: relative;
+    min-height: 100dvh;
+    min-height: 100svh;
+  }
+
+  #__next,
+  [data-nextjs-scroll-focus-boundary] {
+    min-height: 100%;
+  }
+
+  img,
+  video,
+  canvas,
+  svg,
+  iframe {
+    max-width: 100%;
   }
 
   h1,
@@ -188,6 +204,21 @@
   select,
   textarea {
     transition: all 0.2s ease-in-out;
+    touch-action: manipulation;
+  }
+
+  @media (max-width: 768px) {
+    button,
+    [role='button'],
+    a {
+      min-height: 44px;
+    }
+
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
   }
 }
 
@@ -782,12 +813,12 @@
 .genre-marquee-wrapper {
   width: 100%;
   overflow: hidden;
-  mask-image: linear-gradient(to right,
+  -webkit-mask-image: linear-gradient(to right,
       transparent,
       black 5%,
       black 95%,
       transparent);
-  -webkit-mask-image: linear-gradient(to right,
+  mask-image: linear-gradient(to right,
       transparent,
       black 5%,
       black 95%,
@@ -1288,8 +1319,6 @@
   gap: 16px;
   min-height: 280px;
   max-height: 360px;
-  scrollbar-width: thin;
-  scrollbar-color: #000 transparent;
 }
 
 .madhava-messages::-webkit-scrollbar {

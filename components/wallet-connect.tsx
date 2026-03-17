@@ -46,6 +46,13 @@ export default function WalletConnect() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [copyTooltip, setCopyTooltip] = useState('Click to copy');
+  const isMobile = typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  const openMetaMaskApp = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const target = `${window.location.host}${window.location.pathname}${window.location.search}`;
+    window.location.href = `https://metamask.app.link/dapp/${target}`;
+  }, []);
 
   const copyAddressToClipboard = useCallback(async () => {
     if (!account) return;
@@ -173,7 +180,7 @@ export default function WalletConnect() {
         <Button
           onClick={() => setShowWalletModal(true)}
           disabled={connecting}
-          className="w-full relative group bg-[#38bdf8] border-[3px] border-black text-black rounded-none shadow-[4px_4px_0_0_#000] hover:bg-[#0284c7] hover:text-white hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none h-12 transition-all flex items-center justify-center gap-2 font-black uppercase tracking-widest text-[12px]"
+          className="w-full relative group bg-[#cc3333] border-[3px] border-black text-white rounded-none shadow-[4px_4px_0_0_#000] hover:bg-[#e63946] hover:text-white hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none h-12 transition-all flex items-center justify-center gap-2 font-black uppercase tracking-widest text-[12px]"
         >
           
           {connecting ? (
@@ -190,13 +197,13 @@ export default function WalletConnect() {
         </Button>
 
         <Dialog open={showWalletModal} onOpenChange={setShowWalletModal}>
-          <DialogContent className="sm:max-w-md bg-[#EEDFCA] border-[4px] border-black p-0 gap-0 overflow-hidden text-black rounded-none shadow-[8px_8px_0_0_#000]">
+          <DialogContent className="sm:max-w-md max-w-[calc(100vw-1.5rem)] bg-[#EEDFCA] border-[4px] border-black p-0 gap-0 overflow-hidden text-black rounded-none shadow-[8px_8px_0_0_#000]">
             <div className="p-6 border-b border-white/5 relative z-10">
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-50 pointer-events-none" />
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500/10 to-red-500/10 opacity-50 pointer-events-none" />
               <div className="flex justify-between items-center relative z-20">
                 <div>
                   <h2 className="text-xl font-medium tracking-tight mb-1">Connect Wallet</h2>
-                  <p className="text-sm text-white/50">Select what app to use to connect.</p>
+                  <p className="text-sm text-black/60">Select what app to use to connect.</p>
                 </div>
               </div>
             </div>
@@ -204,44 +211,57 @@ export default function WalletConnect() {
             <div className="p-6 space-y-4 relative z-10 bg-white">
               <button 
                 onClick={handleMetaMaskConnect}
-                className="w-full flex items-center justify-between p-4 rounded-none bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-[#EEDFCA] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none transition-all group"
+                className="w-full min-h-[52px] flex items-center justify-between p-4 rounded-none bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-[#EEDFCA] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none transition-all group"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-[#F6851B]/20 flex items-center justify-center border border-[#F6851B]/30">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" className="w-6 h-6" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-white">MetaMask</h3>
-                    <p className="text-xs text-white/40">Browser extension</p>
+                    <h3 className="font-semibold text-black">MetaMask</h3>
+                    <p className="text-xs text-black/50">Browser extension</p>
                   </div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                  <ChevronDown className="w-4 h-4 -rotate-90 text-white/50" />
+                <div className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center group-hover:bg-black/10 transition-colors">
+                  <ChevronDown className="w-4 h-4 -rotate-90 text-black/50" />
                 </div>
               </button>
 
+              {isMobile && (
+                <button
+                  onClick={openMetaMaskApp}
+                  className="w-full min-h-[52px] flex items-center justify-between p-4 rounded-none bg-[#fff6ea] border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-[#ffe9cc] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none transition-all group"
+                >
+                  <div className="text-left">
+                    <h3 className="font-semibold text-black">Open MetaMask App</h3>
+                    <p className="text-xs text-black/60">Best for mobile browser wallets</p>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-black/60" />
+                </button>
+              )}
+
               <button 
                 onClick={handleWalletConnect}
-                className="w-full flex items-center justify-between p-4 rounded-none bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-[#EEDFCA] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none transition-all group"
+                className="w-full min-h-[52px] flex items-center justify-between p-4 rounded-none bg-white border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-[#EEDFCA] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000] active:translate-y-1 active:shadow-none transition-all group"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
                     <img src="https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=c98dbfa8da03b44b8296a86c6a7e0da3" alt="WalletConnect" className="w-6 h-6 rounded-md" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-white">WalletConnect</h3>
-                    <p className="text-xs text-white/40">Mobile & Desktop wallets</p>
+                    <h3 className="font-semibold text-black">WalletConnect</h3>
+                    <p className="text-xs text-black/50">Mobile and Desktop wallets</p>
                   </div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                  <ChevronDown className="w-4 h-4 -rotate-90 text-white/50" />
+                <div className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center group-hover:bg-black/10 transition-colors">
+                  <ChevronDown className="w-4 h-4 -rotate-90 text-black/50" />
                 </div>
               </button>
             </div>
 
-            <div className="p-4 bg-white/5 border-t border-white/5 flex items-center justify-center gap-2">
+            <div className="p-4 bg-black/5 border-t border-black/10 flex items-center justify-center gap-2">
               <ShieldCheck className="w-4 h-4 text-red-400" />
-              <p className="text-[11px] text-white/40 font-medium">We never store your private keys. Transactions happen securely in your wallet.</p>
+              <p className="text-[11px] text-black/60 font-medium">We never store private keys. Transactions happen securely in your wallet.</p>
             </div>
           </DialogContent>
         </Dialog>
@@ -270,21 +290,21 @@ export default function WalletConnect() {
         <div className="p-3 mb-2 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
           <Avatar className="h-10 w-10 border border-white/20">
             <AvatarImage src={`https://api.dicebear.com/7.x/identicon/svg?seed=${account}`} alt="Avatar" />
-            <AvatarFallback className="bg-white/10 text-white text-xs">{account?.slice(2, 4).toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="bg-white/60 text-black text-xs">{account?.slice(2, 4).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col overflow-hidden">
-            <span className="text-sm font-semibold truncate text-white">{ensName || truncateAddress(account)}</span>
-            <span className="text-xs text-white/50 bg-white/5 px-2 py-0.5 rounded-full w-fit mt-1 flex items-center gap-1">
+            <span className="text-sm font-semibold truncate text-black">{ensName || truncateAddress(account)}</span>
+            <span className="text-xs text-black/60 bg-black/5 px-2 py-0.5 rounded-full w-fit mt-1 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
               {networkName || 'Ethereum'}
             </span>
           </div>
         </div>
 
-        <div className="p-3 mb-2 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
-          <div className="text-xs text-white/50 mb-1">Balance</div>
+        <div className="p-3 mb-2 rounded-xl bg-gradient-to-r from-[#cc3333]/10 to-[#f97316]/10 border border-[#cc3333]/20">
+          <div className="text-xs text-black/60 mb-1">Balance</div>
           <div className="text-xl font-medium tracking-tight flex items-baseline gap-1">
-            {balance} <span className="text-xs font-semibold text-blue-400">ETH</span>
+            {balance} <span className="text-xs font-semibold text-[#cc3333]">ETH</span>
           </div>
         </div>
 
@@ -293,7 +313,7 @@ export default function WalletConnect() {
             onClick={copyAddressToClipboard}
             className="flex items-center gap-2 cursor-pointer rounded-lg p-2.5 hover:bg-white/10 focus:bg-white/10 transition-colors"
           >
-            <Copy className="h-4 w-4 text-white/60" />
+            <Copy className="h-4 w-4 text-black/70" />
             <span className="text-sm">Copy Address</span>
           </DropdownMenuItem>
 
@@ -301,11 +321,11 @@ export default function WalletConnect() {
             onClick={viewOnExplorer}
             className="flex items-center gap-2 cursor-pointer rounded-lg p-2.5 hover:bg-white/10 focus:bg-white/10 transition-colors"
           >
-            <ExternalLink className="h-4 w-4 text-white/60" />
+            <ExternalLink className="h-4 w-4 text-black/70" />
             <span className="text-sm">View on Explorer</span>
           </DropdownMenuItem>
 
-          <DropdownMenuSeparator className="my-1 bg-white/10" />
+          <DropdownMenuSeparator className="my-1 bg-black/10" />
 
           <DropdownMenuItem
             onClick={disconnectWallet}
