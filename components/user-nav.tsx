@@ -41,6 +41,8 @@ export function UserNav() {
   const { toast } = useToast();
   const [dbUser, setDbUser] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
+  const [hasAuthToken, setHasAuthToken] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const supabase = React.useMemo(() => createClient(), []);
   const { role, isAdmin, isModerator, isModOrAdmin, isOverridden, toggleViewMode } = useUserRole();
 
@@ -48,6 +50,7 @@ export function UserNav() {
     // Check Supabase session
     const refreshSession = async () => {
       let currentSession: any = null;
+      let tokenExists = false;
 
       const { data: { session: initialSession } }: { data: { session: any } } = await supabase.auth.getSession();
       currentSession = initialSession;
@@ -57,6 +60,7 @@ export function UserNav() {
       if (!currentSession && typeof window !== 'undefined') {
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
+        tokenExists = Boolean(accessToken);
 
         if (accessToken && refreshToken) {
           const { data, error } = await supabase.auth.setSession({
@@ -68,18 +72,22 @@ export function UserNav() {
             currentSession = data.session;
           }
         }
+      } else if (currentSession) {
+        tokenExists = true;
       }
 
       setSession(currentSession);
+      setHasAuthToken(tokenExists || Boolean(currentSession));
       if (currentSession?.user) {
         setDbUser({
           username: currentSession.user.user_metadata?.username || currentSession.user.email?.split('@')[0],
           avatar: currentSession.user.user_metadata?.avatar_url,
           id: currentSession.user.id,
         });
-      } else if (!account) {
+      } else if (!account && !tokenExists) {
         setDbUser(null);
       }
+      setAuthReady(true);
     };
 
     refreshSession();
@@ -89,10 +97,14 @@ export function UserNav() {
     } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setSession(session);
       if (session?.user) {
+        setHasAuthToken(true);
         setDbUser({ username: session.user.user_metadata?.username || session.user.email?.split('@')[0], avatar: session.user.user_metadata?.avatar_url, id: session.user.id });
       } else if (!account) {
-        setDbUser(null);
+        const tokenExists = typeof window !== 'undefined' ? Boolean(localStorage.getItem('accessToken')) : false;
+        setHasAuthToken(tokenExists);
+        if (!tokenExists) setDbUser(null);
       }
+      setAuthReady(true);
     });
 
     // Listen for token changes from OAuth callback (localStorage persistence)
@@ -125,14 +137,14 @@ export function UserNav() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (account || session) {
+      if (account || session || hasAuthToken) {
         try {
           const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
           let fetchUrl = `${baseUrl}/api/v1/users/profile/${account}`;
           const headers: Record<string, string> = {};
 
-          if (session) {
-            const token = session.access_token;
+          if (session || hasAuthToken) {
+            const token = session?.access_token || (typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null);
             if (token) {
               headers['Authorization'] = `Bearer ${token}`;
             }
@@ -149,7 +161,7 @@ export function UserNav() {
         }
       }
     };
-    if (account || session) fetchUserData();
+    if (account || session || hasAuthToken) fetchUserData();
 
     // Listen for global profile updates (e.g. from settings page)
     const handleProfileUpdate = () => fetchUserData();
@@ -172,21 +184,34 @@ export function UserNav() {
   }, []);
 
   useEffect(() => {
-    if (account || session) {
+    if (account || session || hasAuthToken) {
       loadUnreadCount();
       notifIntervalRef.current = setInterval(loadUnreadCount, 20_000);
     }
     return () => {
       if (notifIntervalRef.current) clearInterval(notifIntervalRef.current);
     };
-  }, [account, session, loadUnreadCount]);
+  }, [account, session, hasAuthToken, loadUnreadCount]);
 
   const handleLogout = async () => {
     if (account) await disconnectWallet();
     if (session) await supabase.auth.signOut();
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      window.dispatchEvent(new StorageEvent('storage', { key: 'accessToken', newValue: null }));
+      window.dispatchEvent(new Event('auth-changed'));
+    }
+    setHasAuthToken(false);
+    setSession(null);
+    setDbUser(null);
   };
 
-  if (!account && !session) {
+  if (!authReady) {
+    return <div className="h-9 w-[92px]" aria-hidden="true" />;
+  }
+
+  if (!account && !session && !hasAuthToken) {
     return (
       <Button
         variant="default"

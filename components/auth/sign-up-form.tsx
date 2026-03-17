@@ -120,8 +120,10 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
     { id: 'both', label: 'Both', desc: 'The full platform experience', icon: Sparkles, activeColor: 'border-teal-600 bg-teal-600/10', iconActive: 'bg-teal-600 text-white' },
   ] as const;
 
+  const selectedRoleConfig = roles.find((r) => r.id === selectedRole);
+
   return (
-    <div className="w-full max-w-lg px-6 relative z-10 flex flex-col pt-6 pb-10 mx-auto">
+    <div className="w-full max-w-md px-4 sm:px-6 relative z-10 flex flex-col pt-6 pb-10 mx-auto">
       {/* Header */}
       <div className="flex flex-col items-center mb-7">
         <Link href="/" className="mb-5 block">
@@ -138,12 +140,26 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
         <p className="text-black/60 text-sm font-bold mt-1 text-center">
           {step === 'role' ? 'Select how you plan to use Comicraft.' : 'Enter your details to get started.'}
         </p>
+
+        <div className="mt-4 w-full max-w-sm">
+          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-black/50 mb-2">
+            <span>Step 1: Role</span>
+            <span>Step 2: Details</span>
+          </div>
+          <div className="h-2 border-[2px] border-black bg-white overflow-hidden">
+            <div
+              className="h-full bg-[#cc3333] transition-all duration-300"
+              style={{ width: step === 'role' ? '50%' : '100%' }}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Card */}
-      <div className="bg-white border-[3px] border-black shadow-[6px_6px_0_0_#000] p-7 w-full">
+      <div className="w-full">
         {step === 'role' ? (
           <div className="animate-in fade-in zoom-in-95 duration-300">
+            <p className="text-[11px] font-black uppercase tracking-widest text-black/50 mb-3">Choose your primary mode</p>
             <div className="grid grid-cols-1 gap-3 mb-7">
               {roles.map((r) => (
                 <button
@@ -159,6 +175,9 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
                   <div className="flex-1">
                     <h3 className="font-black text-black text-sm uppercase tracking-wide">{r.label}</h3>
                     <p className="text-xs text-black/60 font-bold mt-0.5">{r.desc}</p>
+                    <div className="mt-2 inline-flex items-center px-2 py-0.5 border-[2px] border-black text-[10px] font-black uppercase tracking-wider bg-white">
+                      {r.id === 'creator' ? 'Publish + Mint' : r.id === 'collector' ? 'Collect + Discover' : 'All Features'}
+                    </div>
                   </div>
                   {selectedRole === r.id && (
                     <CheckCircle2 className={`w-5 h-5 ml-auto flex-shrink-0 text-black`} />
@@ -183,6 +202,20 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
           </div>
         ) : (
           <div className="animate-in slide-in-from-right-4 duration-300">
+            <div className="mb-5 p-3 border-[2px] border-black bg-[#EEDFCA] flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-black/50">Selected Role</p>
+                <p className="text-sm font-black uppercase text-black">{selectedRoleConfig?.label || 'Both'}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStep('role')}
+                className="text-[10px] font-black uppercase tracking-wide text-[#cc3333] hover:text-black transition-colors"
+              >
+                Change
+              </button>
+            </div>
+
             <form onSubmit={handleEmailSignUp} className="space-y-4">
               {/* Name row */}
               <div className="grid grid-cols-2 gap-3">
@@ -220,6 +253,7 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
                     placeholder="jdoe_123"
                   />
                 </div>
+                <p className="text-[10px] font-bold text-black/50 uppercase tracking-wide">3-20 chars, letters/numbers/underscores</p>
               </div>
 
               {/* Email */}
@@ -252,7 +286,7 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
                       className="w-full h-10 pl-9 pr-10 bg-transparent border-none text-black placeholder:text-black/30 focus-visible:ring-0 shadow-none text-sm font-bold"
                       placeholder="••••••••"
                     />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} aria-pressed={showPassword} className="absolute right-3 text-black/40 hover:text-[#cc3333] focus:outline-none transition-colors">
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'} className="absolute right-3 text-black/40 hover:text-[#cc3333] focus:outline-none transition-colors">
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
@@ -262,6 +296,14 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
                       {[25, 50, 75, 100].map((thresh) => (
                         <div key={thresh} className={`h-1.5 flex-1 border border-black ${strength >= thresh ? getStrengthColor() : 'bg-[#EEDFCA]'}`} />
                       ))}
+                    </div>
+                  )}
+                  {password && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      <span className={`px-2 py-0.5 text-[10px] font-black uppercase border border-black ${password.length >= 8 ? 'bg-green-100' : 'bg-white'}`}>8+ chars</span>
+                      <span className={`px-2 py-0.5 text-[10px] font-black uppercase border border-black ${/[A-Z]/.test(password) ? 'bg-green-100' : 'bg-white'}`}>Uppercase</span>
+                      <span className={`px-2 py-0.5 text-[10px] font-black uppercase border border-black ${/[a-z]/.test(password) ? 'bg-green-100' : 'bg-white'}`}>Lowercase</span>
+                      <span className={`px-2 py-0.5 text-[10px] font-black uppercase border border-black ${/[0-9]/.test(password) ? 'bg-green-100' : 'bg-white'}`}>Number</span>
                     </div>
                   )}
                 </div>
@@ -278,7 +320,7 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
                       className="w-full h-10 pl-9 pr-10 bg-transparent border-none text-black placeholder:text-black/30 focus-visible:ring-0 shadow-none text-sm font-bold"
                       placeholder="••••••••"
                     />
-                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} aria-pressed={showConfirmPassword} className="absolute right-3 text-black/40 hover:text-[#cc3333] focus:outline-none transition-colors">
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'} className="absolute right-3 text-black/40 hover:text-[#cc3333] focus:outline-none transition-colors">
                       {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
@@ -286,7 +328,7 @@ export function SignUpForm({ onToggleMode }: { onToggleMode: () => void }) {
               </div>
 
               {/* Optional fields */}
-              <div className="grid grid-cols-2 gap-3 pt-2 border-t-[2px] border-black/10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t-[2px] border-black/10">
                 {[
                   { id: 'bio', label: 'Short Bio (Opt)', value: bio, onChange: setBio, placeholder: 'A quick intro' },
                   { id: 'favoriteGenre', label: 'Fav Genre (Opt)', value: favoriteGenre, onChange: setFavoriteGenre, placeholder: 'Sci-Fi' },

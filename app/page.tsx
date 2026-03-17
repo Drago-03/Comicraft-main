@@ -515,7 +515,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="mb-12">
             <motion.div variants={fadeUp} className="flex items-center gap-4 mb-4">
-              <Image src="/comicraft-logo.png" alt="Comicraft Logo" width={48} height={48} className="object-contain" />
+              <Image src="/logo.png" alt="Comicraft Logo" width={48} height={48} className="object-contain" />
               <h2 className="text-4xl font-black uppercase italic tracking-tighter">How Comicraft Stacks Up</h2>
             </motion.div>
             <motion.p variants={fadeUp} className="text-background-light/60 text-lg max-w-2xl">
