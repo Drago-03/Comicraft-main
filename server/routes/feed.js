@@ -97,7 +97,7 @@ router.get('/', async (req, res) => {
         // Build query
         let query = supabaseAdmin
             .from('stories')
-            .select('id, title, description, genre, content, views, likes, created_at, author_id, cover_image_url', 
+            .select('id, title, description, genre, content, views, likes, created_at, author_id, cover_image', 
                     { count: 'exact' });
 
         // Filter by genre if provided
@@ -106,7 +106,7 @@ router.get('/', async (req, res) => {
         }
 
         // Filter for published/approved stories only
-        query = query.or('moderation_status.eq.approved,moderation_status.is.null');
+        query = query.or('status.eq.approved,status.is.null');
 
         // Order by newest first
         query = query.order('created_at', { ascending: false });
@@ -140,7 +140,7 @@ router.get('/', async (req, res) => {
                     views: story.views || 0,
                     likes: story.likes || 0,
                     created_at: story.created_at,
-                    cover_image_url: story.cover_image_url,
+                    cover_image_url: story.cover_image || story.cover_image_url,
                     author_id: story.author_id,
                     author_name: profileMap[story.author_id]?.display_name || 
                                   profileMap[story.author_id]?.username || 
@@ -157,7 +157,7 @@ router.get('/', async (req, res) => {
                     views: story.views || 0,
                     likes: story.likes || 0,
                     created_at: story.created_at,
-                    cover_image_url: story.cover_image_url,
+                    cover_image_url: story.cover_image || story.cover_image_url,
                     author_id: story.author_id,
                     author_name: 'Anonymous',
                     author_avatar: null,

@@ -243,7 +243,7 @@ router.get('/profile/username/:username', async (req, res) => {
       .from('stories')
       .select('*')
       .eq('author_id', user.id)
-      .or('moderation_status.eq.approved,moderation_status.is.null')
+      .or('status.eq.approved,status.is.null')
       .order('created_at', { ascending: false });
 
     const storyList = stories || [];

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Release details:
 
+- Fixed: Corrected malformed REST API queries against the `stories` table causing 400 Bad Request errors (`cover_image_url` -> `cover_image`, `moderation_status` -> `status`).
+- Added: Integrated Resend SMTP for Supabase Auth and added professional Comicraft email templates.
+- Added: Configured a secure Next.js App Router endpoint (`/api/email`) utilizing the Resend REST API for dynamic transactional emails.
 - Added: Added a second homepage CTA, **Upload to Library**, routing to `/upload`.
 - Changed: Set project version metadata to `1.0.106`.
 - Changed: Updated **Begin Formatting** CTA to route to `/create` (Forge).
