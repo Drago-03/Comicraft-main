@@ -120,12 +120,11 @@ export function Footer({ version }: { version?: string }) {
                   { href: '/community/creators', label: 'Top Creators' },
                   { href: '/dashboard/royalties', label: 'Earnings' },
                   { href: '/upload', label: 'Upload Story' },
-                  { href: '/governance', label: 'DAO Governance' },
                   { href: '/trading', label: 'Trading Space' },
                   { href: '/creator-fund', label: 'Creator Fund' },
                   { href: '/reader-rewards', label: 'Reader Rewards' },
                   { href: '/subscriptions', label: 'Subscriptions' },
-                  { href: '/buy/CRAFTS', label: 'CRAFTS' },
+                  { href: '/buy/CRAFTS', label: 'Buy CRAFTS' },
                 ].map((link) => (
                   <li key={link.label}>
                     <Link
@@ -140,17 +139,23 @@ export function Footer({ version }: { version?: string }) {
               </ul>
             </nav>
 
-            {/* Legal Section */}
+            {/* Legal & Compliance Section */}
             <nav aria-label="Legal links" className="text-left">
               <h3 className="font-semibold text-sm tracking-wider uppercase mb-5 text-white/30">
-                Legal
+                Legal & Compliance
               </h3>
               <ul className="space-y-4 pl-0 list-none">
                 {[
-                  { href: '/terms', label: 'Terms' },
-                  { href: '/privacy', label: 'Privacy' },
-                  { href: '/cookies', label: 'Cookies' },
-                  { href: '/contact', label: 'Contact' },
+                  { href: '/terms', label: 'Terms of Service' },
+                  { href: '/privacy', label: 'Privacy Policy' },
+                  { href: '/cookies', label: 'Cookie Policy' },
+                  { href: '/contact', label: 'Contact Us' },
+                  { href: '/governance', label: 'DAO Governance' },
+                  { href: '/ip-licensing', label: 'IP Licensing' },
+                  { href: '/kavach', label: 'IQ Compliance (KAVACH)' },
+                  { href: '/kavach/submit', label: 'KAVACH Submit' },
+                  { href: '/kavach/blocklist', label: 'KAVACH Blocklist' },
+                  { href: '/kavach/dmca', label: 'DMCA Notice' },
                 ].map((link) => (
                   <li key={link.href}>
                     <Link
@@ -173,21 +178,14 @@ export function Footer({ version }: { version?: string }) {
               <ul className="space-y-4 pl-0 list-none">
                 {[
                   { href: '/aboutus', label: 'About Us' },
-                  { href: '/blogs', label: 'Blogs' },
+                  { href: '/blogs', label: 'Blog' },
                   { href: '/docs', label: 'Documentation' },
                   { href: '/faq', label: 'FAQ' },
-                  { href: '/kavach', label: 'IQ Compliance Hub (KAVACH)' },
-                  { href: '/kavach/submit', label: 'KAVACH Submit' },
-                  { href: '/kavach/blocklist', label: 'KAVACH Blocklist' },
-                  { href: '/kavach/dmca', label: 'KAVACH DMCA' },
-                  { href: '/governance', label: 'DAO Governance' },
-                  { href: '/ip-licensing', label: 'IP Licensing' },
                   { href: '/whitelabel', label: 'White Label API' },
                   { href: '/dynamic-nfts', label: 'Dynamic NFTs' },
                   { href: '/story-tools', label: 'Story Tools' },
-                  { href: '/status', label: 'Status' },
-                  { href: '/buy/CRAFTS', label: 'Buy CRAFTS' },
-                  { href: '/feedback', label: 'Feedback' },
+                  { href: '/status', label: 'System Status' },
+                  { href: '/feedback', label: 'Send Feedback' },
                 ].map((link) => (
                   <li key={link.href}>
                     <Link

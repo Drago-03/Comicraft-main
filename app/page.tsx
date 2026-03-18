@@ -615,7 +615,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           FINAL CTA — Begin Your Journey
           ═══════════════════════════════════════ */}
-      <section className="relative pt-32 pb-[200px] -mb-[150px] bg-ink overflow-hidden">
+      <section className="relative pt-24 pb-20 bg-ink overflow-hidden">
         {/* Halftone BG */}
         <div className="absolute inset-0 pointer-events-none opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F5E6C8'/%3E%3C/svg%3E")` }} />
 

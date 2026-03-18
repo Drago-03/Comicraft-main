@@ -21,13 +21,10 @@ interface CommunityPost {
   type: 'story' | 'discussion' | 'review' | 'announcement'; storyPreview?: string; tags?: string[];
 }
 
+interface FeaturedNFT {
+  id: string; title: string; author: string; image: string; tokenId?: string;
+}
 
-
-const showcaseNFTs = [
-  { id: 1, img: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=400&fit=crop', title: 'Neon Shadows', author: 'Marcus' },
-  { id: 2, img: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=400&fit=crop', title: 'Quantum Drop', author: 'Sarah' },
-  { id: 3, img: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop', title: 'Ethereal Dragon', author: 'Elena' }
-];
 
 function PostActions({ post, onVote }: { post: CommunityPost; onVote: (id: string, v: 'up' | 'down' | null) => void }) {
   return (
@@ -109,16 +106,18 @@ function PostCard({ post, onVote }: { post: CommunityPost; onVote: (id: string, 
 
 export default function CommunityFeed() {
   const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [featuredNFTs, setFeaturedNFTs] = useState<FeaturedNFT[]>([]);
   const [loading, setLoading] = useState(true);
+  const [nftLoading, setNftLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'stories' | 'discussions'>('all');
   const [profile, setProfile] = useState<any>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     // Fetch user profile from backend API (BFF pattern)
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     if (token) {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com';
       fetch(`${baseUrl}/api/v1/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -127,7 +126,8 @@ export default function CommunityFeed() {
         .catch(() => {});
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://comicraft-main.onrender.com'}/api/v1/stories?limit=20`)
+    // Fetch community feed posts from real-time backend
+    fetch(`${baseUrl}/api/v1/stories?limit=20`)
       .then(r => {
         if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
         return r.json();
@@ -160,6 +160,28 @@ export default function CommunityFeed() {
         console.error('Failed to load feed:', err);
         setLoading(false);
         toast({ title: 'Error loading feed', description: err.message, variant: 'destructive' });
+      });
+
+    // Fetch featured/showcase NFTs from real backend (trending or top NFTs)
+    fetch(`${baseUrl}/api/v1/marketplace/featured?limit=3`)
+      .then(r => r.ok ? r.json() : { data: [] })
+      .then(json => {
+        const data = json.data || [];
+        if (data.length > 0) {
+          const mapped = data.map((nft: any) => ({
+            id: nft._id || nft.id || nft.tokenId,
+            title: nft.name || nft.title || 'Featured NFT',
+            author: nft.creator || nft.author || 'Community Creator',
+            image: nft.image || nft.coverImage || 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=400&fit=crop',
+            tokenId: nft.tokenId,
+          }));
+          setFeaturedNFTs(mapped);
+        }
+        setNftLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load featured NFTs:', err);
+        setNftLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -267,27 +289,33 @@ export default function CommunityFeed() {
               </div>
             </motion.div>
 
-            {/* Showcase NFTs */}
+            {/* Showcase NFTs — Real-time Featured NFTs from Backend */}
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
               <div className="flex items-center gap-2 mb-6">
                 <Star className="w-5 h-5 text-amber-400" />
                 <h3 className="font-bold text-lg">Community Hall of Fame</h3>
               </div>
-              <div className="space-y-4">
-                {showcaseNFTs.map(nft => (
-                  <div key={nft.id} className="flex items-center gap-4 group cursor-pointer">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/20 perspective-1000">
-                      <motion.div whileHover={{ rotateY: 15, rotateX: 5 }} className="w-full h-full preserve-3d">
-                        <Image src={nft.img} alt={nft.title} fill className="object-cover transition-transform group-hover:scale-110" />
-                      </motion.div>
+              {nftLoading ? (
+                <p className="text-center py-8 text-white/50 text-sm">Loading featured NFTs...</p>
+              ) : featuredNFTs.length === 0 ? (
+                <p className="text-center py-8 text-white/50 text-sm">No featured NFTs available</p>
+              ) : (
+                <div className="space-y-4">
+                  {featuredNFTs.map(nft => (
+                    <div key={nft.id} className="flex items-center gap-4 group cursor-pointer hover:bg-white/5 p-2 rounded-lg transition-colors">
+                      <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/20 flex-shrink-0">
+                        <motion.div whileHover={{ scale: 1.05 }} className="w-full h-full">
+                          <Image src={nft.image} alt={nft.title} fill className="object-cover transition-transform group-hover:scale-110" />
+                        </motion.div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold group-hover:text-red-400 transition-colors line-clamp-1">{nft.title}</h4>
+                        <p className="text-xs text-white/50 truncate">By {nft.author}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold group-hover:text-red-400 transition-colors line-clamp-1">{nft.title}</h4>
-                      <p className="text-xs text-white/50">By {nft.author}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
           </div>
         </div>
