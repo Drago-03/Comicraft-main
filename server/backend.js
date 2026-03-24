@@ -283,6 +283,11 @@ app.use(
         imgSrc: ["'self'", 'data:', 'https:'],
       },
     },
+    // Allow cross-origin requests from the Cloudflare-hosted frontend
+    // to the Render-hosted backend. Without this, helmet sets
+    // Cross-Origin-Resource-Policy: same-origin which blocks all API responses.
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginEmbedderPolicy: false,
   })
 );
 
@@ -835,6 +840,9 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 app.use('/api/', limiter);
+
+// Serve static files (favicon, manifest, etc.) from the public directory
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Middleware
 app.use(correlationIdMiddleware); // Generate/track X-Request-ID for logging & tracing

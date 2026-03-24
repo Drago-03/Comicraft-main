@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.107] - 2026-03-25
+
+Release details:
+
+- Fixed: Resolved Cross-Origin-Resource-Policy (CORP) errors blocking the Cloudflare-hosted frontend from reading Render backend API responses. Configured `helmet()` with `crossOriginResourcePolicy: { policy: 'cross-origin' }` and disabled `crossOriginEmbedderPolicy`.
+- Fixed: Removed noisy helpbot health-check polling that generated `Cross-Origin-Resource-Policy` console errors every 60 seconds when visiting any page.
+- Added: Enabled `express.static` serving of `public/` directory on the Render backend so `favicon.ico` and other static assets load correctly.
+- Changed: Set project version metadata to `1.0.107`.
+
 ## [1.0.106] - 2026-03-17
 
 Release details:

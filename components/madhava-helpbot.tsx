@@ -42,24 +42,9 @@ export default function MadhavaHelpBot() {
   }, []);
 
   useEffect(() => {
-    const checkHealth = async () => {
-      try {
-        // Ping the backend health endpoint directly
-        const res = await fetch(`${BACKEND_URL}/api/health/bot`, {
-          cache: 'no-store',
-          mode: 'no-cors',
-        });
-        // mode: 'no-cors' gives opaque response — if fetch didn't throw, it's online
-        setIsOnline(true);
-      } catch {
-        // Network error = backend unreachable, but MADHAVA still works
-        // via the local Gemini route, so keep online = true
-        setIsOnline(true);
-      }
-    };
-    checkHealth();
-    const interval = setInterval(checkHealth, 60000);
-    return () => clearInterval(interval);
+    // MADHAVA uses the local /api/helpbot/chat route (Gemini-powered),
+    // which is always available — no need to poll the Render backend.
+    setIsOnline(true);
   }, []);
 
   // Auto-scroll to bottom when messages change
